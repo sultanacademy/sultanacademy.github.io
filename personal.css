@@ -883,3 +883,22 @@ img {
         min-width: 100%;
     }
 }
+
+
+.menu-toggle {
+    display: none; /* Kompüterdə gizli olsun */
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    cursor: pointer;
+    z-index: 100000;
+}
+
+.menu-toggle .bar {
+    height: 3px;
+    width: 100%;
+    background-color: #f8fafc;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
