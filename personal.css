@@ -889,19 +889,25 @@ img {
     display: none; /* Kompüterdə gizli olsun */
     flex-direction: column;
     justify-content: space-between;
-    width: 30px;
-    height: 21px;
+    width: 34px;
+    height: 24px;
     cursor: pointer;
     z-index: 100000;
+    background: transparent;
+    border: none;
+    padding: 0;
 }
 
 .menu-toggle .bar {
+    display: block;
     height: 3px;
     width: 100%;
-    background-color: #f8fafc;
+    background-color: #f8fafc; /* Xətlərin rəngi açıq və aydın olsun */
     border-radius: 3px;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease-in-out;
+    transform-origin: center;
 }
+
 
 
 @media (max-width: 968px) {
@@ -928,4 +934,37 @@ img {
     .nav-list.active {
         right: 0;
     }
+
 }
+
+
+
+@media (max-width: 968px) {
+    .menu-toggle {
+        display: flex !important; /* Mobildə artıq aydın görünəcək */
+    }
+
+    .navbar {
+        justify-content: space-between !important; /* Sol və sağda elementlərin düzgün paylanması üçün */
+        padding: 14px 20px !important;
+    }
+}
+
+
+
+
+/* Kliklənəndə (open sinfi düşəndə) 3 xəttin X-ə çevrilməsi */
+.menu-toggle.open .bar:nth-child(1) {
+    transform: translateY(10.5px) rotate(45deg);
+}
+
+.menu-toggle.open .bar:nth-child(2) {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.menu-toggle.open .bar:nth-child(3) {
+    transform: translateY(-10.5px) rotate(-45deg);
+}
+
+
