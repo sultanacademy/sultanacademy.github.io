@@ -902,3 +902,30 @@ img {
     border-radius: 3px;
     transition: all 0.3s ease;
 }
+
+
+@media (max-width: 968px) {
+    .menu-toggle {
+        display: flex !important; /* Mobildə görünsün */
+    }
+
+    .nav-list {
+        position: fixed;
+        top: 0;
+        right: -100%; /* İlkin olaraq ekrandan kənarda gizlədilsin */
+        width: 75%;
+        height: 100vh;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(15px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 0.3s ease-in-out;
+        box-shadow: -5px 0 25px rgba(0,0,0,0.3);
+    }
+
+    /* JavaScript-in işə salması üçün active sinfi */
+    .nav-list.active {
+        right: 0;
+    }
+}
