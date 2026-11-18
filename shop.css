@@ -367,3 +367,29 @@ a, button, input {
     .login-box button { width: 100%; }
     .watch-ad-btn { width: 100%; font-size: 14px; padding: 14px; }
 }
+
+
+/* Official Academy Section in Shop */
+.official-academy-section {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 24px;
+    padding: 35px 25px;
+    margin-bottom: 45px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 20px rgba(56, 189, 248, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.official-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #0284c7, #38bdf8);
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+}
