@@ -16,10 +16,6 @@ body {
     cursor: url('favicon.ico'), auto;
 }
 
-a, button, .social-icon, .book-card, .classroom-btn, .subsidiary-card, .tutor-card, .filter-btn {
-    cursor: pointer;
-}
-
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 90px;
@@ -1180,3 +1176,98 @@ img {
     #social-proof-container { bottom: 15px; left: 15px; right: 15px; }
     .sp-card { min-width: 100%; }
 }
+
+
+
+/* 1. KURSORU YARIBAYARI KİÇİLTMƏK (18px Modern SVG Bulb) */
+body {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='%2338bdf8'%3E%3Cpath d='M12 2C7.58 2 4 5.58 4 10c0 2.76 1.4 5.19 3.54 6.61.27.18.46.46.46.79v1.6c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-1.6c0-.33.19-.61.46-.79C18.6 15.19 20 12.76 20 10c0-4.42-3.58-8-8-8zm-2 19c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-.5h-4v.5z'/%3E%3C/svg%3E"), auto !important;
+}
+
+/* 2. ROL SEÇİMİ VƏ QEYDİYYAT MODALI STİLLƏRİ */
+.role-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.role-tab-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+    font-size: 13px;
+    transition: 0.25s;
+}
+.role-tab-btn.active {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+}
+.educator-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+}
+.educator-fields label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    margin-top: 5px;
+}
+.cal-guide-link {
+    font-size: 11px;
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 3px;
+}
+.cal-guide-link:hover { text-decoration: underline; }
+
+/* 3. MÜƏLLİM KARTINDA ƏLAQƏ DÜYMƏLƏRİ */
+.tutor-action-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+.meet-btn {
+    background: #ffffff;
+    color: #ea4335;
+    border: 1px solid #ea4335;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: 0.25s;
+}
+.meet-btn:hover {
+    background: #ea4335;
+    color: #ffffff;
+}
+.cal-booking-btn {
+    background: #0f172a;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: 0.25s;
+}
+.cal-booking-btn:hover { background: #38bdf8; color: #0f172a; }
