@@ -141,118 +141,39 @@
         </div>
     </section>
 
-    <!-- TUTORS MARKETPLACE SECTION -->
+
+
+
+<!-- TUTORS & MENTORS SECTION -->
     <section id="tutors" class="section">
         <div class="section-header">
-            <h2>Find Your Expert Tutor</h2>
-            <p>Connect with passionate independent polyglots & educators directly on Discord. Free platform without commission!</p>
+            <h2>Independent Educators & Mentors</h2>
+            <p>Connect with verified educators for 1-on-1 sessions on Discord, Google Meet, or Cal.com.</p>
         </div>
 
-        <!-- Tutor Filters -->
-        <div class="tutor-filters">
-            <button class="filter-btn active" data-filter="all">All Tutors</button>
-            <button class="filter-btn" data-filter="german">🇩🇪 German</button>
-            <button class="filter-btn" data-filter="english">🇺🇸 English</button>
-            <button class="filter-btn" data-filter="turkish-az">🇹🇷 🇦🇿 Turkish/Azerbaijani</button>
-            <button class="filter-btn" data-filter="productivity">⚡ Productivity</button>
+        <!-- DİNAMİK FİLTRLƏR (Bazada olan dillərə görə avtomatik çıxacaq) -->
+        <div class="tutor-filters" id="dynamicFilters">
+            <button class="filter-btn active" data-filter="all">All Mentors</button>
         </div>
 
-        <!-- Tutors Grid -->
-        <div class="tutors-grid">
-            
-            <!-- Tutor 1: Sultan Alizada -->
-            <div class="tutor-card" data-category="german english turkish-az productivity">
-                <div class="tutor-header">
-                    <img src="your-photo.jpg" alt="Sultan Alizada" class="tutor-avatar">
-                    <div class="tutor-main-info">
-                        <h3>Sultan Alizada <i class="fas fa-check-circle verified-badge" title="Verified Coach"></i></h3>
-                        <p class="tutor-title">Polyglot & Productivity Coach</p>
-                        <div class="tutor-rating">
-                            <span class="stars">⭐⭐⭐⭐⭐</span>
-                            <strong>5.0</strong> <span class="rating-count">(32 reviews)</span>
-                        </div>
-                    </div>
-                </div>
-                <p class="tutor-bio">Learning my 8th language! Tailored 1-on-1 language coaching, disciplined routine management, and interview preparation.</p>
-                <div class="tutor-tags">
-                    <span>🇩🇪 German (C1)</span>
-                    <span>🇬🇧 English (Fluent)</span>
-                    <span>🇹🇷 Turkish</span>
-                    <span>🇦🇿 Azerbaijani</span>
-                </div>
-                <div class="tutor-footer">
-                    <div class="tutor-price">Free Trial Available</div>
-                    <!-- Contact Unlocker -->
-                    <button class="unlock-tutor-btn" data-discord="https://discord.gg/rPbq3sWNCQ">
-                        <i class="fas fa-lock"></i> Contact on Discord (Watch AD)
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tutor 2: German Specialist Placeholder -->
-            <div class="tutor-card" data-category="german">
-                <div class="tutor-header">
-                    <div class="tutor-avatar-placeholder"><i class="fas fa-user-graduate"></i></div>
-                    <div class="tutor-main-info">
-                        <h3>Leyla M. <i class="fas fa-check-circle verified-badge" title="Verified Tutor"></i></h3>
-                        <p class="tutor-title">Goethe C1 German Instructor</p>
-                        <div class="tutor-rating">
-                            <span class="stars">⭐⭐⭐⭐⭐</span>
-                            <strong>4.9</strong> <span class="rating-count">(19 reviews)</span>
-                        </div>
-                    </div>
-                </div>
-                <p class="tutor-bio">Specialist in TELC / Goethe exam preparation, grammar simplification, and interactive speaking sessions on Discord.</p>
-                <div class="tutor-tags">
-                    <span>🇩🇪 German (C1)</span>
-                    <span>🇦🇿 Azerbaijani</span>
-                    <span>🇷🇺 Russian</span>
-                </div>
-                <div class="tutor-footer">
-                    <div class="tutor-price">$12 - $15 / hr</div>
-                    <button class="unlock-tutor-btn" data-discord="https://discord.gg/rPbq3sWNCQ">
-                        <i class="fas fa-lock"></i> Contact on Discord (Watch AD)
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tutor 3: English Specialist Placeholder -->
-            <div class="tutor-card" data-category="english">
-                <div class="tutor-header">
-                    <div class="tutor-avatar-placeholder"><i class="fas fa-user-tie"></i></div>
-                    <div class="tutor-main-info">
-                        <h3>Murad R.</h3>
-                        <p class="tutor-title">IELTS & Conversational English</p>
-                        <div class="tutor-rating">
-                            <span class="stars">⭐⭐⭐⭐⭐</span>
-                            <strong>4.8</strong> <span class="rating-count">(14 reviews)</span>
-                        </div>
-                    </div>
-                </div>
-                <p class="tutor-bio">Focused on breaking the language barrier, business communication, and boosting speaking confidence via Discord voice lounges.</p>
-                <div class="tutor-tags">
-                    <span>🇺🇸 English (Advanced)</span>
-                    <span>🇦🇿 Azerbaijani</span>
-                </div>
-                <div class="tutor-footer">
-                    <div class="tutor-price">$10 - $14 / hr</div>
-                    <button class="unlock-tutor-btn" data-discord="https://discord.gg/rPbq3sWNCQ">
-                        <i class="fas fa-lock"></i> Contact on Discord (Watch AD)
-                    </button>
-                </div>
-            </div>
-
+        <!-- DİNAMİK MÜƏLLİM KARTLARI (Bazada olan müəllimlər bura dolacaq) -->
+        <div class="tutors-grid" id="tutorsGrid">
+            <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading Educators...</p>
         </div>
 
-        <!-- Payment & Trust Recommendation Notice -->
+        <!-- Zero Commission & Trust Box -->
         <div class="payment-recommendation-box">
             <div class="pay-icon"><i class="fas fa-handshake"></i></div>
             <div class="pay-text">
-                <strong>100% Zero-Commission Policy:</strong>
-                <p>Sultan Academy does not charge students or tutors any middleman commission. Once you connect on Discord, you can agree on lesson times and transfer payments directly via recommended secure banking solutions like <b>Wise</b> or <b>TransferGo</b>.</p>
+                <strong>100% Zero-Commission Community:</strong>
+                <p>We do not hold your funds. Connect with mentors directly and settle payments transparently via <b>Wise</b>, <b>TransferGo</b>, or your preferred banking tools.</p>
             </div>
         </div>
     </section>
+
+
+
+    
 
     <!-- BOOKS & CLASSROOM SECTION -->
     <section id="books" class="section bg-light">
@@ -481,19 +402,66 @@
     <!-- Live Social Proof Notifications Container -->
     <div id="social-proof-container"></div>
 
-    <!-- AUTH MODAL (Giriş / Qeydiyyat) -->
+    <!-- ŞAXƏLİ AUTH & REGISTRATION MODAL -->
     <div id="authModal" class="auth-modal-overlay hidden">
         <div class="auth-modal-card">
             <button class="auth-close-btn" id="closeAuthModal">&times;</button>
-            <div class="auth-modal-header">
-                <h3><i class="fas fa-user-lock"></i> Sultan Academy Identity</h3>
-                <p>Identify yourself with a free Username to unlock tutor contacts and rewards!</p>
+            
+            <div class="role-tabs">
+                <button type="button" class="role-tab-btn active" id="tabLearner">🎓 Learner</button>
+                <button type="button" class="role-tab-btn" id="tabEducator">💡 Become a Mentor</button>
             </div>
-            <div class="auth-input-group">
-                <input type="text" id="modalUsernameInput" placeholder="Choose or Enter Username..." autocomplete="off">
-                <button id="modalAuthSubmitBtn">Continue <i class="fas fa-arrow-right"></i></button>
+
+            <!-- 1. Tələbə Qeydiyyatı -->
+            <div id="learnerForm">
+                <div class="auth-modal-header">
+                    <h3>Learner Identity</h3>
+                    <p>Enter your username to unlock sponsor access, rewards, and contact mentors!</p>
+                </div>
+                <div class="auth-input-group">
+                    <input type="text" id="learnerUsernameInput" placeholder="Enter Username..." autocomplete="off">
+                    <button type="button" id="learnerSubmitBtn">Continue as Learner <i class="fas fa-arrow-right"></i></button>
+                </div>
             </div>
-            <p class="auth-note"><i class="fas fa-shield-alt"></i> No password or credit card required. Free forever.</p>
+
+            <!-- 2. Müəllim / Mentor Qeydiyyatı -->
+            <div id="educatorForm" class="hidden">
+                <div class="auth-modal-header">
+                    <h3>Apply as Independent Educator</h3>
+                    <p>Create your teaching profile. Your card will appear once reviewed by admin!</p>
+                </div>
+                <div class="educator-fields">
+                    <label>Full Name / Title</label>
+                    <input type="text" id="eduName" placeholder="e.g. Leyla Mammadova">
+
+                    <label>Headline & Subject</label>
+                    <input type="text" id="eduTitle" placeholder="e.g. C1 German Specialist">
+
+                    <label>Languages Taught (Vergüllə ayırın: German, English)</label>
+                    <input type="text" id="eduLanguages" placeholder="German, English, Turkish">
+
+                    <label>Short Bio</label>
+                    <textarea id="eduBio" rows="2" style="width:100%; padding:10px; border-radius:10px; border:1px solid #cbd5e1;" placeholder="Describe your teaching approach..."></textarea>
+
+                    <label>Discord Server / Profile Link</label>
+                    <input type="text" id="eduDiscord" placeholder="https://discord.gg/...">
+
+                    <label>Cal.com Booking Link (Optional)</label>
+                    <input type="text" id="eduCal" placeholder="https://cal.com/your-name/30min">
+                    <a href="https://youtu.be/80enIW1-26w?si=gdKzJYIsT5YGtfOl" target="_blank" class="cal-guide-link">
+                        <i class="fab fa-youtube"></i> How to set up Cal.com? (Tutorial)
+                    </a>
+
+                    <label>Hourly Rate</label>
+                    <input type="text" id="eduPrice" placeholder="e.g. $12/hr or Free Trial">
+
+                    <button type="button" id="educatorSubmitBtn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; margin-top: 15px;">
+                        Submit Educator Profile
+                    </button>
+                </div>
+            </div>
+            
+            <p class="auth-note"><i class="fas fa-shield-alt"></i> Safe & verified ecosystem. No credit card required.</p>
         </div>
     </div>
 
