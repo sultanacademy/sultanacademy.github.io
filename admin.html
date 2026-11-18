@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sultan Academy - Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: #0f172a; color: #f8fafc; padding: 40px 20px; }
+        .admin-box { max-width: 900px; margin: 0 auto; background: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid #334155; }
+        h1 { margin-bottom: 25px; color: #38bdf8; font-size: 24px; display: flex; align-items: center; gap: 10px; }
+        .pin-gate { text-align: center; padding: 40px 0; }
+        .pin-gate input { padding: 12px 18px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; margin-right: 10px; font-size: 16px; }
+        .btn { background: #38bdf8; color: #0f172a; font-weight: 700; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; }
+        .table-wrap { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: left; font-size: 13px; }
+        th { color: #94a3b8; }
+        .btn-approve { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .shop-form { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; max-width: 500px; }
+        .shop-form input { padding: 10px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-box">
+        <h1><i class="fas fa-shield-alt"></i> Sultan Academy Control Center</h1>
+
+        <!-- PIN TƏHLÜKƏSİZLİK QAPISI -->
+        <div id="pinGate" class="pin-gate">
+            <p style="margin-bottom: 15px; color: #94a3b8;">Enter Master Secret PIN to unlock:</p>
+            <input type="password" id="adminPin" placeholder="Enter PIN...">
+            <button class="btn" id="unlockAdminBtn">Unlock Portal</button>
+        </div>
+
+        <!-- ƏSAS PANEL -->
+        <div id="portalContent" style="display: none;">
+            <h2 style="font-size: 18px; margin-top: 20px; color: #10b981;"><i class="fas fa-user-check"></i> Pending Mentor Applications</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Title</th>
+                            <th>Languages</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tutorsTableBody">
+                        <tr><td colspan="5">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <hr style="margin: 40px 0; border-color: #334155;">
+
+            <h2 style="font-size: 18px; color: #f59e0b;"><i class="fas fa-upload"></i> Upload Material to Shop</h2>
+            <div class="shop-form">
+                <input type="text" id="shopTitle" placeholder="Item Title">
+                <input type="number" id="shopPrice" placeholder="Price in SP points">
+                <input type="text" id="shopCover" placeholder="Cover Image filename (e.g. book1.png)">
+                <input type="text" id="shopDrive" placeholder="Google Drive / Download Link">
+                <button class="btn" id="addShopBtn" style="background: #f59e0b; color: black;">Submit to Shop</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
+
+        // Sənin Şəxsi Master Kodun (İstəsən dəyişərsən):
+        const MASTER_PIN = "sultan2026";
+
+        document.getElementById('unlockAdminBtn').addEventListener('click', () => {
+            const input = document.getElementById('adminPin').value;
+            if (input === MASTER_PIN) {
+                document.getElementById('pinGate').style.display = 'none';
+                document.getElementById('portalContent').style.display = 'block';
+                loadAdminData();
+            } else {
+                alert("Wrong PIN!");
+            }
+        });
+
+        async function loadAdminData() {
+            const { data: tutors } = await supabase.from('tutors').select('*').order('id', { ascending: false });
+            const tbody = document.getElementById('tutorsTableBody');
+            tbody.innerHTML = "";
+
+            if (!tutors || tutors.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='5'>No applications yet.</td></tr>";
+                return;
+            }
+
+            tutors.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${t.name}</strong></td>
+                    <td>${t.title}</td>
+                    <td>${t.languages}</td>
+                    <td><span style="color: ${t.status === 'approved' ? '#10b981' : '#f59e0b'}">${t.status}</span></td>
+                    <td>
+                        ${t.status !== 'approved' ? `<button class="btn-approve" data-id="${t.id}">Approve</button>` : 'Active'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.querySelectorAll('.btn-approve').forEach(b => {
+                b.addEventListener('click', async (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    await supabase.from('tutors').update({ status: 'approved' }).eq('id', id);
+                    alert("Mentor approved! They are now live on the site.");
+                    loadAdminData();
+                });
+            });
+        }
+
+        // Mağazaya material əlavə etmək
+        document.getElementById('addShopBtn').addEventListener('click', async () => {
+            const title = document.getElementById('shopTitle').value.trim();
+            const price = parseInt(document.getElementById('shopPrice').value);
+            const cover = document.getElementById('shopCover').value.trim();
+            const drive = document.getElementById('shopDrive').value.trim();
+
+            if (!title || !price || !drive) return alert("Fill in required fields!");
+
+            await supabase.from('shop_items').insert([{
+                title, price, cover_img: cover || 'book1.png', drive_link: drive
+            }]);
+
+            alert("Item added to shop!");
+            document.getElementById('shopTitle').value = "";
+            document.getElementById('shopPrice').value = "";
+            document.getElementById('shopDrive').value = "";
+        });
+    </script>
+</body>
+</html>
