@@ -77,12 +77,6 @@
         const authGate = document.getElementById("authGate");
         const dashboardArea = document.getElementById("dashboardArea");
 
-        // 1. Kodu Gmaile göndər
-        document.getElementById("sendOtpBtn").addEventListener("click", async () => {
-            const email = document.getElementById("adminEmailInput").value.trim();
-            if (email !== ADMIN_EMAIL) {
-                return alert("Access Denied! You are not the authorized administrator.");
-            }
 
 // Yeni sətir (Birbaşa Redirect URL-ə yönləndirir):
 const { error } = await supabase.auth.signInWithOtp({ 
