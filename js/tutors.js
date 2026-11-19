@@ -150,10 +150,9 @@ if (tutorForm) {
     tutorForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // Düyməni etibarlı şəkildə tapırıq
-        const submitBtn = tutorForm.querySelector('button[type="submit"]') || tutorForm.querySelector(".submit-profile-btn");
+      // Düyməni birbaşa kliklənən elementdən götürürük (əgər tapılmasa xəta verməz)
+        const submitBtn = e.submitter || tutorForm.querySelector('button[type="submit"]');
         const originalText = submitBtn ? submitBtn.innerHTML : "Submit";
-        
         if (submitBtn) {
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
             submitBtn.disabled = true;
