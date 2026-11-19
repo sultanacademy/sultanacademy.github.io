@@ -367,9 +367,17 @@
                             <input type="text" id="tutorName" required placeholder="e.g. Leyla Mammadova">
                         </div>
                         <div class="form-group">
-                            <label>Avatar / Photo filename (e.g. your-photo.jpg) *</label>
-                            <input type="text" id="tutorAvatar" required placeholder="tutor1.png or your-photo.jpg">
-                        </div>
+    <label>Profile Photo (Direct Image URL) *</label>
+    <div style="display: flex; gap: 8px;">
+        <input type="url" id="tutorAvatar" required placeholder="https://i.postimg.cc/.../photo.png" style="flex: 1;">
+        <a href="https://postimages.org/" target="_blank" rel="noopener" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; padding: 10px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; text-decoration: none;">
+            <i class="fas fa-cloud-upload-alt"></i> Upload Photo
+        </a>
+    </div>
+    <small style="color: #94a3b8; font-size: 11px; margin-top: 4px; display: block;">
+        💡 Click <b>"Upload Photo"</b>, upload your image, copy the <b>Direct link</b> (ends in .png / .jpg), and paste it here.
+    </small>
+</div>
                     </div>
 
                     <div class="form-row">
