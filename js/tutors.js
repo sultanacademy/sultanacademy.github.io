@@ -63,6 +63,49 @@ if (closeDashboardModal) {
     });
 }
 
+
+
+// Discord Admin Kanalına Webhook ilə Bildiriş Göndərmək
+async function notifyDiscordOnNewTutor(tutorData) {
+    // Sənin Discord Admin Kanalının Webhook URL-i:
+    const DISCORD_WEBHOOK_URL = "BURAYA_OZ_DISCORD_WEBHOOK_LINKINI_YAPISDIR";
+
+    if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes("BURAYA")) return;
+
+    const embedPayload = {
+        username: "Sultan Academy Bot",
+        avatar_url: "https://sultanalizada.github.io/logo.png",
+        embeds: [{
+            title: "🎓 Yeni Mentor / Tutor Müraciəti!",
+            color: 3711992, // Neon Mavi Rəng (#38BDF8)
+            fields: [
+                { name: "👤 Ad / Soyad", value: tutorData.name, inline: true },
+                { name: "🌍 Dil", value: tutorData.language, inline: true },
+                { name: "📚 Fənn / Sahə", value: tutorData.subject, inline: true },
+                { name: "💰 Qiymət", value: tutorData.price, inline: true },
+                { name: "🔴 Canlı Yayım / Dərs?", value: tutorData.offers_live_sessions ? "✅ Bəli (Sultan Academy Discord)" : "❌ Xeyr", inline: true },
+                { name: "💬 Discord Otağı", value: tutorData.discord_channel, inline: false },
+                { name: "📅 Cal.com", value: tutorData.cal_link || "Qoşulmayıb", inline: false }
+            ],
+            footer: { text: "admin.html portalına daxil olub təsdiqləyin və ya rədd edin." },
+            timestamp: new Date().toISOString()
+        }]
+    };
+
+    try {
+        await fetch(DISCORD_WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(embedPayload)
+        });
+    } catch (err) {
+        console.error("Discord Webhook Error:", err);
+    }
+}
+
+
+
+
 // --- 3. MENTOR MÜRACİƏTİ VƏ DISCORD WEBHOOK ---
 const tutorForm = document.getElementById('tutorApplicationForm');
 
@@ -127,3 +170,5 @@ export function attachAdUnlocker(buttonElement, targetUrl, unlockType) {
         }, 1000);
     });
 }
+
+
