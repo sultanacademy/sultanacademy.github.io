@@ -67,57 +67,62 @@
         </div>
     </div>
 
-    <script type="module">
+<script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
         const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
 
-        // Yalnız bu emailin daxil olmasına icazə verilir:
         const ADMIN_EMAIL = "sultanacademyinfo@gmail.com";
 
         const authGate = document.getElementById("authGate");
         const dashboardArea = document.getElementById("dashboardArea");
+        const loginPasswordBtn = document.getElementById("loginPasswordBtn");
+        const logoutBtn = document.getElementById("logoutBtn");
 
-
-// Yeni sətir (Birbaşa Redirect URL-ə yönləndirir):
-const { error } = await supabase.auth.signInWithOtp({ 
-    email: ADMIN_EMAIL,
-    options: {
-        emailRedirectTo: 'https://sultanalizada.github.io/admin.html'
-    }
-});            if (!error) {
-                alert("6-digit code has been sent to your Gmail!");
-                document.getElementById("emailStep").style.display = "none";
-                document.getElementById("otpStep").style.display = "block";
-            } else {
-                alert("Error sending code: " + error.message);
-            }
-        });
-
-       // Şifrə ilə 1 saniyədə limitsiz giriş
-        document.getElementById("loginPasswordBtn").addEventListener("click", async () => {
-            const email = document.getElementById("adminEmailInput").value.trim();
-            const password = document.getElementById("adminPasswordInput").value.trim();
-
-            if (!password) return alert("Please enter your password!");
-
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-
-            if (!error && data.session) {
-                authGate.style.display = "none";
-                dashboardArea.style.display = "block";
+        // Əgər artıq şifrə ilə giriş edibsə, təkrar şifrə istəməsin, birbaşa paneli açsın
+        async function checkSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session && session.user && session.user.email === ADMIN_EMAIL) {
+                if (authGate) authGate.style.display = "none";
+                if (dashboardArea) dashboardArea.style.display = "block";
                 loadTutors();
-            } else {
-                alert("Access Denied! Wrong password or unauthorized user.");
             }
-        });
+        }
+        checkSession();
 
-        // Müraciətləri yüklə
+        // Şifrə ilə giriş düyməsi
+        if (loginPasswordBtn) {
+            loginPasswordBtn.addEventListener("click", async () => {
+                const email = document.getElementById("adminEmailInput").value.trim();
+                const password = document.getElementById("adminPasswordInput").value.trim();
+
+                if (!password) return alert("Please enter your password!");
+
+                loginPasswordBtn.innerText = "Checking...";
+                loginPasswordBtn.disabled = true;
+
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (!error && data.session) {
+                    if (authGate) authGate.style.display = "none";
+                    if (dashboardArea) dashboardArea.style.display = "block";
+                    loadTutors();
+                } else {
+                    alert("Access Denied! Wrong password or user not found.");
+                }
+
+                loginPasswordBtn.innerText = "Login to Admin Portal";
+                loginPasswordBtn.disabled = false;
+            });
+        }
+
+        // Müraciətləri bazadan yüklə
         async function loadTutors() {
             const { data: tutors } = await supabase.from('tutors').select('*').order('id', { ascending: false });
             const tbody = document.getElementById("tutorsTableBody");
+            if (!tbody) return;
             tbody.innerHTML = "";
 
             if (!tutors || tutors.length === 0) {
@@ -153,10 +158,13 @@ const { error } = await supabase.auth.signInWithOtp({
             });
         }
 
-        document.getElementById("logoutBtn").addEventListener("click", async () => {
-            await supabase.auth.signOut();
-            window.location.reload();
-        });
+        // Çıxış düyməsi
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", async () => {
+                await supabase.auth.signOut();
+                window.location.reload();
+            });
+        }
     </script>
 </body>
 </html>
