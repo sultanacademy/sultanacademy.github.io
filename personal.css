@@ -676,19 +676,24 @@ img {
 /* ==========================================
    7. MODALS (WELCOME ROLE & DASHBOARD)
    ========================================== */
+/* FORM AÇILANDA ARXA FONUN BÜTÖV VƏ QARANLIQ OLMASI */
 .auth-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(10px);
+    width: 100vw;
+    height: 100vh;
+    background: #0a0f1d !important; /* Arxa fon heç görünmür, bütöv tünd rəng */
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 100002;
     padding: 20px;
+}
+
+/* Saytın arxada scroll olmasını donduran klass */
+body.modal-open {
+    overflow: hidden !important;
 }
 
 /* 1. Welcome Modal */
