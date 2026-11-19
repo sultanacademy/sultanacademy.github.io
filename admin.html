@@ -52,10 +52,10 @@
                         <tr>
                             <th>Photo</th>
                             <th>Name</th>
-                            <th>Language</th>
-                            <th>Subject</th>
+                            <th>Private Email (Admin Only)</th>
+                            <th>Language / Subject</th>
                             <th>Price</th>
-                            <th>Discord Room</th>
+                            <th>Discord</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -118,7 +118,9 @@
             });
         }
 
-        // Müraciətləri bazadan yüklə
+
+
+    // Müraciətləri bazadan yüklə (Email + Delete düyməsi ilə)
         async function loadTutors() {
             const { data: tutors } = await supabase.from('tutors').select('*').order('id', { ascending: false });
             const tbody = document.getElementById("tutorsTableBody");
@@ -135,19 +137,27 @@
                 tr.innerHTML = `
                     <td><img src="${t.avatar_url}" class="avatar-preview" onerror="this.src='your-photo.jpg'"></td>
                     <td><strong>${t.name}</strong></td>
-                    <td>${t.language}</td>
-                    <td>${t.subject}</td>
-                    <td>${t.price}</td>
-                    <td><a href="${t.discord_channel}" target="_blank" style="color:#38bdf8;">Discord Link</a></td>
                     <td>
+                        <a href="mailto:${t.email || ''}" style="color: #38bdf8; text-decoration: underline;">
+                            <i class="fas fa-envelope"></i> ${t.email || 'No Email'}
+                        </a>
+                    </td>
+                    <td><b>${t.language}</b><br><small style="color:#94a3b8;">${t.subject}</small></td>
+                    <td>${t.price}</td>
+                    <td><a href="${t.discord_channel}" target="_blank" style="color:#38bdf8;">Discord Room</a></td>
+                    <td style="display: flex; gap: 8px; align-items: center;">
                         ${t.status === 'pending' 
                             ? `<button class="btn-approve" data-id="${t.id}">Approve</button>` 
-                            : '<span style="color:#10b981; font-weight:bold;">Active</span>'}
+                            : '<span style="color:#10b981; font-weight:bold; font-size:12px;">Active</span>'}
+                        <button class="btn-delete" data-id="${t.id}" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; font-weight:600;">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
 
+            // Təsdiqləmə (Approve)
             document.querySelectorAll(".btn-approve").forEach(b => {
                 b.addEventListener("click", async (e) => {
                     const id = e.target.getAttribute("data-id");
@@ -156,7 +166,21 @@
                     loadTutors();
                 });
             });
+
+            // Kartı Silmə (Delete)
+            document.querySelectorAll(".btn-delete").forEach(b => {
+                b.addEventListener("click", async (e) => {
+                    const id = e.target.getAttribute("data-id");
+                    if (confirm("Bu müəllim kartını bazadan tamamilə silmək istədiyinə əminsən?")) {
+                        await supabase.from('tutors').delete().eq('id', id);
+                        alert("Müəllim kartı silindi!");
+                        loadTutors();
+                    }
+                });
+            });
         }
+
+    
 
         // Çıxış düyməsi
         if (logoutBtn) {
