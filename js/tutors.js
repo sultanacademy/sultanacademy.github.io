@@ -9,43 +9,48 @@ const DISCORD_WEBHOOK_URL = "BURAYA_OZ_DISCORD_WEBHOOK_LINKINI_YAPISDIR";
 
 // --- 1. SƏHİFƏYƏ İLK GİRİŞDƏ ROL SEÇİMİ (WELCOME ONBOARDING) ---
 document.addEventListener("DOMContentLoaded", () => {
-    document.body.classList.add("modal-open");
     const welcomeModal = document.getElementById("welcomeRoleModal");
     const welcomeChooseLearner = document.getElementById("welcomeChooseLearner");
     const welcomeChooseEducator = document.getElementById("welcomeChooseEducator");
 
     const hasChosenRole = localStorage.getItem("sultan_role_chosen");
 
-    // Əgər istifadəçi ilk dəfədirsə, 1.2 saniyə sonra seçim pəncərəsi açılsın
+    // Əgər istifadəçi ilk dəfədirsə, pəncərə açılsın və arxa fon donsun:
     if (!hasChosenRole && welcomeModal) {
         setTimeout(() => {
             welcomeModal.classList.remove("hidden");
+            document.body.classList.add("modal-open"); // 👈 BURA: Pəncərə çıxdı, arxanı dondururuq
         }, 1200);
     }
 
+    // Tələbə seçəndə: pəncərə bağlanır və dondurma açılır
     if (welcomeChooseLearner) {
         welcomeChooseLearner.addEventListener("click", () => {
             localStorage.setItem("sultan_role_chosen", "true");
             localStorage.setItem("sultan_role", "learner");
             welcomeModal.classList.add("hidden");
+            document.body.classList.remove("modal-open"); // 👈 BURA: Pəncərə bağlandı, arxanı açırıq
             switchRole("learner");
         });
     }
 
+    // Müəllim seçəndə: ilk pəncərə bağlanır, arxasınca böyük müraciət forması açılır (arxa donulu qalır)
     if (welcomeChooseEducator) {
         welcomeChooseEducator.addEventListener("click", () => {
             localStorage.setItem("sultan_role_chosen", "true");
             localStorage.setItem("sultan_role", "educator");
             welcomeModal.classList.add("hidden");
-            // Müəllim rejiminə keçib müraciət formasını açırıq
+            
             switchRole("educator");
             const dashboardModal = document.getElementById("dashboardModal");
-            if (dashboardModal) dashboardModal.classList.remove("hidden");
+            if (dashboardModal) {
+                dashboardModal.classList.remove("hidden");
+                document.body.classList.add("modal-open"); // 👈 BURA: Forma açıldı, arxa donulu qalır
+            }
         });
     }
 
     loadEducators();
-    document.body.classList.remove("modal-open");
 });
 
 // --- 2. DUAL ROLE DASHBOARD VƏ LOGIN DÜYMƏSİ ---
@@ -80,18 +85,21 @@ function switchRole(role) {
     }
 }
 
-// Login düyməsi kliklənəndə dashboard açılsın
+// Login düyməsinə basanda pəncərə açılır:
 if (navAuthBtn && dashboardModal) {
     navAuthBtn.addEventListener("click", (e) => {
         e.preventDefault();
         dashboardModal.classList.remove("hidden");
+        document.body.classList.add("modal-open"); // 👈 BURA: Login basıldı, arxanı dondur
         switchRole(currentActiveRole);
     });
 }
 
+// "X" düyməsinə basanda pəncərə bağlanır:
 if (closeDashboardModal && dashboardModal) {
     closeDashboardModal.addEventListener("click", () => {
         dashboardModal.classList.add("hidden");
+        document.body.classList.remove("modal-open"); // 👈 BURA: X basıldı, arxanı aç
     });
 }
 
@@ -159,10 +167,11 @@ if (tutorForm) {
 
         const { error } = await supabase.from("tutors").insert([tutorData]);
 
-        if (!error) {
+       if (!error) {
             await notifyDiscordOnNewTutor(tutorData);
             alert("🎉 Your Educator card has been submitted! Sultan Academy admin will review and approve it shortly.");
             dashboardModal.classList.add("hidden");
+            document.body.classList.remove("modal-open"); // 👈 BURA: Forma getdi, arxanı yenidən açırıq
             tutorForm.reset();
         } else {
             alert("Error submitting profile. Please check your connection and fields.");
