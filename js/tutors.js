@@ -9,6 +9,7 @@ const DISCORD_WEBHOOK_URL = "BURAYA_OZ_DISCORD_WEBHOOK_LINKINI_YAPISDIR";
 
 // --- 1. SƏHİFƏYƏ İLK GİRİŞDƏ ROL SEÇİMİ (WELCOME ONBOARDING) ---
 document.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.add("modal-open");
     const welcomeModal = document.getElementById("welcomeRoleModal");
     const welcomeChooseLearner = document.getElementById("welcomeChooseLearner");
     const welcomeChooseEducator = document.getElementById("welcomeChooseEducator");
@@ -44,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     loadEducators();
+    document.body.classList.remove("modal-open");
 });
 
 // --- 2. DUAL ROLE DASHBOARD VƏ LOGIN DÜYMƏSİ ---
