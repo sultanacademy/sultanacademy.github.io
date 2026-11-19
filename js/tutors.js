@@ -141,7 +141,9 @@ async function notifyDiscordOnNewTutor(tutorData) {
     }
 }
 
-// --- 4. MÜƏLLİM MÜRACİƏT FORMASININ GÖNDƏRİLMƏSİ ---
+
+
+// --- 4. MÜƏLLİM MÜRACİƏTİ VƏ KART REDAKTƏSİ (EDIT PROFILE) ---
 const tutorForm = document.getElementById("tutorApplicationForm");
 
 if (tutorForm) {
@@ -153,8 +155,11 @@ if (tutorForm) {
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
         submitBtn.disabled = true;
 
+        const tutorEmail = document.getElementById("tutorEmail").value.trim();
+
         const tutorData = {
             name: document.getElementById("tutorName").value.trim(),
+            email: tutorEmail, // Yalnız adminin görəcəyi gizli email
             avatar_url: document.getElementById("tutorAvatar").value.trim(),
             language: document.getElementById("tutorLanguage").value.trim(),
             subject: document.getElementById("tutorSubject").value.trim(),
@@ -162,25 +167,41 @@ if (tutorForm) {
             discord_channel: document.getElementById("tutorDiscordChannel").value.trim(),
             offers_live_sessions: document.getElementById("tutorOffersLive").checked,
             cal_link: document.getElementById("tutorCalLink").value.trim(),
-            status: "pending"
+            status: "pending" // HƏR REDAKTƏDƏN SONRA AVTOMATİK TƏSDİQ GÖZLƏMƏSİNƏ KEÇİR!
         };
 
-        const { error } = await supabase.from("tutors").insert([tutorData]);
+        // Bu emaillə əvvəl kart yaradılıbmı yoxlayırıq (Edit yoxsa Yeni?)
+        const { data: existing } = await supabase.from("tutors").select("id").eq("email", tutorEmail).single();
 
-       if (!error) {
+        let operationError = null;
+
+        if (existing) {
+            // Əvvəl varsa, UPDATE edirik (kart yenilənir və status yenidən 'pending' olur)
+            const { error } = await supabase.from("tutors").update(tutorData).eq("id", existing.id);
+            operationError = error;
+        } else {
+            // Yoxdursa, yeni kart yaradırıq
+            const { error } = await supabase.from("tutors").insert([tutorData]);
+            operationError = error;
+        }
+
+        if (!operationError) {
             await notifyDiscordOnNewTutor(tutorData);
-            alert("🎉 Your Educator card has been submitted! Sultan Academy admin will review and approve it shortly.");
+            alert("🎉 Your Educator card has been saved and is now PENDING admin approval!");
             dashboardModal.classList.add("hidden");
-            document.body.classList.remove("modal-open"); // 👈 BURA: Forma getdi, arxanı yenidən açırıq
+            document.body.classList.remove("modal-open");
             tutorForm.reset();
         } else {
-            alert("Error submitting profile. Please check your connection and fields.");
+            alert("Error saving profile. Please check your connection and fields.");
         }
 
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
     });
 }
+
+
+
 
 // --- 5. DİNAMİK MÜƏLLİM KARTLARI VƏ FİLTRLƏR ---
 async function loadEducators() {
@@ -236,10 +257,13 @@ async function loadEducators() {
             <div class="tutor-footer">
                 <div class="tutor-price">${t.price}</div>
                 <div class="tutor-action-group">
-                    <button class="unlock-tutor-btn" data-discord="${t.discord_channel}">
-                        <i class="fab fa-discord"></i> Unlock Discord Room (Watch AD)
+                    <button class="unlock-tutor-btn" data-target="${t.discord_channel}" data-type="Discord Room">
+                        <i class="fab fa-discord"></i> Discord Room (Watch AD)
                     </button>
-                    ${t.cal_link ? `<a href="${t.cal_link}" target="_blank" class="cal-booking-btn" rel="noopener"><i class="fas fa-calendar-alt"></i> Book on Cal.com</a>` : ''}
+                    ${t.cal_link ? `
+                    <button class="cal-booking-btn unlock-cal-btn" data-target="${t.cal_link}" data-type="Cal.com Booking">
+                        <i class="fas fa-calendar-alt"></i> Book on Cal.com (Watch AD)
+                    </button>` : ''}
                 </div>
             </div>
         `;
@@ -271,16 +295,18 @@ async function loadEducators() {
         });
     }
 
-    // Reklamla Discord Linkini Açmaq
-    document.querySelectorAll(".unlock-tutor-btn").forEach(btn => {
+// Həm Discord, həm də Cal.com üçün ortaq Reklam İzləmə funksiyası
+    document.querySelectorAll(".unlock-tutor-btn, .unlock-cal-btn").forEach(btn => {
         btn.addEventListener("click", function(e) {
             e.preventDefault();
-            const discordLink = this.getAttribute("data-discord");
+            const targetUrl = this.getAttribute("data-target");
+            const targetType = this.getAttribute("data-type") || "Link";
+
             const adUrl = "https://www.profitableratecpmnetwork.com/fspm49jkm?key=88e5821febc3aed060a93ce3587926fc";
             const adWindow = window.open(adUrl, "_blank");
 
             if (!adWindow || adWindow.closed || typeof adWindow.closed === "undefined") {
-                return alert("⚠️ Pop-up Blocked! Please allow pop-ups to verify the sponsor ad and unlock the room.");
+                return alert(`⚠️ Pop-up Blocked! Please allow pop-ups to verify the sponsor ad and unlock ${targetType}.`);
             }
 
             this.style.pointerEvents = "none";
@@ -293,10 +319,10 @@ async function loadEducators() {
                     this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Unlocking... ${timeLeft}s`;
                 } else {
                     clearInterval(timer);
-                    this.innerHTML = '<i class="fab fa-discord"></i> Opened';
+                    this.innerHTML = `<i class="fas fa-check"></i> ${targetType} Opened`;
                     this.style.background = "#10b981";
                     this.style.pointerEvents = "auto";
-                    window.open(discordLink, "_blank");
+                    window.open(targetUrl, "_blank");
                 }
             }, 1000);
         });
