@@ -150,12 +150,17 @@ if (tutorForm) {
     tutorForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const submitBtn = tutorForm.querySelector(".submit-profile-btn");
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-        submitBtn.disabled = true;
+        // Düyməni etibarlı şəkildə tapırıq
+        const submitBtn = tutorForm.querySelector('button[type="submit"]') || tutorForm.querySelector(".submit-profile-btn");
+        const originalText = submitBtn ? submitBtn.innerHTML : "Submit";
+        
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitBtn.disabled = true;
+        }
 
-        const tutorEmail = document.getElementById("tutorEmail").value.trim();
+        const emailInput = document.getElementById("tutorEmail");
+        const tutorEmail = emailInput ? emailInput.value.trim() : "";
 
         const tutorData = {
             name: document.getElementById("tutorName").value.trim(),
@@ -195,8 +200,10 @@ if (tutorForm) {
             alert("Error saving profile. Please check your connection and fields.");
         }
 
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
+if (submitBtn) {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
     });
 }
 
