@@ -88,8 +88,13 @@
                 return alert("Access Denied! You are not the authorized administrator.");
             }
 
-            const { error } = await supabase.auth.signInWithOtp({ email: ADMIN_EMAIL });
-            if (!error) {
+// Yeni sətir (Birbaşa Redirect URL-ə yönləndirir):
+const { error } = await supabase.auth.signInWithOtp({ 
+    email: ADMIN_EMAIL,
+    options: {
+        emailRedirectTo: 'https://sultanalizada.github.io/admin.html'
+    }
+});            if (!error) {
                 alert("6-digit code has been sent to your Gmail!");
                 document.getElementById("emailStep").style.display = "none";
                 document.getElementById("otpStep").style.display = "block";
