@@ -321,68 +321,123 @@
     <!-- Live Social Proof Notifications Container -->
     <div id="social-proof-container"></div>
 
-    <!-- ŞAXƏLİ AUTH & REGISTRATION MODAL -->
-    <div id="authModal" class="auth-modal-overlay hidden">
-        <div class="auth-modal-card">
-            <button class="auth-close-btn" id="closeAuthModal">&times;</button>
-            
-            <div class="role-tabs">
-                <button type="button" class="role-tab-btn active" id="tabLearner">🎓 Learner</button>
-                <button type="button" class="role-tab-btn" id="tabEducator">💡 Become a Mentor</button>
+
+
+    <!-- DUAL ROLE USER DASHBOARD & APPLICATION MODAL -->
+<div id="dashboardModal" class="auth-modal-overlay hidden">
+    <div class="dashboard-modal-card">
+        <button class="auth-close-btn" id="closeDashboardModal">&times;</button>
+        
+        <!-- YUXARIDA 1 KLİKLƏ ROL KEÇİDİ (STUDENT <-> EDUCATOR) -->
+        <div class="role-switcher-bar">
+            <span class="switcher-label">Active Mode:</span>
+            <div class="role-pill-box">
+                <button type="button" class="pill-btn active" id="btnModeLearner">
+                    <i class="fas fa-graduation-cap"></i> Learner
+                </button>
+                <button type="button" class="pill-btn" id="btnModeEducator">
+                    <i class="fas fa-chalkboard-teacher"></i> Educator
+                </button>
             </div>
-
-            <!-- 1. Tələbə Qeydiyyatı -->
-            <div id="learnerForm">
-                <div class="auth-modal-header">
-                    <h3>Learner Identity</h3>
-                    <p>Enter your username to unlock sponsor access, rewards, and contact mentors!</p>
-                </div>
-                <div class="auth-input-group">
-                    <input type="text" id="learnerUsernameInput" placeholder="Enter Username..." autocomplete="off">
-                    <button type="button" id="learnerSubmitBtn">Continue as Learner <i class="fas fa-arrow-right"></i></button>
-                </div>
-            </div>
-
-            <!-- 2. Müəllim / Mentor Qeydiyyatı -->
-            <div id="educatorForm" class="hidden">
-                <div class="auth-modal-header">
-                    <h3>Apply as Independent Educator</h3>
-                    <p>Create your teaching profile. Your card will appear once reviewed by admin!</p>
-                </div>
-                <div class="educator-fields">
-                    <label>Full Name / Title</label>
-                    <input type="text" id="eduName" placeholder="e.g. Leyla Mammadova">
-
-                    <label>Headline & Subject</label>
-                    <input type="text" id="eduTitle" placeholder="e.g. C1 German Specialist">
-
-                    <label>Languages Taught (Vergüllə ayırın: German, English)</label>
-                    <input type="text" id="eduLanguages" placeholder="German, English, Turkish">
-
-                    <label>Short Bio</label>
-                    <textarea id="eduBio" rows="2" style="width:100%; padding:10px; border-radius:10px; border:1px solid #cbd5e1;" placeholder="Describe your teaching approach..."></textarea>
-
-                    <label>Discord Server / Profile Link</label>
-                    <input type="text" id="eduDiscord" placeholder="https://discord.gg/...">
-
-                    <label>Cal.com Booking Link (Optional)</label>
-                    <input type="text" id="eduCal" placeholder="https://cal.com/your-name/30min">
-                    <a href="https://youtu.be/80enIW1-26w?si=gdKzJYIsT5YGtfOl" target="_blank" class="cal-guide-link">
-                        <i class="fab fa-youtube"></i> How to set up Cal.com? (Tutorial)
-                    </a>
-
-                    <label>Hourly Rate</label>
-                    <input type="text" id="eduPrice" placeholder="e.g. $12/hr or Free Trial">
-
-                    <button type="button" id="educatorSubmitBtn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; margin-top: 15px;">
-                        Submit Educator Profile
-                    </button>
-                </div>
-            </div>
-            
-            <p class="auth-note"><i class="fas fa-shield-alt"></i> Safe & verified ecosystem. No credit card required.</p>
         </div>
+
+        <!-- 1. LEARNER (TƏLƏBƏ) DASHBOARDU -->
+        <div id="viewLearner" class="dashboard-view">
+            <div class="dash-header">
+                <h3>Welcome, <span class="user-display-name">Student</span>!</h3>
+                <p>Track your unlocked Discord classrooms, rewards, and community events.</p>
+            </div>
+            
+            <div class="dash-stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-coins" style="color: #f59e0b;"></i>
+                    <h4 id="learnerPoints">0 SP</h4>
+                    <span>Shop Balance</span>
+                </div>
+                <div class="stat-card">
+                    <i class="fab fa-discord" style="color: #5865F2;"></i>
+                    <h4 id="unlockedCount">0</h4>
+                    <span>Unlocked Mentors</span>
+                </div>
+            </div>
+
+            <div class="dash-quick-links">
+                <a href="shop.html" class="dash-action-btn"><i class="fas fa-shopping-bag"></i> Go to Shop & Tasks</a>
+                <a href="#tutors" class="dash-action-btn secondary" id="dashBrowseTutors"><i class="fas fa-search"></i> Browse Educators</a>
+            </div>
+        </div>
+
+        <!-- 2. EDUCATOR (MÜƏLLİM) DASHBOARDU & KART YARATMA FORMASI -->
+        <div id="viewEducator" class="dashboard-view hidden">
+            
+            <!-- İngiliscə Xüsusi Discord Məlumat Bildirişi -->
+            <div class="discord-advantage-banner">
+                <i class="fab fa-discord"></i>
+                <div>
+                    <strong>Sultan Academy Discord Exclusivity</strong>
+                    <p>💡 Opening your personal classroom inside Sultan Academy Discord boosts student trust & traffic 3x!</p>
+                </div>
+            </div>
+
+            <form id="tutorApplicationForm" class="educator-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name / Display Name *</label>
+                        <input type="text" id="tutorName" required placeholder="e.g. Leyla Mammadova">
+                    </div>
+                    <div class="form-group">
+                        <label>Avatar / Photo URL (or filename) *</label>
+                        <input type="text" id="tutorAvatar" required placeholder="tutor1.png or URL">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Language Taught *</label>
+                        <input type="text" id="tutorLanguage" required placeholder="e.g. German">
+                    </div>
+                    <div class="form-group">
+                        <label>Subject / Specialized Field *</label>
+                        <input type="text" id="tutorSubject" required placeholder="e.g. Medical German / C1 Exam">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Hourly Price / Fee *</label>
+                    <input type="text" id="tutorPrice" required placeholder="e.g. $15/hr or First Lesson Free">
+                </div>
+
+                <!-- Sultan Academy Discord Kanal Linki -->
+                <div class="form-group">
+                    <label>Your Sultan Academy Discord Channel Link *</label>
+                    <input type="url" id="tutorDiscordChannel" required placeholder="https://discord.com/channels/1506203530023931977/...">
+                    <small>Create or ask a moderator to set up your room in Sultan Academy Discord, then paste its direct link.</small>
+                </div>
+
+                <!-- Canlı Dərs / Yayım Seçimi -->
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="tutorOffersLive">
+                    <label for="tutorOffersLive">I offer free/paid live sessions or group workshops on Sultan Academy Discord.</label>
+                </div>
+
+                <!-- Cal.com Booking Linki -->
+                <div class="form-group">
+                    <label>Cal.com Booking Link (Optional)</label>
+                    <input type="url" id="tutorCalLink" placeholder="https://cal.com/your-name/session">
+                    <a href="https://youtu.be/80enIW1-26w?si=gdKzJYIsT5YGtfOl" target="_blank" class="cal-video-link">
+                        <i class="fab fa-youtube"></i> How to set up Cal.com? (Video Guide)
+                    </a>
+                </div>
+
+                <button type="submit" class="submit-profile-btn">
+                    <i class="fas fa-check-circle"></i> Submit Educator Card for Approval
+                </button>
+            </form>
+        </div>
+
     </div>
+</div>
+    
 
     <!-- JavaScript Faylları -->
     <script>
