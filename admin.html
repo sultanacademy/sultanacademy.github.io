@@ -26,20 +26,16 @@
     <div class="admin-box">
         <h1><i class="fas fa-user-shield"></i> Sultan Academy Admin Portal</h1>
 
-        <!-- 2FA EMAIL OTP GİRİŞ QAPISI -->
+<!-- TƏHLÜKƏSİZ ŞİFRƏLİ GİRİŞ (LİMİTSİZ VƏ DƏRHAL) -->
         <div id="authGate" class="auth-gate">
             <i class="fas fa-lock" style="font-size: 40px; color: #38bdf8; margin-bottom: 15px;"></i>
             <h3 style="margin-bottom: 10px;">Admin Authentication</h3>
-            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">Enter your authorized Gmail to receive a one-time secure login code.</p>
+            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">Enter your admin password to access the control center.</p>
 
-            <div id="emailStep">
-                <input type="email" id="adminEmailInput" placeholder="sultanacademyinfo@gmail.com"><br>
-                <button class="btn" id="sendOtpBtn">Send Login Code to Gmail</button>
-            </div>
-
-            <div id="otpStep" style="display: none;">
-                <input type="text" id="adminOtpInput" placeholder="Enter 6-digit code from Gmail"><br>
-                <button class="btn" id="verifyOtpBtn">Verify & Enter</button>
+            <div>
+                <input type="email" id="adminEmailInput" value="sultanacademyinfo@gmail.com" readonly style="opacity: 0.8;"><br>
+                <input type="password" id="adminPasswordInput" placeholder="Enter your secret password"><br>
+                <button class="btn" id="loginPasswordBtn">Login to Admin Portal</button>
             </div>
         </div>
 
@@ -103,13 +99,16 @@ const { error } = await supabase.auth.signInWithOtp({
             }
         });
 
-        // 2. Kodu yoxla və daxil ol
-        document.getElementById("verifyOtpBtn").addEventListener("click", async () => {
-            const token = document.getElementById("adminOtpInput").value.trim();
-            const { data, error } = await supabase.auth.verifyOtp({
-                email: ADMIN_EMAIL,
-                token: token,
-                type: 'email'
+       // Şifrə ilə 1 saniyədə limitsiz giriş
+        document.getElementById("loginPasswordBtn").addEventListener("click", async () => {
+            const email = document.getElementById("adminEmailInput").value.trim();
+            const password = document.getElementById("adminPasswordInput").value.trim();
+
+            if (!password) return alert("Please enter your password!");
+
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
             });
 
             if (!error && data.session) {
@@ -117,7 +116,7 @@ const { error } = await supabase.auth.signInWithOtp({
                 dashboardArea.style.display = "block";
                 loadTutors();
             } else {
-                alert("Invalid or expired code!");
+                alert("Access Denied! Wrong password or unauthorized user.");
             }
         });
 
