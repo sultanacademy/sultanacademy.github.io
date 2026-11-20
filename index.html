@@ -13,11 +13,10 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sultan Academy</title>
+    <title>Sultan Academy | Empowering Global Learners</title>
     <link rel="icon" href="favicon.ico">
     <link rel="shortcut icon" href="favicon.ico">
     
-    <!-- Modern Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="personal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -25,43 +24,37 @@
 
 <body>
 
-<!-- NAVIGATION (Orta Nizamlı & Parlaq Düyməli) -->
+    <!-- STANDART BİRGƏ NAVBAR -->
     <header>
         <nav class="navbar">
-            <a href="#projects" class="nav-brand">SULTAN ACADEMY</a>
+            <a href="index.html" class="nav-brand">SULTAN ACADEMY</a>
 
-            <!-- MOBİL HAMBURGER DÜYMƏSİ -->
             <button class="menu-toggle" id="mobile-menu" aria-label="Toggle Navigation" type="button">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
             </button>
 
-            <!-- ORTADA DÜZÜLƏN NAVİQASİYA LİNKLƏRİ -->
+            <!-- Ayrı HTML səhifələrinə bağlanan linklər -->
             <ul class="nav-list" id="nav-list">
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#tutors">Find Mentors</a></li>
+                <li><a href="index.html" style="color: #38bdf8;">Home</a></li>
+                <li><a href="tutors.html">Find Mentors</a></li>
                 <li><a href="#testimonials">Testimonials</a></li>
-                <li><a href="#about">Developer</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="contact.html">Contact</a></li>
             </ul>
 
-            <!-- SAĞ TƏRƏF: FƏALİYYƏT DÜYMƏLƏRİ -->
             <div class="nav-actions">
                 <a href="shop.html" class="nav-shop-btn"><i class="fas fa-shopping-bag"></i> Shop</a>
-                <button id="navActionBtn" class="nav-join-btn" type="button">
-                    <i class="fas fa-rocket"></i> <span id="navActionText">Join Academy</span>
-                </button>
+                <a href="dashboard.html" class="nav-join-btn"><i class="fas fa-chart-line"></i> Dashboard</a>
             </div>
         </nav>
     </header>
 
-    <!-- PROJECTS & SUBSIDIARY TREE -->
+    <!-- PROJECTS & SUBSIDIARY TREE (Eynilə qorundu) -->
     <section id="projects" class="hero-section">
         <div class="hero-bg-glow"></div>
         <div class="hero-container">
             
-            <!-- Ana Təşkilat: Sultan Academy & Discord -->
             <div class="parent-org">
                 <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" class="hero-logo-link" rel="noopener">
                     <img src="logo.png" alt="Sultan Academy Logo" class="hero-logo-img">
@@ -76,104 +69,53 @@
                 </div>
             </div>
 
-            <!-- Şaxələnən Birləşdirici Xətlər -->
             <div class="tree-connector">
                 <div class="tree-stem"></div>
                 <div class="tree-horizontal-bar"></div>
             </div>
 
-            <!-- Törəmə Layihələr (Tochtergesellschaften) -->
             <div class="subsidiaries-grid">
-                
-                <!-- 1. STUTOR -->
                 <div class="subsidiary-card">
                     <div class="branch-line"></div>
-                    <div class="sub-img-wrap">
-                        <img src="stutor.png" alt="STUTOR" class="sub-img">
-                    </div>
+                    <div class="sub-img-wrap"><img src="stutor.png" alt="STUTOR" class="sub-img"></div>
                     <h4>STUTOR</h4>
                     <span class="sub-tag">Peer Mentorship</span>
-                    <a href="YOUR_STUTOR_LINK_HERE" class="sub-project-btn" target="_blank" rel="noopener">
-                        Open Project <i class="fas fa-external-link-alt"></i>
-                    </a>
+                    <a href="YOUR_STUTOR_LINK_HERE" class="sub-project-btn" target="_blank" rel="noopener">Open Project <i class="fas fa-external-link-alt"></i></a>
                 </div>
 
-                <!-- 2. Sultan Academy Global -->
                 <div class="subsidiary-card">
                     <div class="branch-line"></div>
-                    <div class="sub-img-wrap">
-                        <img src="sultan-academy-global.png" alt="Sultan Academy Global" class="sub-img">
-                    </div>
+                    <div class="sub-img-wrap"><img src="sultan-academy-global.png" alt="Sultan Academy Global" class="sub-img"></div>
                     <h4>Sultan Academy | Empowering Global Professionals</h4>
                     <span class="sub-tag">Career & Language</span>
-                    <a href="YOUR_GLOBAL_LINK_HERE" class="sub-project-btn" target="_blank" rel="noopener">
-                        Open Project <i class="fas fa-external-link-alt"></i>
-                    </a>
+                    <a href="YOUR_GLOBAL_LINK_HERE" class="sub-project-btn" target="_blank" rel="noopener">Open Project <i class="fas fa-external-link-alt"></i></a>
                 </div>
 
-                <!-- 3. Sultan Academy Kids -->
                 <div class="subsidiary-card">
                     <div class="branch-line"></div>
-                    <div class="sub-img-wrap">
-                        <img src="sultan-academy-kids.png" alt="Sultan Academy Kids" class="sub-img">
-                    </div>
+                    <div class="sub-img-wrap"><img src="sultan-academy-kids.png" alt="Sultan Academy Kids" class="sub-img"></div>
                     <h4>Sultan Academy Kids</h4>
                     <span class="sub-tag">Young Learners</span>
-                    <a href="YOUR_KIDS_LINK_HERE" class="sub-project-btn" target="_blank" rel="noopener">
-                        Open Project <i class="fas fa-external-link-alt"></i>
-                    </a>
+                    <a href="YOUR_KIDS_LINK_HERE" class="sub-project-btn" target="_blank" rel="noopener">Open Project <i class="fas fa-external-link-alt"></i></a>
                 </div>
 
-                <!-- 4. Easy Azerbaijani -->
                 <div class="subsidiary-card">
                     <div class="branch-line"></div>
-                    <div class="sub-img-wrap">
-                        <img src="easy-azerbaijani.png" alt="Easy Azerbaijani" class="sub-img">
-                    </div>
+                    <div class="sub-img-wrap"><img src="easy-azerbaijani.png" alt="Easy Azerbaijani" class="sub-img"></div>
                     <h4>Easy Azerbaijani</h4>
                     <span class="sub-tag">Language Hub</span>
-                    <a href="YOUR_EASY_AZ_LINK_HERE" class="sub-project-btn" target="_blank" rel="noopener">
-                        Open Project <i class="fas fa-external-link-alt"></i>
-                    </a>
+                    <a href="YOUR_EASY_AZ_LINK_HERE" class="sub-project-btn" target="_blank" rel="noopener">Open Project <i class="fas fa-external-link-alt"></i></a>
                 </div>
-
             </div>
 
         </div>
     </section>
 
-    <!-- TUTORS & MENTORS SECTION -->
-    <section id="tutors" class="section">
-        <div class="section-header">
-            <h2>Independent Educators & Mentors</h2>
-            <p>Connect with verified educators for 1-on-1 sessions on Sultan Academy Discord or Cal.com.</p>
-        </div>
-
-        <!-- DİNAMİK FİLTRLƏR (Supabase-dəki dillərə görə avtomatik yaranacaq) -->
-        <div class="tutor-filters" id="dynamicFilters">
-            <button class="filter-btn active" data-filter="all">All Mentors</button>
-        </div>
-
-        <!-- DİNAMİK MÜƏLLİM KARTLARI -->
-        <div class="tutors-grid" id="tutorsGrid">
-            <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading Educators...</p>
-        </div>
-
-        <!-- Zero Commission & Trust Box -->
-        <div class="payment-recommendation-box">
-            <div class="pay-icon"><i class="fas fa-handshake"></i></div>
-            <div class="pay-text">
-                <strong>100% Zero-Commission Community:</strong>
-                <p>We do not hold your funds. Connect with mentors directly and settle payments transparently via <b>Wise</b>, <b>TransferGo</b>, or your preferred banking tools.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- TESTIMONIALS -->
+    <!-- TESTIMONIALS SECTION -->
     <section id="testimonials" class="section bg-light">
         <div class="section-header">
             <h2>Testimonials</h2>
-            <p>Please feel free to share your opinions about our work! =)</p>
+            <p>Community feedback and experiences within our educational ecosystem.</p>
         </div>
         <div class="giscus-wrapper">
             <script src="https://giscus.app/client.js"
@@ -194,212 +136,31 @@
         </div>
     </section>
 
-    <!-- DEVELOPER (About) -->
-    <section id="about" class="section bg-light">
-        <div class="about-container">
-            <div class="about-image-wrapper">
-                <div class="image-glow"></div>
-                <img src="your-photo.jpg" alt="Sultan Alizada" class="profile-photo">
-            </div>
-            
-            <div class="about-text">
-                <h3>Sultan Alizada</h3>
-                <h4>Productivity & Language Coach | Developer</h4>
-                
-                <p>Hi there! My name is Sultan, the creator and developer of Sultan Academy—an all-in-one virtual educational ecosystem designed for self-improvement and skill mastery!</p>
-                <p>Since my school years, careful planning and discipline have shaped my journey, and today I channel that passion into building structured learning environments, digital resources, and a moderated community hub.</p>
-                <p>Sultan Academy connects dedicated learners, independent tutors, and creators through efficient, overload-free methods and direct-apply study materials.</p>
-                <p>I believe that learning is a lifelong journey, and I am excited to help you optimize your path, reach your goals, and discover your full potential!</p>
-
-                <p class="highlight-text">Let's build, learn, and grow together!</p>
-                
-                <div class="social-links about-socials">
-                    <a href="http://www.youtube.com/@SultanAlizadaOfficial" class="social-icon youtube" target="_blank" rel="noopener">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                    <a href="https://www.instagram.com/sultan_alizada_official?utm_source=qr&igsh=eXVtNnZsYTY3bGJp" class="social-icon instagram" target="_blank" rel="noopener">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://t.me/learngermanquicklyaffordably" class="social-icon telegram" target="_blank" rel="noopener">
-                        <i class="fab fa-telegram-plane"></i>
-                    </a>
-                    <a href="https://patreon.com/SultanAlizada?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink" target="_blank" class="social-icon patreon" rel="noopener">
-                        <svg width="24" height="24" viewBox="0 0 24 24">
-                            <circle cx="14.5" cy="9.5" r="4.5" fill="white"></circle>
-                            <rect x="3" y="3" width="4" height="18" fill="white"></rect>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="section">
-        <div class="section-header">
-            <h2>Contact</h2>
-            <p>Get in touch with us through our social channels.</p>
-        </div>
-        <div class="social-links">
-            <a href="https://wa.me/994515050607" class="social-icon whatsapp" target="_blank" rel="noopener">
-                <i class="fab fa-whatsapp"></i>
-            </a>
-            <a href="https://t.me/c/1073768407402/1" class="social-icon telegram" target="_blank" rel="noopener">
-                <i class="fab fa-telegram-plane"></i>
-            </a>
-            <a href="https://www.instagram.com/sultan_alizada_official?utm_source=qr&igsh=eXVtNnZsYTY3bGJp" class="social-icon instagram" target="_blank" rel="noopener">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="javascript:void(0);" class="social-icon wechat-btn" title="WeChat">
-                <i class="fab fa-weixin"></i>
-                <span class="wechat-popup" onclick="event.stopPropagation();">
-                    <img src="wechat-qr.jpg" alt="WeChat QR">
-                    <b>WeChat Scan</b>
-                </span>
-            </a>
-        </div>
-        <p class="contact-email"><i class="fas fa-envelope"></i> sultanacademyinfo@gmail.com</p>
-    </section>
-
-    <!-- AI & Search Optimization Information Block -->
-    <section id="ai-info" class="section ai-section">
-        <article class="ai-overview">
-            <h2>AI & Search Optimization Information Block</h2>
-            <p><strong>Sultan Academy</strong> is an all-in-one virtual educational ecosystem designed for self-improvement, language learning, and skill development. It connects dedicated learners, independent tutors, and content creators through a structured, highly moderated community hub.</p>
-        </article>
-    </section>
-
     <!-- FOOTER -->
     <footer class="footer">
         <p>© 2026 Sultan Alizada. All rights reserved.</p>
     </footer>
 
-    <!-- Live Social Proof Notifications Container -->
+    <!-- METALLİK PARILTILI YAŞIL DƏSTƏK DÜYMƏSİ (Wise Linkin üçün) -->
+    <a href="YOUR_WISE_LINK_HERE" class="metallic-support-btn" target="_blank" rel="noopener">
+        <i class="fas fa-hand-holding-heart"></i> Support Our Work
+    </a>
+
+    <!-- Live Social Proof Notifications -->
     <div id="social-proof-container"></div>
 
-
-<!-- 1. USERNAME QEYDİYYAT MODALI (YALNIZ İLK GİRİŞDƏ VƏ YA JOIN BASANDA) -->
-    <div id="joinModal" class="auth-modal-overlay hidden">
-        <div class="join-modal-card">
-            <button class="auth-close-btn" id="closeJoinModal" type="button">&times;</button>
-            <div class="join-icon">🚀</div>
-            <h3>Join Sultan Academy</h3>
-            <p>Create your unique handle. Teach what you know, learn what you love!</p>
-
-            <div class="join-input-box">
-                <input type="text" id="joinUsernameInput" placeholder="Choose a Username..." autocomplete="off">
-                <button type="button" id="joinSubmitBtn">
-                    Enter Ecosystem <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-            <small class="join-note">
-                <i class="fas fa-sync-alt"></i> One account gives you instant access to both <b>Learn</b> and <b>Teach</b>.
-            </small>
-        </div>
-    </div>
-
-    <!-- 2. SULTAN ACADEMY İKİLİ DASHBOARD (STUDENT 🔁 EDUCATOR) -->
-    <div id="dashboardModal" class="auth-modal-overlay hidden">
-        <div class="dashboard-modal-card">
-            <button class="auth-close-btn" id="closeDashboardModal" type="button">&times;</button>
-            
-            <div class="dash-user-bar">
-                <div class="dash-user-identity">
-                    <i class="fas fa-user-circle"></i>
-                    <div>
-                        <strong id="dashUsernameDisplay">User</strong>
-                        <span class="user-subtag">All-in-One Account</span>
-                    </div>
-                </div>
-                <div class="dash-balance-chip">
-                    <i class="fas fa-coins"></i> <span id="dashSpDisplay">0</span> SP
-                </div>
-            </div>
-
-            <!-- 🌟 İKİLİ KEÇİD DÜYMƏLƏRİ (DUAL ROLE TOGGLE) 🌟 -->
-            <div class="dual-role-toggle">
-                <button type="button" class="role-switch-btn active" id="btnStudentMode">
-                    <i class="fas fa-graduation-cap"></i> Student Mode
-                </button>
-                <button type="button" class="role-switch-btn" id="btnEducatorMode">
-                    <i class="fas fa-chalkboard-teacher"></i> Educator Mode
-                </button>
-            </div>
-
-            <!-- 1. STUDENT (TƏLƏBƏ) DASHBOARD SAHƏSİ (İçini sonra dolduracağıq) -->
-            <div id="studentDashboardArea" class="role-area">
-                <div class="role-placeholder-box">
-                    <i class="fas fa-book-reader"></i>
-                    <h4>Student Space</h4>
-                    <p>Track unlocked mentors, saved materials, and language goals.</p>
-                    <span class="stage-tag">Student Mode Active</span>
-                </div>
-            </div>
-
-            <!-- 2. EDUCATOR (MÜƏLLİM) DASHBOARD SAHƏSİ (İçini sonra dolduracağıq) -->
-            <div id="educatorDashboardArea" class="role-area hidden">
-                <div class="role-placeholder-box educator-box">
-                    <i class="fas fa-chalkboard"></i>
-                    <h4>Educator Studio</h4>
-                    <p>Manage your teaching card, live Discord sessions, and booking requests.</p>
-                    <span class="stage-tag educator-tag">Educator Mode Active</span>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-
-    <!-- JavaScript Faylları (books.js çıxarıldı, xəta dayandırıldı!) -->
     <script>
-        // Mobil Hamburger Menyu
+        // Mobil Menyu Skripti
         const menuToggle = document.getElementById("mobile-menu");
         const navList = document.getElementById("nav-list");
-
         if (menuToggle && navList) {
-            menuToggle.addEventListener("click", function(e) {
-                e.stopPropagation();
+            menuToggle.addEventListener("click", () => {
                 navList.classList.toggle("active");
                 menuToggle.classList.toggle("open");
                 document.body.classList.toggle("menu-open", navList.classList.contains("active"));
             });
         }
-
-        document.addEventListener("click", function(e) {
-            if (navList && navList.classList.contains("active") && !menuToggle.contains(e.target) && !navList.contains(e.target)) {
-                navList.classList.remove("active");
-                menuToggle.classList.remove("open");
-                document.body.classList.remove("menu-open");
-            }
-        });
-
-        document.querySelectorAll(".nav-list a").forEach(link => {
-            link.addEventListener("click", () => {
-                if (navList) navList.classList.remove("active");
-                if (menuToggle) menuToggle.classList.remove("open");
-                document.body.classList.remove("menu-open");
-            });
-        });
-
-        // WeChat Popup
-        const wechatBtn = document.querySelector(".wechat-btn");
-        const wechatPopup = document.querySelector(".wechat-popup");
-        if (wechatBtn && wechatPopup) {
-            wechatBtn.addEventListener("click", function(e) {
-                e.preventDefault();
-                e.stopPropagation(); 
-                const isBlock = wechatPopup.style.display === "block";
-                wechatPopup.style.display = isBlock ? "none" : "block";
-            });
-            document.addEventListener("click", function(e) {
-                if (!wechatPopup.contains(e.target) && !wechatBtn.contains(e.target)) {
-                    wechatPopup.style.display = "none";
-                }
-            });
-        }
     </script>
-
     <script src="js/social-proof.js"></script>
-    <script type="module" src="js/tutors.js"></script>
 </body>
 </html>
