@@ -7,7 +7,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // --- DISCORD WEBHOOK LINKINI BURA YAPIŞDIR ---
 const DISCORD_WEBHOOK_URL = "BURAYA_OZ_DISCORD_WEBHOOK_LINKINI_YAPISDIR";
 
-// --- SULTAN ACADEMY: JOIN & DUAL ROLE DASHBOARD LOGIC ---
+// --- 1. ELEMENTLƏRİN SEÇİLMƏSİ (TƏKRARSIZ VƏ TƏMİZ) ---
 const navActionBtn = document.getElementById("navActionBtn");
 const navActionText = document.getElementById("navActionText");
 
@@ -18,8 +18,8 @@ const joinSubmitBtn = document.getElementById("joinSubmitBtn");
 
 const dashboardModal = document.getElementById("dashboardModal");
 const closeDashboardModal = document.getElementById("closeDashboardModal");
-
 const dashUsernameDisplay = document.getElementById("dashUsernameDisplay");
+
 const btnStudentMode = document.getElementById("btnStudentMode");
 const btnEducatorMode = document.getElementById("btnEducatorMode");
 const studentDashboardArea = document.getElementById("studentDashboardArea");
@@ -28,27 +28,31 @@ const educatorDashboardArea = document.getElementById("educatorDashboardArea");
 let activeUser = localStorage.getItem("sultan_user") || null;
 let activeRole = localStorage.getItem("sultan_role") || "student";
 
-// 1. Menyudakı düymənin vəziyyətini yeniləyirik
+// --- 2. NAVİQASİYA DÜYMƏSİNİN VƏZİYYƏTİ ---
 function updateNavUI() {
     if (activeUser) {
-        navActionText.innerText = `${activeUser} (Dashboard)`;
+        if (navActionText) navActionText.innerText = `${activeUser} (Dashboard)`;
         if (dashUsernameDisplay) dashUsernameDisplay.innerText = activeUser;
     } else {
-        navActionText.innerText = "Join Academy";
+        if (navActionText) navActionText.innerText = "Join Academy";
     }
 }
 updateNavUI();
 
-// 2. Düyməyə klik: İstifadəçi yoxdursa "Join" açılır, varsa birbaşa "Dashboard" açılır!
+// Əsas Düymə: İstifadəçi yoxdursa "Join" açılır, varsa "Dashboard"
 if (navActionBtn) {
     navActionBtn.addEventListener("click", () => {
         if (!activeUser) {
-            joinModal.classList.remove("hidden");
-            document.body.classList.add("modal-open");
+            if (joinModal) {
+                joinModal.classList.remove("hidden");
+                document.body.classList.add("modal-open");
+            }
         } else {
-            dashboardModal.classList.remove("hidden");
-            document.body.classList.add("modal-open");
-            setRole(activeRole);
+            if (dashboardModal) {
+                dashboardModal.classList.remove("hidden");
+                document.body.classList.add("modal-open");
+                setRole(activeRole);
+            }
         }
     });
 }
@@ -56,109 +60,58 @@ if (navActionBtn) {
 // Qeydiyyatı təsdiq etmək (Frictionsuz Username ilə)
 if (joinSubmitBtn) {
     joinSubmitBtn.addEventListener("click", () => {
-        const username = joinUsernameInput.value.trim().toLowerCase();
+        const username = joinUsernameInput ? joinUsernameInput.value.trim().toLowerCase() : "";
         if (!username) return alert("Please enter a username!");
 
         activeUser = username;
         localStorage.setItem("sultan_user", username);
         updateNavUI();
 
-        joinModal.classList.add("hidden");
-        // Dərhal Dashboard-u açırıq
-        dashboardModal.classList.remove("hidden");
-        setRole(activeRole);
+        if (joinModal) joinModal.classList.add("hidden");
+        if (dashboardModal) {
+            dashboardModal.classList.remove("hidden");
+            setRole(activeRole);
+        }
     });
 }
 
-// 3. İKİLİ ROL KEÇİDİ (STUDENT 🔁 EDUCATOR)
+// --- 3. İKİLİ ROL KEÇİDİ (STUDENT 🔁 EDUCATOR) ---
 function setRole(role) {
     activeRole = role;
     localStorage.setItem("sultan_role", role);
 
     if (role === "student") {
-        btnStudentMode.classList.add("active");
-        btnEducatorMode.classList.remove("active");
-        studentDashboardArea.classList.remove("hidden");
-        educatorDashboardArea.classList.add("hidden");
+        if (btnStudentMode) btnStudentMode.classList.add("active");
+        if (btnEducatorMode) btnEducatorMode.classList.remove("active");
+        if (studentDashboardArea) studentDashboardArea.classList.remove("hidden");
+        if (educatorDashboardArea) educatorDashboardArea.classList.add("hidden");
     } else {
-        btnEducatorMode.classList.add("active");
-        btnStudentMode.classList.remove("active");
-        educatorDashboardArea.classList.remove("hidden");
-        studentDashboardArea.classList.add("hidden");
+        if (btnEducatorMode) btnEducatorMode.classList.add("active");
+        if (btnStudentMode) btnStudentMode.classList.remove("active");
+        if (educatorDashboardArea) educatorDashboardArea.classList.remove("hidden");
+        if (studentDashboardArea) studentDashboardArea.classList.add("hidden");
     }
 }
 
 if (btnStudentMode) btnStudentMode.addEventListener("click", () => setRole("student"));
 if (btnEducatorMode) btnEducatorMode.addEventListener("click", () => setRole("educator"));
 
-// Modalları bağlamaq
-if (closeJoinModal) {
+// Pəncərələri (Modalları) bağlamaq
+if (closeJoinModal && joinModal) {
     closeJoinModal.addEventListener("click", () => {
         joinModal.classList.add("hidden");
         document.body.classList.remove("modal-open");
     });
 }
-if (closeDashboardModal) {
+
+if (closeDashboardModal && dashboardModal) {
     closeDashboardModal.addEventListener("click", () => {
         dashboardModal.classList.add("hidden");
         document.body.classList.remove("modal-open");
     });
 }
 
-// --- 2. DUAL ROLE DASHBOARD VƏ LOGIN DÜYMƏSİ ---
-const navAuthBtn = document.getElementById("navAuthBtn");
-const navAuthText = document.getElementById("navAuthText");
-const dashboardModal = document.getElementById("dashboardModal");
-const closeDashboardModal = document.getElementById("closeDashboardModal");
-
-const btnModeLearner = document.getElementById("btnModeLearner");
-const btnModeEducator = document.getElementById("btnModeEducator");
-const viewLearner = document.getElementById("viewLearner");
-const viewEducator = document.getElementById("viewEducator");
-
-let currentActiveRole = localStorage.getItem("sultan_role") || "learner";
-
-function switchRole(role) {
-    currentActiveRole = role;
-    localStorage.setItem("sultan_role", role);
-
-    if (btnModeLearner && btnModeEducator && viewLearner && viewEducator) {
-        if (role === "learner") {
-            btnModeLearner.classList.add("active");
-            btnModeEducator.classList.remove("active");
-            viewLearner.classList.remove("hidden");
-            viewEducator.classList.add("hidden");
-        } else {
-            btnModeEducator.classList.add("active");
-            btnModeLearner.classList.remove("active");
-            viewEducator.classList.remove("hidden");
-            viewLearner.classList.add("hidden");
-        }
-    }
-}
-
-// Login düyməsinə basanda pəncərə açılır:
-if (navAuthBtn && dashboardModal) {
-    navAuthBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        dashboardModal.classList.remove("hidden");
-        document.body.classList.add("modal-open"); // 👈 BURA: Login basıldı, arxanı dondur
-        switchRole(currentActiveRole);
-    });
-}
-
-// "X" düyməsinə basanda pəncərə bağlanır:
-if (closeDashboardModal && dashboardModal) {
-    closeDashboardModal.addEventListener("click", () => {
-        dashboardModal.classList.add("hidden");
-        document.body.classList.remove("modal-open"); // 👈 BURA: X basıldı, arxanı aç
-    });
-}
-
-if (btnModeLearner) btnModeLearner.addEventListener("click", () => switchRole("learner"));
-if (btnModeEducator) btnModeEducator.addEventListener("click", () => switchRole("educator"));
-
-// --- 3. DISCORD WEBHOOK BİLDİRİŞ FUNKSİYASI ---
+// --- 4. DISCORD WEBHOOK BİLDİRİŞİ ---
 async function notifyDiscordOnNewTutor(tutorData) {
     if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes("BURAYA")) return;
 
@@ -170,10 +123,11 @@ async function notifyDiscordOnNewTutor(tutorData) {
             color: 3711992,
             fields: [
                 { name: "👤 Ad / Soyad", value: tutorData.name, inline: true },
+                { name: "📧 Email (Gizli)", value: tutorData.email || "Qeyd edilməyib", inline: true },
                 { name: "🌍 Dil", value: tutorData.language, inline: true },
                 { name: "📚 Fənn / Sahə", value: tutorData.subject, inline: true },
                 { name: "💰 Qiymət", value: tutorData.price, inline: true },
-                { name: "🔴 Canlı Dərs / Yayım?", value: tutorData.offers_live_sessions ? "✅ Bəli (Sultan Academy Discord)" : "❌ Xeyr", inline: true },
+                { name: "🔴 Canlı Dərs / Yayım?", value: tutorData.offers_live_sessions ? "✅ Bəli" : "❌ Xeyr", inline: true },
                 { name: "💬 Discord Otağı", value: tutorData.discord_channel, inline: false },
                 { name: "📅 Cal.com", value: tutorData.cal_link || "Qoşulmayıb", inline: false }
             ],
@@ -193,16 +147,13 @@ async function notifyDiscordOnNewTutor(tutorData) {
     }
 }
 
-
-
-// --- 4. MÜƏLLİM MÜRACİƏTİ VƏ KART REDAKTƏSİ (EDIT PROFILE) ---
+// --- 5. MÜƏLLİM MÜRACİƏTİ VƏ KART REDAKTƏSİ (SUBMIT & EDIT) ---
 const tutorForm = document.getElementById("tutorApplicationForm");
 
 if (tutorForm) {
     tutorForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-      // Düyməni birbaşa kliklənən elementdən götürürük (əgər tapılmasa xəta verməz)
         const submitBtn = e.submitter || tutorForm.querySelector('button[type="submit"]');
         const originalText = submitBtn ? submitBtn.innerHTML : "Submit";
         if (submitBtn) {
@@ -215,7 +166,7 @@ if (tutorForm) {
 
         const tutorData = {
             name: document.getElementById("tutorName").value.trim(),
-            email: tutorEmail, // Yalnız adminin görəcəyi gizli email
+            email: tutorEmail,
             avatar_url: document.getElementById("tutorAvatar").value.trim(),
             language: document.getElementById("tutorLanguage").value.trim(),
             subject: document.getElementById("tutorSubject").value.trim(),
@@ -223,20 +174,17 @@ if (tutorForm) {
             discord_channel: document.getElementById("tutorDiscordChannel").value.trim(),
             offers_live_sessions: document.getElementById("tutorOffersLive").checked,
             cal_link: document.getElementById("tutorCalLink").value.trim(),
-            status: "pending" // HƏR REDAKTƏDƏN SONRA AVTOMATİK TƏSDİQ GÖZLƏMƏSİNƏ KEÇİR!
+            status: "pending"
         };
 
-        // Bu emaillə əvvəl kart yaradılıbmı yoxlayırıq (Edit yoxsa Yeni?)
         const { data: existing } = await supabase.from("tutors").select("id").eq("email", tutorEmail).single();
 
         let operationError = null;
 
         if (existing) {
-            // Əvvəl varsa, UPDATE edirik (kart yenilənir və status yenidən 'pending' olur)
             const { error } = await supabase.from("tutors").update(tutorData).eq("id", existing.id);
             operationError = error;
         } else {
-            // Yoxdursa, yeni kart yaradırıq
             const { error } = await supabase.from("tutors").insert([tutorData]);
             operationError = error;
         }
@@ -244,31 +192,27 @@ if (tutorForm) {
         if (!operationError) {
             await notifyDiscordOnNewTutor(tutorData);
             alert("🎉 Your Educator card has been saved and is now PENDING admin approval!");
-            dashboardModal.classList.add("hidden");
+            if (dashboardModal) dashboardModal.classList.add("hidden");
             document.body.classList.remove("modal-open");
             tutorForm.reset();
         } else {
             alert("Error saving profile. Please check your connection and fields.");
         }
 
-if (submitBtn) {
+        if (submitBtn) {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }
     });
 }
 
-
-
-
-// --- 5. DİNAMİK MÜƏLLİM KARTLARI VƏ FİLTRLƏR ---
+// --- 6. DİNAMİK MÜƏLLİM KARTLARI VƏ FİLTRLƏR ---
 async function loadEducators() {
     const tutorsGrid = document.getElementById("tutorsGrid");
     const dynamicFilters = document.getElementById("dynamicFilters");
 
     if (!tutorsGrid) return;
 
-    // Bazadan yalnız təsdiqlənmiş müəllimləri çəkirik
     const { data: tutors, error } = await supabase
         .from("tutors")
         .select("*")
@@ -297,7 +241,7 @@ async function loadEducators() {
 
         card.innerHTML = `
             <div class="tutor-header">
-                <img src="${t.avatar_url || 'your-photo.jpg'}" alt="${t.name}" class="tutor-avatar">
+                <img src="${t.avatar_url || 'your-photo.jpg'}" alt="${t.name}" class="tutor-avatar" onerror="this.src='your-photo.jpg'">
                 <div class="tutor-main-info">
                     <h3>${t.name} <i class="fas fa-check-circle verified-badge" title="Verified Mentor"></i></h3>
                     <p class="tutor-title">${t.subject}</p>
@@ -328,7 +272,6 @@ async function loadEducators() {
         tutorsGrid.appendChild(card);
     });
 
-    // Dinamik Filtr Düymələri
     if (dynamicFilters) {
         dynamicFilters.innerHTML = `<button class="filter-btn active" data-filter="all">All Mentors</button>`;
         uniqueLanguages.forEach(lang => {
@@ -353,7 +296,7 @@ async function loadEducators() {
         });
     }
 
-// Həm Discord, həm də Cal.com üçün ortaq Reklam İzləmə funksiyası
+    // Reklamla Açılış
     document.querySelectorAll(".unlock-tutor-btn, .unlock-cal-btn").forEach(btn => {
         btn.addEventListener("click", function(e) {
             e.preventDefault();
@@ -386,3 +329,6 @@ async function loadEducators() {
         });
     });
 }
+
+// Səhifə yüklənəndə müəllimləri avtomatik çağırırıq
+document.addEventListener("DOMContentLoaded", loadEducators);
