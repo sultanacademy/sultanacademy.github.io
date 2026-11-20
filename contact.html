@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Creator | Sultan Academy</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="personal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="nav-brand">SULTAN ACADEMY</a>
+            <ul class="nav-list" id="nav-list">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tutors.html">Find Mentors</a></li>
+                <li><a href="index.html#testimonials">Testimonials</a></li>
+                <li><a href="contact.html" style="color: #38bdf8;">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="shop.html" class="nav-shop-btn"><i class="fas fa-shopping-bag"></i> Shop</a>
+                <a href="dashboard.html" class="nav-join-btn"><i class="fas fa-chart-line"></i> Dashboard</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 1. ƏLAQƏ BÖLMƏSİ (WhatsApp və Instagram ÇIXARILDI!) -->
+    <section class="section" style="padding-top: 140px;">
+        <div class="section-header">
+            <h2>Get in Touch</h2>
+            <p>Direct communication channels for inquiries, collaborations, and community feedback.</p>
+        </div>
+
+        <div class="social-links">
+            <!-- YALNIZ TELEGRAM VƏ WECHAT QALDI -->
+            <a href="https://t.me/c/1073768407402/1" class="social-icon telegram" target="_blank" rel="noopener">
+                <i class="fab fa-telegram-plane"></i>
+            </a>
+            <a href="javascript:void(0);" class="social-icon wechat-btn" title="WeChat">
+                <i class="fab fa-weixin"></i>
+                <span class="wechat-popup" onclick="event.stopPropagation();">
+                    <img src="wechat-qr.jpg" alt="WeChat QR">
+                    <b>WeChat Scan</b>
+                </span>
+            </a>
+        </div>
+        <p class="contact-email"><i class="fas fa-envelope"></i> sultanacademyinfo@gmail.com</p>
+    </section>
+
+    <!-- 2. DEVELOPER / CREATOR BÖLMƏSİ (Instagram Yalnız Buradadır!) -->
+    <section class="section bg-light">
+        <div class="about-container">
+            <div class="about-image-wrapper">
+                <div class="image-glow"></div>
+                <img src="your-photo.jpg" alt="Sultan Alizada" class="profile-photo">
+            </div>
+            
+            <div class="about-text">
+                <h3>Sultan Alizada</h3>
+                <h4>Productivity & Language Coach | Platform Developer</h4>
+                
+                <p>Hi there! My name is Sultan, the creator and developer of Sultan Academy—an all-in-one virtual educational ecosystem designed for disciplined self-improvement and high-efficiency learning!</p>
+                <p>Since my school years, careful planning and continuous growth have shaped my journey. Today, I build direct-apply digital literature, interactive community hubs, and transparent mentoring spaces.</p>
+                
+                <p class="highlight-text">Let's build, learn, and grow together!</p>
+                
+                <!-- SOSİAL LİNKLƏR: INSTAGRAM MƏHZ BURADA TƏMİRDƏDİR -->
+                <div class="social-links about-socials">
+                    <a href="http://www.youtube.com/@SultanAlizadaOfficial" class="social-icon youtube" target="_blank" rel="noopener">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <!-- INSTAGRAM BURADA -->
+                    <a href="https://www.instagram.com/sultan_alizada_official?utm_source=qr&igsh=eXVtNnZsYTY3bGJp" class="social-icon instagram" target="_blank" rel="noopener">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://t.me/learngermanquicklyaffordably" class="social-icon telegram" target="_blank" rel="noopener">
+                        <i class="fab fa-telegram-plane"></i>
+                    </a>
+                    <a href="https://patreon.com/SultanAlizada?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink" target="_blank" class="social-icon patreon" rel="noopener">
+                        <svg width="24" height="24" viewBox="0 0 24 24"><circle cx="14.5" cy="9.5" r="4.5" fill="white"></circle><rect x="3" y="3" width="4" height="18" fill="white"></rect></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2026 Sultan Alizada. All rights reserved.</p>
+    </footer>
+
+    <!-- METALLİK YAŞIL DƏSTƏK DÜYMƏSİ -->
+    <a href="YOUR_WISE_LINK_HERE" class="metallic-support-btn" target="_blank" rel="noopener">
+        <i class="fas fa-hand-holding-heart"></i> Support Our Work
+    </a>
+
+    <script>
+        const wechatBtn = document.querySelector(".wechat-btn");
+        const wechatPopup = document.querySelector(".wechat-popup");
+        if (wechatBtn && wechatPopup) {
+            wechatBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                wechatPopup.style.display = wechatPopup.style.display === "block" ? "none" : "block";
+            });
+            document.addEventListener("click", () => { wechatPopup.style.display = "none"; });
+        }
+    </script>
+</body>
+</html>
