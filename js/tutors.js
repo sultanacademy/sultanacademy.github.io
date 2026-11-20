@@ -7,51 +7,103 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // --- DISCORD WEBHOOK LINKINI BURA YAPIŞDIR ---
 const DISCORD_WEBHOOK_URL = "BURAYA_OZ_DISCORD_WEBHOOK_LINKINI_YAPISDIR";
 
-// --- 1. SƏHİFƏYƏ İLK GİRİŞDƏ ROL SEÇİMİ (WELCOME ONBOARDING) ---
-document.addEventListener("DOMContentLoaded", () => {
-    const welcomeModal = document.getElementById("welcomeRoleModal");
-    const welcomeChooseLearner = document.getElementById("welcomeChooseLearner");
-    const welcomeChooseEducator = document.getElementById("welcomeChooseEducator");
+// --- SULTAN ACADEMY: JOIN & DUAL ROLE DASHBOARD LOGIC ---
+const navActionBtn = document.getElementById("navActionBtn");
+const navActionText = document.getElementById("navActionText");
 
-    const hasChosenRole = localStorage.getItem("sultan_role_chosen");
+const joinModal = document.getElementById("joinModal");
+const closeJoinModal = document.getElementById("closeJoinModal");
+const joinUsernameInput = document.getElementById("joinUsernameInput");
+const joinSubmitBtn = document.getElementById("joinSubmitBtn");
 
-    // Əgər istifadəçi ilk dəfədirsə, pəncərə açılsın və arxa fon donsun:
-    if (!hasChosenRole && welcomeModal) {
-        setTimeout(() => {
-            welcomeModal.classList.remove("hidden");
-            document.body.classList.add("modal-open"); // 👈 BURA: Pəncərə çıxdı, arxanı dondururuq
-        }, 1200);
+const dashboardModal = document.getElementById("dashboardModal");
+const closeDashboardModal = document.getElementById("closeDashboardModal");
+
+const dashUsernameDisplay = document.getElementById("dashUsernameDisplay");
+const btnStudentMode = document.getElementById("btnStudentMode");
+const btnEducatorMode = document.getElementById("btnEducatorMode");
+const studentDashboardArea = document.getElementById("studentDashboardArea");
+const educatorDashboardArea = document.getElementById("educatorDashboardArea");
+
+let activeUser = localStorage.getItem("sultan_user") || null;
+let activeRole = localStorage.getItem("sultan_role") || "student";
+
+// 1. Menyudakı düymənin vəziyyətini yeniləyirik
+function updateNavUI() {
+    if (activeUser) {
+        navActionText.innerText = `${activeUser} (Dashboard)`;
+        if (dashUsernameDisplay) dashUsernameDisplay.innerText = activeUser;
+    } else {
+        navActionText.innerText = "Join Academy";
     }
+}
+updateNavUI();
 
-    // Tələbə seçəndə: pəncərə bağlanır və dondurma açılır
-    if (welcomeChooseLearner) {
-        welcomeChooseLearner.addEventListener("click", () => {
-            localStorage.setItem("sultan_role_chosen", "true");
-            localStorage.setItem("sultan_role", "learner");
-            welcomeModal.classList.add("hidden");
-            document.body.classList.remove("modal-open"); // 👈 BURA: Pəncərə bağlandı, arxanı açırıq
-            switchRole("learner");
-        });
+// 2. Düyməyə klik: İstifadəçi yoxdursa "Join" açılır, varsa birbaşa "Dashboard" açılır!
+if (navActionBtn) {
+    navActionBtn.addEventListener("click", () => {
+        if (!activeUser) {
+            joinModal.classList.remove("hidden");
+            document.body.classList.add("modal-open");
+        } else {
+            dashboardModal.classList.remove("hidden");
+            document.body.classList.add("modal-open");
+            setRole(activeRole);
+        }
+    });
+}
+
+// Qeydiyyatı təsdiq etmək (Frictionsuz Username ilə)
+if (joinSubmitBtn) {
+    joinSubmitBtn.addEventListener("click", () => {
+        const username = joinUsernameInput.value.trim().toLowerCase();
+        if (!username) return alert("Please enter a username!");
+
+        activeUser = username;
+        localStorage.setItem("sultan_user", username);
+        updateNavUI();
+
+        joinModal.classList.add("hidden");
+        // Dərhal Dashboard-u açırıq
+        dashboardModal.classList.remove("hidden");
+        setRole(activeRole);
+    });
+}
+
+// 3. İKİLİ ROL KEÇİDİ (STUDENT 🔁 EDUCATOR)
+function setRole(role) {
+    activeRole = role;
+    localStorage.setItem("sultan_role", role);
+
+    if (role === "student") {
+        btnStudentMode.classList.add("active");
+        btnEducatorMode.classList.remove("active");
+        studentDashboardArea.classList.remove("hidden");
+        educatorDashboardArea.classList.add("hidden");
+    } else {
+        btnEducatorMode.classList.add("active");
+        btnStudentMode.classList.remove("active");
+        educatorDashboardArea.classList.remove("hidden");
+        studentDashboardArea.classList.add("hidden");
     }
+}
 
-    // Müəllim seçəndə: ilk pəncərə bağlanır, arxasınca böyük müraciət forması açılır (arxa donulu qalır)
-    if (welcomeChooseEducator) {
-        welcomeChooseEducator.addEventListener("click", () => {
-            localStorage.setItem("sultan_role_chosen", "true");
-            localStorage.setItem("sultan_role", "educator");
-            welcomeModal.classList.add("hidden");
-            
-            switchRole("educator");
-            const dashboardModal = document.getElementById("dashboardModal");
-            if (dashboardModal) {
-                dashboardModal.classList.remove("hidden");
-                document.body.classList.add("modal-open"); // 👈 BURA: Forma açıldı, arxa donulu qalır
-            }
-        });
-    }
+if (btnStudentMode) btnStudentMode.addEventListener("click", () => setRole("student"));
+if (btnEducatorMode) btnEducatorMode.addEventListener("click", () => setRole("educator"));
 
-    loadEducators();
-});
+// Modalları bağlamaq
+if (closeJoinModal) {
+    closeJoinModal.addEventListener("click", () => {
+        joinModal.classList.add("hidden");
+        document.body.classList.remove("modal-open");
+    });
+}
+if (closeDashboardModal) {
+    closeDashboardModal.addEventListener("click", () => {
+        dashboardModal.classList.add("hidden");
+        document.body.classList.remove("modal-open");
+    });
+}
 
 // --- 2. DUAL ROLE DASHBOARD VƏ LOGIN DÜYMƏSİ ---
 const navAuthBtn = document.getElementById("navAuthBtn");
