@@ -25,32 +25,34 @@
 
 <body>
 
-    <!-- NAVIGATION -->
+<!-- NAVIGATION (Orta Nizamlı & Parlaq Düyməli) -->
     <header>
         <nav class="navbar">
             <a href="#projects" class="nav-brand">SULTAN ACADEMY</a>
 
-            <!-- MOBİL HAMBURGER DÜYMƏSİ (3 Xətt <-> X) -->
-            <button class="menu-toggle" id="mobile-menu" aria-label="Toggle Navigation">
+            <!-- MOBİL HAMBURGER DÜYMƏSİ -->
+            <button class="menu-toggle" id="mobile-menu" aria-label="Toggle Navigation" type="button">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
             </button>
 
+            <!-- ORTADA DÜZÜLƏN NAVİQASİYA LİNKLƏRİ -->
             <ul class="nav-list" id="nav-list">
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#tutors">Find Mentors</a></li>
                 <li><a href="#testimonials">Testimonials</a></li>
                 <li><a href="#about">Developer</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="shop.html" class="nav-shop-btn"><i class="fas fa-shopping-bag"></i> Shop</a></li>
-                <!-- Login / Profile Button -->
-                <li>
-                    <button id="navAuthBtn" class="nav-auth-btn" type="button">
-                        <i class="fas fa-user-circle"></i> <span id="navAuthText">Login</span>
-                    </button>
-                </li>
             </ul>
+
+            <!-- SAĞ TƏRƏF: FƏALİYYƏT DÜYMƏLƏRİ -->
+            <div class="nav-actions">
+                <a href="shop.html" class="nav-shop-btn"><i class="fas fa-shopping-bag"></i> Shop</a>
+                <button id="navActionBtn" class="nav-join-btn" type="button">
+                    <i class="fas fa-rocket"></i> <span id="navActionText">Join Academy</span>
+                </button>
+            </div>
         </nav>
     </header>
 
@@ -275,162 +277,78 @@
     <!-- Live Social Proof Notifications Container -->
     <div id="social-proof-container"></div>
 
-    <!-- 1. SAYTA İLK GİRİŞDƏ ROL SEÇİMİ (WELCOME MODAL) -->
-    <div id="welcomeRoleModal" class="auth-modal-overlay hidden">
-        <div class="welcome-modal-card">
-            <div class="welcome-icon">🎓</div>
-            <h3>Welcome to Sultan Academy</h3>
-            <p class="welcome-desc">Choose how you would like to explore the platform today:</p>
-            
-            <div class="welcome-choices">
-                <button type="button" class="welcome-choice-btn" id="welcomeChooseLearner">
-                    <div class="choice-icon"><i class="fas fa-user-graduate"></i></div>
-                    <div class="choice-text">
-                        <strong>I'm a Learner / Student</strong>
-                        <span>Browse mentors, access materials, and join live rooms.</span>
-                    </div>
-                </button>
 
-                <button type="button" class="welcome-choice-btn" id="welcomeChooseEducator">
-                    <div class="choice-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-                    <div class="choice-text">
-                        <strong>I'm an Educator / Mentor</strong>
-                        <span>Teach 1-on-1, create your card, and connect with students.</span>
-                    </div>
+<!-- 1. USERNAME QEYDİYYAT MODALI (YALNIZ İLK GİRİŞDƏ VƏ YA JOIN BASANDA) -->
+    <div id="joinModal" class="auth-modal-overlay hidden">
+        <div class="join-modal-card">
+            <button class="auth-close-btn" id="closeJoinModal" type="button">&times;</button>
+            <div class="join-icon">🚀</div>
+            <h3>Join Sultan Academy</h3>
+            <p>Create your unique handle. Teach what you know, learn what you love!</p>
+
+            <div class="join-input-box">
+                <input type="text" id="joinUsernameInput" placeholder="Choose a Username..." autocomplete="off">
+                <button type="button" id="joinSubmitBtn">
+                    Enter Ecosystem <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
-
-            <p class="welcome-switch-note">
-                <i class="fas fa-sync-alt"></i> You can seamlessly switch between Learner & Educator roles anytime from your profile!
-            </p>
+            <small class="join-note">
+                <i class="fas fa-sync-alt"></i> One account gives you instant access to both <b>Learn</b> and <b>Teach</b>.
+            </small>
         </div>
     </div>
 
-    <!-- 2. ƏSAS DASHBOARD VƏ MÜRACİƏT MODALI -->
+    <!-- 2. SULTAN ACADEMY İKİLİ DASHBOARD (STUDENT 🔁 EDUCATOR) -->
     <div id="dashboardModal" class="auth-modal-overlay hidden">
         <div class="dashboard-modal-card">
             <button class="auth-close-btn" id="closeDashboardModal" type="button">&times;</button>
             
-            <!-- 1 Kliklə Rol Keçidi -->
-            <div class="role-switcher-bar">
-                <span class="switcher-label">Active Mode:</span>
-                <div class="role-pill-box">
-                    <button type="button" class="pill-btn active" id="btnModeLearner">
-                        <i class="fas fa-graduation-cap"></i> Learner
-                    </button>
-                    <button type="button" class="pill-btn" id="btnModeEducator">
-                        <i class="fas fa-chalkboard-teacher"></i> Educator
-                    </button>
-                </div>
-            </div>
-
-            <!-- LEARNER VIEW -->
-            <div id="viewLearner" class="dashboard-view">
-                <div class="dash-header">
-                    <h3>Welcome, <span class="user-display-name">Student</span>!</h3>
-                    <p>Track your unlocked Discord classrooms, rewards, and community events.</p>
-                </div>
-                
-                <div class="dash-stats-grid">
-                    <div class="stat-card">
-                        <i class="fas fa-coins" style="color: #f59e0b;"></i>
-                        <h4 id="learnerPoints">0 SP</h4>
-                        <span>Shop Balance</span>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fab fa-discord" style="color: #5865F2;"></i>
-                        <h4 id="unlockedCount">0</h4>
-                        <span>Unlocked Mentors</span>
-                    </div>
-                </div>
-
-                <div class="dash-quick-links">
-                    <a href="shop.html" class="dash-action-btn"><i class="fas fa-shopping-bag"></i> Go to Shop & Tasks</a>
-                    <a href="#tutors" class="dash-action-btn secondary" id="dashBrowseTutors"><i class="fas fa-search"></i> Browse Educators</a>
-                </div>
-            </div>
-
-            <!-- EDUCATOR VIEW & APPLICATION -->
-            <div id="viewEducator" class="dashboard-view hidden">
-                <div class="discord-advantage-banner">
-                    <i class="fab fa-discord"></i>
+            <div class="dash-user-bar">
+                <div class="dash-user-identity">
+                    <i class="fas fa-user-circle"></i>
                     <div>
-                        <strong>Sultan Academy Discord Exclusivity</strong>
-                        <p>💡 Opening your personal classroom inside Sultan Academy Discord boosts student trust & traffic 3x!</p>
+                        <strong id="dashUsernameDisplay">User</strong>
+                        <span class="user-subtag">All-in-One Account</span>
                     </div>
                 </div>
+                <div class="dash-balance-chip">
+                    <i class="fas fa-coins"></i> <span id="dashSpDisplay">0</span> SP
+                </div>
+            </div>
 
-                <form id="tutorApplicationForm" class="educator-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Full Name / Display Name *</label>
-                            <input type="text" id="tutorName" required placeholder="e.g. James Smith">
-                        </div>
-                        <div class="form-group">
-                            <label>Contact Email (Private — Admin Only) *</label>
-                            <input type="email" id="tutorEmail" required placeholder="your.email@gmail.com">
-                        </div>
-                    </div>
-                    <small style="color: #38bdf8; font-size: 11px; margin-top: -8px; margin-bottom: 8px; display: block;">
-                        🔒 Your email will NEVER be shown publicly. It is strictly for Sultan Academy admin to contact you.
-                    </small>
-                        <div class="form-group">
-    <label>Profile Photo (Direct Image URL) *</label>
-    <div style="display: flex; gap: 8px;">
-        <input type="url" id="tutorAvatar" required placeholder="https://i.postimg.cc/.../photo.png" style="flex: 1;">
-        <a href="https://postimages.org/" target="_blank" rel="noopener" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; padding: 10px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; text-decoration: none;">
-            <i class="fas fa-cloud-upload-alt"></i> Upload Photo
-        </a>
-    </div>
-    <small style="color: #94a3b8; font-size: 11px; margin-top: 4px; display: block;">
-        💡 Click <b>"Upload Photo"</b>, upload your image, copy the <b>Direct link</b> (ends in .png / .jpg), and paste it here.
-    </small>
-</div>
-                    </div>
+            <!-- 🌟 İKİLİ KEÇİD DÜYMƏLƏRİ (DUAL ROLE TOGGLE) 🌟 -->
+            <div class="dual-role-toggle">
+                <button type="button" class="role-switch-btn active" id="btnStudentMode">
+                    <i class="fas fa-graduation-cap"></i> Student Mode
+                </button>
+                <button type="button" class="role-switch-btn" id="btnEducatorMode">
+                    <i class="fas fa-chalkboard-teacher"></i> Educator Mode
+                </button>
+            </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Language Taught *</label>
-                            <input type="text" id="tutorLanguage" required placeholder="e.g. German">
-                        </div>
-                        <div class="form-group">
-                            <label>Subject / Specialized Field *</label>
-                            <input type="text" id="tutorSubject" required placeholder="e.g. C1 TELC / Grammar">
-                        </div>
-                    </div>
+            <!-- 1. STUDENT (TƏLƏBƏ) DASHBOARD SAHƏSİ (İçini sonra dolduracağıq) -->
+            <div id="studentDashboardArea" class="role-area">
+                <div class="role-placeholder-box">
+                    <i class="fas fa-book-reader"></i>
+                    <h4>Student Space</h4>
+                    <p>Track unlocked mentors, saved materials, and language goals.</p>
+                    <span class="stage-tag">Student Mode Active</span>
+                </div>
+            </div>
 
-                    <div class="form-group">
-                        <label>Hourly Price / Fee *</label>
-                        <input type="text" id="tutorPrice" required placeholder="e.g. $15/hr or First Lesson Free">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Your Sultan Academy Discord Channel Link *</label>
-                        <input type="url" id="tutorDiscordChannel" required placeholder="https://discord.com/channels/1506203530023931977/...">
-                        <small style="color: #94a3b8; font-size: 11px;">Ask an admin in Sultan Academy Discord to set up your room, then paste its direct link here.</small>
-                    </div>
-
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="tutorOffersLive">
-                        <label for="tutorOffersLive">I offer free/paid live sessions or workshops on Sultan Academy Discord.</label>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Cal.com Booking Link (Optional)</label>
-                        <input type="url" id="tutorCalLink" placeholder="https://cal.com/your-name/session">
-                        <a href="https://youtu.be/80enIW1-26w?si=gdKzJYIsT5YGtfOl" target="_blank" class="cal-video-link" rel="noopener">
-                            <i class="fab fa-youtube"></i> How to set up Cal.com? (Video Guide)
-                        </a>
-                    </div>
-
-                    <button type="submit" class="submit-profile-btn">
-                        <i class="fas fa-check-circle"></i> Submit Educator Card for Approval
-                    </button>
-                </form>
+            <!-- 2. EDUCATOR (MÜƏLLİM) DASHBOARD SAHƏSİ (İçini sonra dolduracağıq) -->
+            <div id="educatorDashboardArea" class="role-area hidden">
+                <div class="role-placeholder-box educator-box">
+                    <i class="fas fa-chalkboard"></i>
+                    <h4>Educator Studio</h4>
+                    <p>Manage your teaching card, live Discord sessions, and booking requests.</p>
+                    <span class="stage-tag educator-tag">Educator Mode Active</span>
+                </div>
             </div>
 
         </div>
     </div>
+
 
     <!-- JavaScript Faylları (books.js çıxarıldı, xəta dayandırıldı!) -->
     <script>
