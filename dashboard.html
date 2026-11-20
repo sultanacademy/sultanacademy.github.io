@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Workspace | Sultan Academy</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="personal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body style="background: #0a0f1d;">
+
+    <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="nav-brand">SULTAN ACADEMY</a>
+            <ul class="nav-list">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tutors.html">Find Mentors</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="shop.html">Shop</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="logoutBtn" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; padding: 6px 14px; border-radius: 20px; font-weight: 600; cursor: pointer;">
+                    <i class="fas fa-sign-out-alt"></i> Exit Space
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- GENİŞ DASHBOARD PLATFORMASI -->
+    <main class="section" style="padding-top: 130px; max-width: 900px;">
+        
+        <!-- İSTİFADƏÇİ BAŞLIĞI -->
+        <div class="dash-user-bar" style="background: #1e293b; padding: 20px 25px; border-radius: 20px; border: 1px solid #334155;">
+            <div class="dash-user-identity">
+                <i class="fas fa-user-circle" style="font-size: 45px; color: #38bdf8;"></i>
+                <div>
+                    <h3 id="dashUserGreeting" style="color: white; margin: 0; font-size: 20px;">Welcome Back!</h3>
+                    <span class="user-subtag" style="color: #94a3b8;">All-in-One Dual Ecosystem Account</span>
+                </div>
+            </div>
+            <div class="dash-balance-chip">
+                <i class="fas fa-coins"></i> <span id="dashUserSP">0</span> SP Points
+            </div>
+        </div>
+
+        <!-- 🌟 ƏSAS İKİLİ KEÇİD DÜYMƏLƏRİ (DUAL ROLE TOGGLE) 🌟 -->
+        <div class="dual-role-toggle" style="margin-top: 30px;">
+            <button type="button" class="role-switch-btn active" id="tabStudent">
+                <i class="fas fa-graduation-cap"></i> Student Workspace
+            </button>
+            <button type="button" class="role-switch-btn" id="tabEducator">
+                <i class="fas fa-chalkboard-teacher"></i> Educator Studio
+            </button>
+        </div>
+
+        <!-- 1. TƏLƏBƏ SAHƏSİ (İçini təsvir etdikcə dolduracağıq) -->
+        <div id="studentSection" class="role-area">
+            <div class="role-placeholder-box" style="padding: 60px 20px;">
+                <i class="fas fa-book-reader" style="font-size: 50px;"></i>
+                <h4>Student Learning Space</h4>
+                <p>Track your saved educators, study targets, and conversation lounge events.</p>
+                <span class="stage-tag">Student Mode Active</span>
+            </div>
+        </div>
+
+        <!-- 2. MÜƏLLİM SAHƏSİ (İçini təsvir etdikcə dolduracağıq) -->
+        <div id="educatorSection" class="role-area hidden">
+            <div class="role-placeholder-box educator-box" style="padding: 60px 20px;">
+                <i class="fas fa-chalkboard" style="font-size: 50px;"></i>
+                <h4>Educator Teaching Studio</h4>
+                <p>Control your Sultan Academy Discord classroom link, booking availability, and live workshops.</p>
+                <span class="stage-tag educator-tag">Educator Mode Active</span>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- METALLİK YAŞIL DƏSTƏK DÜYMƏSİ -->
+    <a href="YOUR_WISE_LINK_HERE" class="metallic-support-btn" target="_blank" rel="noopener">
+        <i class="fas fa-hand-holding-heart"></i> Support Our Work
+    </a>
+
+    <script>
+        // ROL KEÇİDİ (STUDENT <-> EDUCATOR)
+        const tabStudent = document.getElementById("tabStudent");
+        const tabEducator = document.getElementById("tabEducator");
+        const studentSec = document.getElementById("studentSection");
+        const educatorSec = document.getElementById("educatorSection");
+
+        tabStudent.addEventListener("click", () => {
+            tabStudent.classList.add("active");
+            tabEducator.classList.remove("active");
+            studentSec.classList.remove("hidden");
+            educatorSec.classList.add("hidden");
+        });
+
+        tabEducator.addEventListener("click", () => {
+            tabEducator.classList.add("active");
+            tabStudent.classList.remove("active");
+            educatorSec.classList.remove("hidden");
+            studentSec.classList.add("hidden");
+        });
+
+        // Çıxış düyməsi
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            localStorage.removeItem("sultan_user");
+            window.location.href = "index.html";
+        });
+    </script>
+</body>
+</html>
