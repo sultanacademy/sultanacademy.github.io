@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4H914F5E57"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4H914F5E57');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Independent Educators | Sultan Academy</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <!-- Modern Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="personal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- STANDART BİRGƏ NAVBAR -->
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="nav-brand">SULTAN ACADEMY</a>
+
+            <!-- Mobil Menyu Düyməsi -->
+            <button class="menu-toggle" id="mobile-menu" aria-label="Toggle Navigation" type="button">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <!-- Menyu Linkləri: "Find Educators" aktivdir -->
+            <ul class="nav-list" id="nav-list">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tutors.html" style="color: #38bdf8;">Find Educators</a></li>
+                <li><a href="index.html#testimonials">Testimonials</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="shop.html" class="nav-shop-btn"><i class="fas fa-shopping-bag"></i> Shop</a>
+                <a href="dashboard.html" class="nav-join-btn"><i class="fas fa-chart-line"></i> Dashboard</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- EDUCATORS MARKETPLACE SECTION -->
+    <main class="section" style="padding-top: 140px;">
+        <div class="section-header">
+            <h2>Find Your Independent Educator</h2>
+            <p>Connect with passionate verified educators for 1-on-1 sessions on Sultan Academy Discord or Cal.com. 100% free community without commission fees!</p>
+        </div>
+
+        <!-- DİNAMİK FİLTR DÜYMƏLƏRİ (Bazada hansı dillər varsa, bura avtomatik çıxır) -->
+        <div class="tutor-filters" id="dynamicFilters">
+            <button class="filter-btn active" data-filter="all">All Educators</button>
+        </div>
+
+        <!-- DİNAMİK KARTLARIN DÜZÜLDÜYÜ SAHƏ (js/tutors.js tərəfindən doldurulur) -->
+        <div class="tutors-grid" id="tutorsGrid">
+            <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading Educators from Database...</p>
+        </div>
+
+        <!-- Sıfır Komissiya və Güvən Bildirişi -->
+        <div class="payment-recommendation-box" style="margin-top: 60px;">
+            <div class="pay-icon"><i class="fas fa-handshake"></i></div>
+            <div class="pay-text">
+                <strong>100% Direct & Zero-Commission Community:</strong>
+                <p>Sultan Academy does not charge students or educators any middleman commission. Once you connect in the Discord room, you can arrange lesson schedules and transfer tuition directly using recommended secure services like <b>Wise</b> or <b>TransferGo</b>.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2026 Sultan Alizada. All rights reserved.</p>
+    </footer>
+
+    <!-- METALLİK PARILTILI YAŞIL DƏSTƏK DÜYMƏSİ -->
+    <a href="YOUR_WISE_LINK_HERE" class="metallic-support-btn" target="_blank" rel="noopener">
+        <i class="fas fa-hand-holding-heart"></i> Support Our Work
+    </a>
+
+    <!-- Canlı Alış və Dəstək Pop-up Bildirişləri üçün qutu -->
+    <div id="social-proof-container"></div>
+
+    <!-- SKRİPTLƏR -->
+    <script>
+        // Mobil Menyu İdarəetməsi
+        const menuToggle = document.getElementById("mobile-menu");
+        const navList = document.getElementById("nav-list");
+        if (menuToggle && navList) {
+            menuToggle.addEventListener("click", () => {
+                navList.classList.toggle("active");
+                menuToggle.classList.toggle("open");
+                document.body.classList.toggle("menu-open", navList.classList.contains("active"));
+            });
+        }
+    </script>
+    <script src="js/social-proof.js"></script>
+    <!-- Müəllimləri Supabase-dən yükləyən və reklamla əlaqə açan əsas skript -->
+    <script type="module" src="js/tutors.js"></script>
+</body>
+</html>
