@@ -174,77 +174,55 @@
         </div>
     </section>
 
-    <!-- 3. WEEKLY LIVE CLUBS & WORKSHOPS -->
+<!-- 3. WEEKLY LIVE CLUBS & WORKSHOPS (DİNAMİK + AVTOMATİK) -->
     <section id="live-clubs" class="section bg-light">
         <div class="section-header">
             <h2>Weekly Live Clubs & Workshops</h2>
-            <p>Join interactive speaking lounges, coding labs, and creative sessions directly inside our Discord server.</p>
+            <p>Join interactive speaking lounges, coding labs, and creative sessions hosted by our educators on Discord.</p>
+            <div style="margin-top: 15px;">
+                <a href="dashboard.html?mode=educator" class="inline-blue-btn" style="padding: 8px 18px; font-size: 13px;">
+                    <i class="fas fa-plus-circle"></i> Host a Live Club
+                </a>
+            </div>
         </div>
 
-        <div class="clubs-grid">
-            <div class="club-card">
-                <div class="club-badge live-lang"><i class="fas fa-comments"></i> Languages</div>
-                <h4>Polyglot Speaking Lounge</h4>
-                <p>Practice German, English, Turkish & Azerbaijani in friendly moderated voice rooms for all levels.</p>
-                <div class="club-meta">
-                    <span><i class="far fa-clock"></i> Weekly Community Rooms</span>
-                    <span><i class="fab fa-discord"></i> Free Access</span>
-                </div>
-                <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn">
-                    <i class="fab fa-discord"></i> Join Discord Lounge
-                </a>
-            </div>
-
-            <div class="club-card">
-                <div class="club-badge live-tech"><i class="fas fa-laptop-code"></i> Tech & Study</div>
-                <h4>Coding & Productivity Lab</h4>
-                <p>Co-working Pomodoro sessions, beginner web dev help, and structured study-planning workshops.</p>
-                <div class="club-meta">
-                    <span><i class="far fa-clock"></i> Weekend Focus Sessions</span>
-                    <span><i class="fab fa-discord"></i> Open Stage</span>
-                </div>
-                <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn">
-                    <i class="fab fa-discord"></i> Join Discord Lounge
-                </a>
-            </div>
-
-            <div class="club-card">
-                <div class="club-badge live-music"><i class="fas fa-guitar"></i> Music & Arts</div>
-                <h4>Creative & Music Hangout</h4>
-                <p>Acoustic jams, music theory discussions, and hobby sharing with fellow academy members.</p>
-                <div class="club-meta">
-                    <span><i class="far fa-clock"></i> Community Jam Hours</span>
-                    <span><i class="fab fa-discord"></i> All Talents Welcome</span>
-                </div>
-                <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn">
-                    <i class="fab fa-discord"></i> Join Discord Lounge
-                </a>
-            </div>
+        <div class="clubs-grid" id="clubsGrid">
+            <!-- Supabase-dən avtomatik yüklənəcək (boşdursa başlanğıc klublar qalacaq) -->
+            <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading live workshops...</p>
         </div>
     </section>
 
-    <!-- 4. TESTIMONIALS -->
+    <!-- 4. CUSTOM TESTIMONIALS (Giscus SİLİNDİ, ADMİN TƏSDİQLİ ÖZ SİSTEMİMİZ GƏLDİ!) -->
     <section id="testimonials" class="section">
         <div class="section-header">
-            <h2>Testimonials</h2>
-            <p>Community feedback and experiences within our educational ecosystem.</p>
+            <h2>Student & Educator Testimonials</h2>
+            <p>Real voices from our global learning community. Every review is verified before publishing.</p>
         </div>
-        <div class="giscus-wrapper">
-            <script src="https://giscus.app/client.js"
-                data-repo="sultanacademy/sultanacademy.github.io"
-                data-repo-id="R_kgDOSLUnMw"
-                data-category="General"
-                data-category-id="DIC_kwDOSLUnM84DFKWL"
-                data-mapping="pathname"
-                data-strict="0"
-                data-reactions-enabled="1"
-                data-emit-metadata="0"
-                data-input-position="bottom"
-                data-theme="preferred_color_scheme"
-                data-lang="en"
-                crossorigin="anonymous"
-                async>
-            </script>
+
+        <!-- Təsdiqlənmiş Rəylər Şəbəkəsi -->
+        <div class="testimonials-grid" id="testimonialsGrid">
+            <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading testimonials...</p>
+        </div>
+
+        <!-- Yeni Rəy Yazma Forması -->
+        <div class="testimonial-form-box">
+            <h3><i class="fas fa-comment-dots" style="color: #38bdf8;"></i> Share Your Experience</h3>
+            <p>Loved a session or our resources? Leave a testimonial (published after admin review).</p>
+            <form id="testimonialForm" class="testi-form">
+                <div class="testi-row">
+                    <input type="text" id="testiName" required placeholder="Your Name (e.g. Aysel M.)">
+                    <input type="text" id="testiRole" required placeholder="Your Role (e.g. German Learner)">
+                    <select id="testiRating">
+                        <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                        <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                        <option value="3">⭐⭐⭐ (3/5)</option>
+                    </select>
+                </div>
+                <textarea id="testiMsg" rows="3" required placeholder="Write your honest feedback about Sultan Academy..."></textarea>
+                <button type="submit" id="testiSubmitBtn" class="submit-profile-btn">
+                    <i class="fas fa-paper-plane"></i> Submit Testimonial
+                </button>
+            </form>
         </div>
     </section>
 
@@ -273,10 +251,12 @@
     <script src="js/navbar.js"></script>
     <script src="js/cookie-consent.js"></script>
     <script type="module" src="js/social-proof.js"></script>
+  
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
         const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
 
+        // 1. Canlı Statistika
         async function loadLiveStats() {
             const { count: tutorCount } = await supabase.from('tutors').select('id', { count: 'exact', head: true }).eq('status', 'approved');
             const { count: revCount } = await supabase.from('reviews').select('id', { count: 'exact', head: true });
@@ -285,7 +265,124 @@
             if (elEdu && tutorCount !== null) elEdu.innerText = tutorCount > 0 ? `${tutorCount}+` : 'Open';
             if (elRev && revCount !== null && revCount > 0) elRev.innerText = `${revCount} Reviews`;
         }
+
+        // 2. Dinamik Canlı Klublar
+        async function loadEvents() {
+            const grid = document.getElementById('clubsGrid');
+            if (!grid) return;
+
+            const { data: events } = await supabase
+                .from('events')
+                .select('id, educator_name, category, title, description, schedule_text, discord_link')
+                .eq('status', 'approved')
+                .order('id', { ascending: false });
+
+            if (!events || events.length === 0) {
+                grid.innerHTML = `
+                    <div class="club-card">
+                        <div class="club-badge live-lang"><i class="fas fa-comments"></i> Languages</div>
+                        <h4>Polyglot Speaking Lounge</h4>
+                        <p>Practice German, English, Turkish & Azerbaijani in friendly moderated voice rooms for all levels.</p>
+                        <div class="club-meta"><span><i class="far fa-clock"></i> Weekly Community Rooms</span><span><i class="fab fa-discord"></i> Free Access</span></div>
+                        <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Discord Lounge</a>
+                    </div>
+                    <div class="club-card">
+                        <div class="club-badge live-tech"><i class="fas fa-laptop-code"></i> Tech & Study</div>
+                        <h4>Coding & Productivity Lab</h4>
+                        <p>Co-working Pomodoro sessions, beginner web dev help, and structured study-planning workshops.</p>
+                        <div class="club-meta"><span><i class="far fa-clock"></i> Weekend Focus Sessions</span><span><i class="fab fa-discord"></i> Open Stage</span></div>
+                        <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Discord Lounge</a>
+                    </div>
+                    <div class="club-card">
+                        <div class="club-badge live-music"><i class="fas fa-guitar"></i> Music & Arts</div>
+                        <h4>Creative & Music Hangout</h4>
+                        <p>Acoustic jams, music theory discussions, and hobby sharing with fellow academy members.</p>
+                        <div class="club-meta"><span><i class="far fa-clock"></i> Community Jam Hours</span><span><i class="fab fa-discord"></i> All Talents Welcome</span></div>
+                        <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Discord Lounge</a>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = events.map(ev => `
+                <div class="club-card">
+                    <div class="club-badge live-lang">${ev.category}</div>
+                    <h4>${ev.title}</h4>
+                    <p>${ev.description}</p>
+                    <div class="club-meta">
+                        <span><i class="far fa-clock"></i> ${ev.schedule_text}</span>
+                        <span><i class="fas fa-user"></i> ${ev.educator_name}</span>
+                    </div>
+                    <a href="${ev.discord_link}" target="_blank" rel="noopener" class="club-join-btn">
+                        <i class="fab fa-discord"></i> Join Live Room
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        // 3. Təsdiqlənmiş Testimonials Yükləmə & Göndərmə
+        async function loadTestimonials() {
+            const grid = document.getElementById('testimonialsGrid');
+            if (!grid) return;
+
+            const { data } = await supabase
+                .from('testimonials')
+                .select('*')
+                .eq('status', 'approved')
+                .order('id', { ascending: false });
+
+            if (!data || data.length === 0) {
+                grid.innerHTML = `<p style="grid-column: 1/-1; color: #64748b; font-size: 14px;">Be the first to share your experience below!</p>`;
+                return;
+            }
+
+            grid.innerHTML = data.map(t => `
+                <div class="testi-card">
+                    <div class="testi-quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <div class="testi-stars">${"⭐".repeat(t.rating)}</div>
+                    <p class="testi-body">"${t.message}"</p>
+                    <div class="testi-author">
+                        <div class="testi-avatar">${t.author_name.charAt(0).toUpperCase()}</div>
+                        <div>
+                            <strong>${t.author_name}</strong>
+                            <span>${t.author_role}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        const testiForm = document.getElementById('testimonialForm');
+        if (testiForm) {
+            testiForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('testiSubmitBtn');
+                const oldHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                btn.disabled = true;
+
+                const { error } = await supabase.from('testimonials').insert([{
+                    author_name: document.getElementById('testiName').value.trim(),
+                    author_role: document.getElementById('testiRole').value.trim(),
+                    rating: parseInt(document.getElementById('testiRating').value),
+                    message: document.getElementById('testiMsg').value.trim(),
+                    status: 'pending'
+                }]);
+
+                if (!error) {
+                    alert("🎉 Thank you! Your testimonial has been submitted and will appear once approved by Admin.");
+                    testiForm.reset();
+                } else {
+                    alert("Error submitting testimonial. Please try again.");
+                }
+                btn.innerHTML = oldHTML;
+                btn.disabled = false;
+            });
+        }
+
         loadLiveStats();
+        loadEvents();
+        loadTestimonials();
     </script>
+    
 </body>
 </html>
