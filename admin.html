@@ -53,6 +53,8 @@
                 <button class="tab-btn" data-tab="tabSocial"><i class="fas fa-bullhorn"></i> Live Donations Feed</button>
                 <button class="tab-btn" data-tab="tabShop"><i class="fas fa-shopping-bag"></i> Shop Items</button>
                 <button class="tab-btn" data-tab="tabReviews"><i class="fas fa-star"></i> Reviews</button>
+                <button class="tab-btn" data-tab="tabEvents"><i class="fas fa-broadcast-tower"></i> Live Clubs</button>
+                <button class="tab-btn" data-tab="tabTestimonials"><i class="fas fa-quote-left"></i> Testimonials</button>
             </div>
 
             <!-- 1. EDUCATORS -->
@@ -107,6 +109,27 @@
                     <tbody id="reviewsTableBody"></tbody>
                 </table>
             </div>
+
+
+
+            <!-- 5. LIVE CLUBS APPROVAL -->
+            <div id="tabEvents" class="tab-panel" style="overflow-x: auto;">
+                <table>
+                    <thead><tr><th>Title</th><th>Educator</th><th>Category</th><th>Schedule</th><th>Action</th></tr></thead>
+                    <tbody id="eventsTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- 6. TESTIMONIALS APPROVAL -->
+            <div id="tabTestimonials" class="tab-panel" style="overflow-x: auto;">
+                <table>
+                    <thead><tr><th>Author</th><th>Rating</th><th>Message</th><th>Action</th></tr></thead>
+                    <tbody id="testimonialsTableBody"></tbody>
+                </table>
+            </div>
+
+
+            
         </div>
     </div>
 
@@ -154,6 +177,8 @@
             loadSocialProof();
             loadShop();
             loadReviews();
+            loadEvents();
+            loadTestimonials();
         }
 
         async function loadTutors() {
@@ -235,6 +260,45 @@
             document.getElementById("shopDrive").value = "";
             loadShop();
         });
+
+
+
+        async function loadEvents() {
+            const { data } = await supabase.from('events').select('*').order('id', { ascending: false });
+            document.getElementById("eventsTableBody").innerHTML = (data || []).map(ev => `
+                <tr>
+                    <td><b>${ev.title}</b><br><small style="color:#94a3b8;">${ev.description}</small></td>
+                    <td>${ev.educator_name}<br><small style="color:#38bdf8;">${ev.educator_email}</small></td>
+                    <td>${ev.category}</td>
+                    <td>${ev.schedule_text}</td>
+                    <td style="display:flex; gap:6px;">
+                        ${ev.status === 'pending' ? `<button class="btn-approve" onclick="approveItem('events', ${ev.id})">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Live</span>'}
+                        <button class="btn-delete" onclick="deleteRow('events', ${ev.id})">Delete</button>
+                    </td>
+                </tr>`).join("") || "<tr><td colspan='5'>No workshops yet.</td></tr>";
+        }
+
+        async function loadTestimonials() {
+            const { data } = await supabase.from('testimonials').select('*').order('id', { ascending: false });
+            document.getElementById("testimonialsTableBody").innerHTML = (data || []).map(t => `
+                <tr>
+                    <td><b>${t.author_name}</b><br><small style="color:#94a3b8;">${t.author_role}</small></td>
+                    <td>${"⭐".repeat(t.rating)}</td>
+                    <td>${t.message}</td>
+                    <td style="display:flex; gap:6px;">
+                        ${t.status === 'pending' ? `<button class="btn-approve" onclick="approveItem('testimonials', ${t.id})">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Published</span>'}
+                        <button class="btn-delete" onclick="deleteRow('testimonials', ${t.id})">Delete</button>
+                    </td>
+                </tr>`).join("") || "<tr><td colspan='4'>No testimonials yet.</td></tr>";
+        }
+
+        window.approveItem = async (table, id) => {
+            await supabase.from(table).update({ status: 'approved' }).eq('id', id);
+            loadAllAdminData();
+        };
+
+
+        
     </script>
 </body>
 </html>
