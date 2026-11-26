@@ -1,0 +1,16 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Hər 3 gündən bir saat 12:00-da işə düşür
+    - cron: '0 12 */3 * *'
+  workflow_dispatch: # İstəsən GitHub Actions-dan əllə də işə sala bilərsən
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Postgres
+        run: |
+          curl -f -X GET "https://ezccynahgubalainoqkf.supabase.co/rest/v1/tutors?select=id&limit=1" \
+            -H "apikey: sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX"
