@@ -3,192 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sultan Academy - Secure Admin</title>
+    <title>Sultan Academy - Control Center</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: #0a0f1d; color: #f8fafc; padding: 40px 20px; }
-        .admin-box { max-width: 950px; margin: 0 auto; background: #1e293b; padding: 35px; border-radius: 24px; border: 1px solid #334155; }
-        h1 { margin-bottom: 25px; color: #38bdf8; font-size: 24px; }
+        body { background: #0a0f1d; color: #f8fafc; padding: 30px 15px; }
+        .admin-box { max-width: 1050px; margin: 0 auto; background: #1e293b; padding: 30px; border-radius: 24px; border: 1px solid #334155; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 25px; }
+        h1 { color: #38bdf8; font-size: 22px; }
         .auth-gate { text-align: center; padding: 40px 20px; background: #0f172a; border-radius: 16px; border: 1px solid #334155; }
-        input { padding: 12px 16px; border-radius: 10px; border: 1px solid #475569; background: #1e293b; color: white; font-size: 14px; margin-bottom: 12px; width: 100%; max-width: 320px; }
-        .btn { background: #38bdf8; color: #0f172a; font-weight: 700; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        input { padding: 11px 15px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 14px; margin-bottom: 10px; width: 100%; max-width: 340px; }
+        .btn { background: #38bdf8; color: #0f172a; font-weight: 700; border: none; padding: 11px 20px; border-radius: 10px; cursor: pointer; }
+        .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; border-bottom: 1px solid #334155; padding-bottom: 15px; }
+        .tab-btn { background: #0f172a; color: #94a3b8; border: 1px solid #334155; padding: 9px 18px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 13px; }
+        .tab-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: left; font-size: 13px; }
         th { color: #94a3b8; }
-        .btn-approve { background: #10b981; color: white; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .avatar-preview { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
+        .btn-approve { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-delete { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .avatar-preview { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+        .form-grid { display: flex; flex-direction: column; gap: 6px; max-width: 450px; margin-bottom: 25px; }
     </style>
 </head>
 <body>
 
     <div class="admin-box">
-        <h1><i class="fas fa-user-shield"></i> Sultan Academy Admin Portal</h1>
-
-<!-- TƏHLÜKƏSİZ ŞİFRƏLİ GİRİŞ (LİMİTSİZ VƏ DƏRHAL) -->
-        <div id="authGate" class="auth-gate">
-            <i class="fas fa-lock" style="font-size: 40px; color: #38bdf8; margin-bottom: 15px;"></i>
-            <h3 style="margin-bottom: 10px;">Admin Authentication</h3>
-            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">Enter your admin password to access the control center.</p>
-
-            <div>
-                <input type="email" id="adminEmailInput" value="sultanacademyinfo@gmail.com" readonly style="opacity: 0.8;"><br>
-                <input type="password" id="adminPasswordInput" placeholder="Enter your secret password"><br>
-                <button class="btn" id="loginPasswordBtn">Login to Admin Portal</button>
-            </div>
+        <div class="top-bar">
+            <h1><i class="fas fa-user-shield"></i> Sultan Academy Admin</h1>
+            <button class="btn" id="logoutBtn" style="display:none; background: #ef4444; color: white;">Logout</button>
         </div>
 
-        <!-- ƏSAS İDARƏETMƏ PANELİ (YALNIZ SƏN GİRƏNDƏ AÇILIR) -->
+        <!-- GİRİŞ -->
+        <div id="authGate" class="auth-gate">
+            <i class="fas fa-lock" style="font-size: 38px; color: #38bdf8; margin-bottom: 15px;"></i>
+            <h3 style="margin-bottom: 15px;">Admin Authentication</h3>
+            <input type="email" id="adminEmailInput" value="sultanacademyinfo@gmail.com" readonly style="opacity: 0.8;"><br>
+            <input type="password" id="adminPasswordInput" placeholder="Enter your secret password"><br>
+            <button class="btn" id="loginPasswordBtn">Login to Control Center</button>
+        </div>
+
+        <!-- PANEL -->
         <div id="dashboardArea" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: #10b981; font-size: 18px;"><i class="fas fa-clock"></i> Pending Educator Applications</h2>
-                <button class="btn" id="logoutBtn" style="background: #ef4444; color: white; padding: 8px 16px;">Logout</button>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="tabTutors"><i class="fas fa-chalkboard-teacher"></i> Educators</button>
+                <button class="tab-btn" data-tab="tabSocial"><i class="fas fa-bullhorn"></i> Live Donations Feed</button>
+                <button class="tab-btn" data-tab="tabShop"><i class="fas fa-shopping-bag"></i> Shop Items</button>
+                <button class="tab-btn" data-tab="tabReviews"><i class="fas fa-star"></i> Reviews</button>
             </div>
 
-            <div style="overflow-x: auto;">
+            <!-- 1. EDUCATORS -->
+            <div id="tabTutors" class="tab-panel active" style="overflow-x: auto;">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Photo</th>
-                            <th>Name</th>
-                            <th>Private Email (Admin Only)</th>
-                            <th>Language / Subject</th>
-                            <th>Price</th>
-                            <th>Discord</th>
-                            <th>Action</th>
-                        </tr>
+                        <tr><th>Photo</th><th>Name</th><th>Private Email</th><th>Language / Subject</th><th>Price</th><th>Discord</th><th>Action</th></tr>
                     </thead>
-                    <tbody id="tutorsTableBody">
-                        <tr><td colspan="7">Loading...</td></tr>
-                    </tbody>
+                    <tbody id="tutorsTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- 2. LIVE DONATIONS & SOCIAL PROOF -->
+            <div id="tabSocial" class="tab-panel">
+                <h3 style="margin-bottom: 12px; color: #10b981;">Add Supporter / Purchase Pop-up</h3>
+                <div class="form-grid">
+                    <input type="text" id="spName" placeholder="Name (e.g. Aysel T.)">
+                    <input type="text" id="spAction" placeholder="Action (e.g. donated $20 via Wise)">
+                    <input type="text" id="spTime" placeholder="Time text (e.g. 5 mins ago)">
+                    <button class="btn" id="addSpBtn" style="max-width: 200px;">Add to Live Feed</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead><tr><th>Name</th><th>Action</th><th>Time</th><th>Delete</th></tr></thead>
+                        <tbody id="socialTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. SHOP ITEMS -->
+            <div id="tabShop" class="tab-panel">
+                <h3 style="margin-bottom: 12px; color: #f59e0b;">Add New Shop Item</h3>
+                <div class="form-grid">
+                    <input type="text" id="shopTitle" placeholder="Material Title">
+                    <input type="number" id="shopPrice" placeholder="Price in SP (e.g. 30)">
+                    <input type="text" id="shopCover" placeholder="Cover Image (e.g. book1.png)">
+                    <input type="url" id="shopDrive" placeholder="Download / Drive Link">
+                    <button class="btn" id="addShopBtn" style="max-width: 200px; background: #f59e0b;">Add to Shop</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead><tr><th>Title</th><th>Price (SP)</th><th>Delete</th></tr></thead>
+                        <tbody id="shopTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 4. REVIEWS MODERATION -->
+            <div id="tabReviews" class="tab-panel" style="overflow-x: auto;">
+                <table>
+                    <thead><tr><th>Student</th><th>Rating</th><th>Comment</th><th>Delete</th></tr></thead>
+                    <tbody id="reviewsTableBody"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-<script type="module">
+    <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
         const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
-
         const ADMIN_EMAIL = "sultanacademyinfo@gmail.com";
 
         const authGate = document.getElementById("authGate");
         const dashboardArea = document.getElementById("dashboardArea");
-        const loginPasswordBtn = document.getElementById("loginPasswordBtn");
         const logoutBtn = document.getElementById("logoutBtn");
 
-        // Əgər artıq şifrə ilə giriş edibsə, təkrar şifrə istəməsin, birbaşa paneli açsın
         async function checkSession() {
             const { data: { session } } = await supabase.auth.getSession();
-            if (session && session.user && session.user.email === ADMIN_EMAIL) {
-                if (authGate) authGate.style.display = "none";
-                if (dashboardArea) dashboardArea.style.display = "block";
-                loadTutors();
+            if (session && session.user.email === ADMIN_EMAIL) {
+                authGate.style.display = "none";
+                dashboardArea.style.display = "block";
+                logoutBtn.style.display = "inline-block";
+                loadAllAdminData();
             }
         }
         checkSession();
 
-        // Şifrə ilə giriş düyməsi
-        if (loginPasswordBtn) {
-            loginPasswordBtn.addEventListener("click", async () => {
-                const email = document.getElementById("adminEmailInput").value.trim();
-                const password = document.getElementById("adminPasswordInput").value.trim();
+        document.getElementById("loginPasswordBtn").addEventListener("click", async () => {
+            const email = document.getElementById("adminEmailInput").value.trim();
+            const password = document.getElementById("adminPasswordInput").value.trim();
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (!error && data.session) checkSession();
+            else alert("Access Denied!");
+        });
 
-                if (!password) return alert("Please enter your password!");
+        logoutBtn.addEventListener("click", async () => { await supabase.auth.signOut(); window.location.reload(); });
 
-                loginPasswordBtn.innerText = "Checking...";
-                loginPasswordBtn.disabled = true;
-
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
-
-                if (!error && data.session) {
-                    if (authGate) authGate.style.display = "none";
-                    if (dashboardArea) dashboardArea.style.display = "block";
-                    loadTutors();
-                } else {
-                    alert("Access Denied! Wrong password or user not found.");
-                }
-
-                loginPasswordBtn.innerText = "Login to Admin Portal";
-                loginPasswordBtn.disabled = false;
+        document.querySelectorAll(".tab-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+                document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+                btn.classList.add("active");
+                document.getElementById(btn.getAttribute("data-tab")).classList.add("active");
             });
+        });
+
+        async function loadAllAdminData() {
+            loadTutors();
+            loadSocialProof();
+            loadShop();
+            loadReviews();
         }
 
-
-
-    // Müraciətləri bazadan yüklə (Email + Delete düyməsi ilə)
         async function loadTutors() {
-            const { data: tutors } = await supabase.from('tutors').select('*').order('id', { ascending: false });
+            const { data } = await supabase.from('tutors').select('*').order('id', { ascending: false });
             const tbody = document.getElementById("tutorsTableBody");
-            if (!tbody) return;
-            tbody.innerHTML = "";
-
-            if (!tutors || tutors.length === 0) {
-                tbody.innerHTML = "<tr><td colspan='7'>No applications found.</td></tr>";
-                return;
-            }
-
-            tutors.forEach(t => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
+            tbody.innerHTML = (data || []).map(t => `
+                <tr>
                     <td><img src="${t.avatar_url}" class="avatar-preview" onerror="this.src='your-photo.jpg'"></td>
                     <td><strong>${t.name}</strong></td>
-                    <td>
-                        <a href="mailto:${t.email || ''}" style="color: #38bdf8; text-decoration: underline;">
-                            <i class="fas fa-envelope"></i> ${t.email || 'No Email'}
-                        </a>
-                    </td>
+                    <td><a href="mailto:${t.email || ''}" style="color:#38bdf8;">${t.email || 'N/A'}</a></td>
                     <td><b>${t.language}</b><br><small style="color:#94a3b8;">${t.subject}</small></td>
                     <td>${t.price}</td>
-                    <td><a href="${t.discord_channel}" target="_blank" style="color:#38bdf8;">Discord Room</a></td>
-                    <td style="display: flex; gap: 8px; align-items: center;">
-                        ${t.status === 'pending' 
-                            ? `<button class="btn-approve" data-id="${t.id}">Approve</button>` 
-                            : '<span style="color:#10b981; font-weight:bold; font-size:12px;">Active</span>'}
-                        <button class="btn-delete" data-id="${t.id}" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; font-weight:600;">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
+                    <td><a href="${t.discord_channel}" target="_blank" style="color:#38bdf8;">Open</a></td>
+                    <td style="display:flex; gap:6px;">
+                        ${t.status === 'pending' ? `<button class="btn-approve" onclick="approveTutor(${t.id})">Approve</button>` : '<span style="color:#10b981; font-weight:700;">Active</span>'}
+                        <button class="btn-delete" onclick="deleteRow('tutors', ${t.id})">Delete</button>
                     </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            // Təsdiqləmə (Approve)
-            document.querySelectorAll(".btn-approve").forEach(b => {
-                b.addEventListener("click", async (e) => {
-                    const id = e.target.getAttribute("data-id");
-                    await supabase.from('tutors').update({ status: 'approved' }).eq('id', id);
-                    alert("Educator approved and published to the website!");
-                    loadTutors();
-                });
-            });
-
-            // Kartı Silmə (Delete)
-            document.querySelectorAll(".btn-delete").forEach(b => {
-                b.addEventListener("click", async (e) => {
-                    const id = e.target.getAttribute("data-id");
-                    if (confirm("Bu müəllim kartını bazadan tamamilə silmək istədiyinə əminsən?")) {
-                        await supabase.from('tutors').delete().eq('id', id);
-                        alert("Müəllim kartı silindi!");
-                        loadTutors();
-                    }
-                });
-            });
+                </tr>`).join("") || "<tr><td colspan='7'>No applications.</td></tr>";
         }
 
-    
-
-        // Çıxış düyməsi
-        if (logoutBtn) {
-            logoutBtn.addEventListener("click", async () => {
-                await supabase.auth.signOut();
-                window.location.reload();
-            });
+        async function loadSocialProof() {
+            const { data } = await supabase.from('social_proof').select('*').order('id', { ascending: false });
+            document.getElementById("socialTableBody").innerHTML = (data || []).map(s => `
+                <tr>
+                    <td><b>${s.name}</b></td><td>${s.action}</td><td>${s.time_text}</td>
+                    <td><button class="btn-delete" onclick="deleteRow('social_proof', ${s.id})">Delete</button></td>
+                </tr>`).join("");
         }
+
+        async function loadShop() {
+            const { data } = await supabase.from('shop_items').select('*').order('id', { ascending: false });
+            document.getElementById("shopTableBody").innerHTML = (data || []).map(i => `
+                <tr>
+                    <td><b>${i.title}</b></td><td>${i.price} SP</td>
+                    <td><button class="btn-delete" onclick="deleteRow('shop_items', ${i.id})">Delete</button></td>
+                </tr>`).join("");
+        }
+
+        async function loadReviews() {
+            const { data } = await supabase.from('reviews').select('*').order('id', { ascending: false });
+            document.getElementById("reviewsTableBody").innerHTML = (data || []).map(r => `
+                <tr>
+                    <td><b>${r.student_name}</b></td><td>${"⭐".repeat(r.rating)}</td><td>${r.comment}</td>
+                    <td><button class="btn-delete" onclick="deleteRow('reviews', ${r.id})">Delete</button></td>
+                </tr>`).join("");
+        }
+
+        window.approveTutor = async (id) => {
+            await supabase.from('tutors').update({ status: 'approved' }).eq('id', id);
+            loadTutors();
+        };
+
+        window.deleteRow = async (table, id) => {
+            if (!confirm("Silmək istədiyinə əminsən?")) return;
+            await supabase.from(table).delete().eq('id', id);
+            loadAllAdminData();
+        };
+
+        document.getElementById("addSpBtn").addEventListener("click", async () => {
+            const name = document.getElementById("spName").value.trim();
+            const action = document.getElementById("spAction").value.trim();
+            const time_text = document.getElementById("spTime").value.trim() || "Recently";
+            if (!name || !action) return alert("Fill Name & Action!");
+            await supabase.from('social_proof').insert([{ name, action, time_text, is_active: true }]);
+            document.getElementById("spName").value = "";
+            document.getElementById("spAction").value = "";
+            loadSocialProof();
+        });
+
+        document.getElementById("addShopBtn").addEventListener("click", async () => {
+            const title = document.getElementById("shopTitle").value.trim();
+            const price = parseInt(document.getElementById("shopPrice").value);
+            const cover_img = document.getElementById("shopCover").value.trim() || "book1.png";
+            const drive_link = document.getElementById("shopDrive").value.trim();
+            if (!title || !price || !drive_link) return alert("Fill required fields!");
+            await supabase.from('shop_items').insert([{ title, price, cover_img, drive_link }]);
+            document.getElementById("shopTitle").value = "";
+            document.getElementById("shopPrice").value = "";
+            document.getElementById("shopDrive").value = "";
+            loadShop();
+        });
     </script>
 </body>
 </html>
