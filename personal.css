@@ -1463,3 +1463,78 @@ body.modal-open {
     background: #4752C4;
     transform: translateY(-2px);
 }
+
+
+/* Jitsi Video Classroom Button on Tutor Cards */
+.video-room-btn {
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+    color: #ffffff !important;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: 0.25s;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+.video-room-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(14, 165, 233, 0.45); }
+
+/* Custom Testimonials Grid & Form */
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 24px;
+    margin-bottom: 50px;
+}
+
+.testi-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    padding: 26px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.03);
+    position: relative;
+}
+
+.testi-quote-icon { font-size: 24px; color: rgba(56, 189, 248, 0.25); margin-bottom: 8px; }
+.testi-stars { font-size: 13px; margin-bottom: 12px; }
+.testi-body { font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 20px; font-style: italic; }
+
+.testi-author { display: flex; align-items: center; gap: 12px; margin-top: auto; }
+.testi-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, #38bdf8, #6366f1);
+    color: white; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+.testi-author strong { display: block; font-size: 14px; color: #0f172a; }
+.testi-author span { font-size: 11px; color: #64748b; }
+
+.testimonial-form-box {
+    max-width: 750px;
+    margin: 0 auto;
+    background: #0f172a;
+    border-radius: 24px;
+    padding: 32px;
+    color: #f8fafc;
+    text-align: left;
+    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.15);
+}
+.testimonial-form-box h3 { font-size: 20px; margin-bottom: 6px; }
+.testimonial-form-box p { font-size: 13px; color: #94a3b8; margin-bottom: 20px; }
+
+.testi-form { display: flex; flex-direction: column; gap: 14px; }
+.testi-row { display: grid; grid-template-columns: 1fr 1fr 140px; gap: 12px; }
+.testi-form input, .testi-form select, .testi-form textarea {
+    background: #1e293b; border: 1px solid #334155; color: #ffffff;
+    padding: 11px 14px; border-radius: 10px; font-size: 13px; outline: none; width: 100%;
+}
+.testi-form input:focus, .testi-form textarea:focus { border-color: #38bdf8; }
+
+@media (max-width: 768px) { .testi-row { grid-template-columns: 1fr; } }
