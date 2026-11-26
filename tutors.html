@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-4H914F5E57"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -15,75 +13,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find Independent Educators | Sultan Academy</title>
     <link rel="icon" href="favicon.ico">
-    <link rel="shortcut icon" href="favicon.ico">
-    
-    <!-- Modern Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="personal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 <body>
 
-  <header id="main-header"></header><script src="js/navbar.js"></script>
+    <header id="main-header"></header>
 
-    <!-- EDUCATORS MARKETPLACE SECTION -->
     <main class="section" style="padding-top: 140px;">
         <div class="section-header">
             <h2>Find Your Independent Educator</h2>
-            <p>Connect with passionate verified educators for 1-on-1 sessions on Sultan Academy Discord or Cal.com. 100% free community without commission fees!</p>
+            <p>Connect with verified educators for 1-on-1 sessions on Sultan Academy Discord or Cal.com. Zero middleman fees!</p>
+            <div style="margin-top: 20px;">
+                <a href="dashboard.html?mode=educator" class="inline-blue-btn" style="padding: 10px 22px; font-size: 14px;">
+                    <i class="fas fa-chalkboard-teacher"></i> Want to Teach? Apply Here
+                </a>
+            </div>
         </div>
 
-        <!-- DİNAMİK FİLTR DÜYMƏLƏRİ (Bazada hansı dillər varsa, bura avtomatik çıxır) -->
         <div class="tutor-filters" id="dynamicFilters">
             <button class="filter-btn active" data-filter="all">All Educators</button>
         </div>
 
-        <!-- DİNAMİK KARTLARIN DÜZÜLDÜYÜ SAHƏ (js/tutors.js tərəfindən doldurulur) -->
         <div class="tutors-grid" id="tutorsGrid">
-            <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading Educators from Database...</p>
+            <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading Educators...</p>
         </div>
 
-        <!-- Sıfır Komissiya və Güvən Bildirişi -->
         <div class="payment-recommendation-box" style="margin-top: 60px;">
             <div class="pay-icon"><i class="fas fa-handshake"></i></div>
             <div class="pay-text">
                 <strong>100% Direct & Zero-Commission Community:</strong>
-                <p>Sultan Academy does not charge students or educators any middleman commission. Once you connect in the Discord room, you can arrange lesson schedules and transfer tuition directly using recommended secure services like <b>Wise</b> or <b>TransferGo</b>.</p>
+                <p>Sultan Academy never holds your tuition. Arrange sessions directly in Discord and transfer fees safely using <b>Wise</b> or <b>TransferGo</b>.</p>
             </div>
         </div>
     </main>
 
-    <!-- FOOTER -->
+    <!-- 5 ULDUZLU RƏYLƏR MODALI -->
+    <div id="reviewsModal" class="auth-modal-overlay hidden">
+        <div class="dashboard-modal-card" style="max-width: 520px; text-align: left;">
+            <button class="auth-close-btn" id="closeReviewsModal" type="button">&times;</button>
+            <h3 id="reviewsModalTitle" style="color: #ffffff; margin-bottom: 15px; font-size: 20px;">Educator Reviews</h3>
+
+            <div id="reviewsList" style="max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                <p style="color: #94a3b8; font-size: 13px;">Loading reviews...</p>
+            </div>
+
+            <form id="reviewForm" class="educator-form" style="border-top: 1px solid #334155; padding-top: 15px;">
+                <input type="hidden" id="revTutorId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Your Name *</label>
+                        <input type="text" id="revStudentName" required placeholder="e.g. Kamran">
+                    </div>
+                    <div class="form-group">
+                        <label>Rating *</label>
+                        <select id="revRating" style="background: #1e293b; border: 1px solid #334155; padding: 10px; border-radius: 10px; color: #f59e0b; font-weight: 600;">
+                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                            <option value="3">⭐⭐⭐ (3/5)</option>
+                            <option value="2">⭐⭐ (2/5)</option>
+                            <option value="1">⭐ (1/5)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Your Feedback *</label>
+                    <input type="text" id="revComment" required placeholder="Share your experience with this educator...">
+                </div>
+                <button type="submit" class="submit-profile-btn" style="margin-top: 5px;">Post Review</button>
+            </form>
+        </div>
+    </div>
+
     <footer class="footer">
         <p>© 2026 Sultan Alizada. All rights reserved.</p>
     </footer>
 
-    <!-- METALLİK PARILTILI YAŞIL DƏSTƏK DÜYMƏSİ -->
     <a href="YOUR_WISE_LINK_HERE" class="metallic-support-btn" target="_blank" rel="noopener">
         <i class="fas fa-hand-holding-heart"></i> Support Our Work
     </a>
 
-    <!-- Canlı Alış və Dəstək Pop-up Bildirişləri üçün qutu -->
     <div id="social-proof-container"></div>
 
-    <!-- SKRİPTLƏR -->
-    <script>
-        // Mobil Menyu İdarəetməsi
-        const menuToggle = document.getElementById("mobile-menu");
-        const navList = document.getElementById("nav-list");
-        if (menuToggle && navList) {
-            menuToggle.addEventListener("click", () => {
-                navList.classList.toggle("active");
-                menuToggle.classList.toggle("open");
-                document.body.classList.toggle("menu-open", navList.classList.contains("active"));
-            });
-        }
-    </script>
-    <script src="js/social-proof.js"></script>
-    <!-- Müəllimləri Supabase-dən yükləyən və reklamla əlaqə açan əsas skript -->
-    <script type="module" src="js/tutors.js"></script>
-
+    <script src="js/navbar.js"></script>
     <script src="js/cookie-consent.js"></script>
+    <script type="module" src="js/social-proof.js"></script>
+    <script type="module" src="js/tutors.js"></script>
 </body>
 </html>
