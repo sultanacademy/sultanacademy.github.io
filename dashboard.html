@@ -151,6 +151,16 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label>Main Category / Discipline *</label>
+                        <select id="tutorCategory" required style="background: #1e293b; border: 1px solid #334155; padding: 10px 14px; border-radius: 10px; color: white; font-size: 13px; outline: none;">
+                            <option value="Languages">🌍 World Languages</option>
+                            <option value="Tech & Coding">💻 Tech & Coding</option>
+                            <option value="Music & Arts">🎸 Music & Arts</option>
+                            <option value="Coaching & Skills">🚀 Coaching & Exam Prep</option>
+                        </select>
+                    </div>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label>Language Taught *</label>
@@ -185,6 +195,57 @@
                         <i class="fas fa-check-circle"></i> Submit Educator Card for Approval
                     </button>
                 </form>
+
+
+                <!-- MÜƏLLİMİN ÖZ CANLI KLUB / WORKSHOP ELANI YARATMASI -->
+            <div class="dash-card" style="margin-top: 25px;">
+                <h4 style="margin-bottom: 10px;"><i class="fas fa-broadcast-tower" style="color: #818cf8;"></i> Host a Live Weekly Club / Workshop</h4>
+                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 16px;">Want to run a free or paid group club on Discord? Submit it here — once approved, it appears on the Home page!</p>
+                <form id="eventApplicationForm" class="educator-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Your Name *</label>
+                            <input type="text" id="evEducatorName" required placeholder="e.g. Leyla Mammadova">
+                        </div>
+                        <div class="form-group">
+                            <label>Your Email (Admin Only) *</label>
+                            <input type="email" id="evEducatorEmail" required placeholder="your.email@gmail.com">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Club Category *</label>
+                            <select id="evCategory" style="background: #1e293b; border: 1px solid #334155; padding: 10px 14px; border-radius: 10px; color: white; font-size: 13px;">
+                                <option value="Languages">Languages</option>
+                                <option value="Tech & Coding">Tech & Coding</option>
+                                <option value="Music & Arts">Music & Arts</option>
+                                <option value="Coaching & Skills">Coaching & Skills</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Schedule (Day & Time) *</label>
+                            <input type="text" id="evSchedule" required placeholder="e.g. Fridays 19:00 UTC">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Club / Workshop Title *</label>
+                        <input type="text" id="evTitle" required placeholder="e.g. German B2 Speaking Practice">
+                    </div>
+                    <div class="form-group">
+                        <label>Short Description *</label>
+                        <input type="text" id="evDesc" required placeholder="What will learners practice in this session?">
+                    </div>
+                    <div class="form-group">
+                        <label>Sultan Academy Discord Room Link *</label>
+                        <input type="url" id="evDiscord" required placeholder="https://discord.com/channels/1506203530023931977/...">
+                    </div>
+                    <button type="submit" id="evSubmitBtn" class="submit-profile-btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                        <i class="fas fa-paper-plane"></i> Submit Club for Approval
+                    </button>
+                </form>
+            </div>
+
+                
             </div>
         </div>
 
@@ -324,6 +385,7 @@
             document.getElementById("tutorDiscordChannel").value = t.discord_channel;
             document.getElementById("tutorOffersLive").checked = t.offers_live_sessions;
             document.getElementById("tutorCalLink").value = t.cal_link || "";
+            document.getElementById("tutorCategory").value = t.category || "Languages";
         });
 
         // 5. EDUCATOR KART GÖNDƏRMƏ / REDAKTƏ
@@ -369,7 +431,8 @@
                 discord_channel: document.getElementById("tutorDiscordChannel").value.trim(),
                 offers_live_sessions: document.getElementById("tutorOffersLive").checked,
                 cal_link: document.getElementById("tutorCalLink").value.trim(),
-                status: "pending"
+                status: "pending",
+                category: document.getElementById("tutorCategory").value
             };
 
             let ok = false;
@@ -384,7 +447,8 @@
                     p_price: payload.price,
                     p_discord: payload.discord_channel,
                     p_live: payload.offers_live_sessions,
-                    p_cal: payload.cal_link
+                    p_cal: payload.cal_link,
+                    p_category: payload.category
                 });
                 ok = !error && data === true;
             } else {
@@ -404,6 +468,40 @@
             btn.innerHTML = oldHTML;
             btn.disabled = false;
         });
+
+
+
+        // 6. CANLI KLUB / WORKSHOP GÖNDƏRİLMƏSİ
+        document.getElementById("eventApplicationForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("evSubmitBtn");
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            const evData = {
+                educator_name: document.getElementById("evEducatorName").value.trim(),
+                educator_email: document.getElementById("evEducatorEmail").value.trim(),
+                category: document.getElementById("evCategory").value,
+                schedule_text: document.getElementById("evSchedule").value.trim(),
+                title: document.getElementById("evTitle").value.trim(),
+                description: document.getElementById("evDesc").value.trim(),
+                discord_link: document.getElementById("evDiscord").value.trim(),
+                status: "pending"
+            };
+
+            const { error } = await supabase.from("events").insert([evData]);
+            if (!error) {
+                alert("🎉 Your Live Club has been submitted and is pending Admin approval!");
+                e.target.reset();
+            } else {
+                alert("Error submitting workshop.");
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Club for Approval';
+        });
+
+
+        
     </script>
 </body>
 </html>
