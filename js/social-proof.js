@@ -1,78 +1,70 @@
-// --- SULTAN ACADEMY SPONTAN DONATION & PURCHASE FEED ---
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-// 1. SƏNİN DƏSTƏKÇİ VƏ ALICI SİYAHIN (Buraya istədiyin adı artıra bilərsən):
-const supportersList = [
-    { name: "Eldar M.", action: "bought Dental Assistant Guide", time: "2 minutes ago", initial: "E" },
-    { name: "Sarah K.", action: "donated $15 via Wise", time: "8 minutes ago", initial: "S" },
-    { name: "Murad R.", action: "bought Russian Language Guide", time: "18 minutes ago", initial: "M" },
-    { name: "Aysel T.", action: "donated $20 via Patreon", time: "34 minutes ago", initial: "A" },
-    { name: "Lukas W.", action: "joined German Classroom", time: "1 hour ago", initial: "L" },
-    { name: "Kamran B.", action: "bought TELC C1 Preparation", time: "2 hours ago", initial: "K" },
-    { name: "Farid H.", action: "donated $10 via Patreon", time: "3 hours ago", initial: "F" }
+const supabase = createClient(
+    'https://ezccynahgubalainoqkf.supabase.co',
+    'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX'
+);
+
+const fallbackList = [
+    { name: "Eldar M.", action: "bought Dental Assistant Guide", time_text: "Recently" },
+    { name: "Sarah K.", action: "donated $15 via Wise", time_text: "Recently" },
+    { name: "Lukas W.", action: "joined German Classroom", time_text: "Recently" }
 ];
 
-// 2. Spontan və Parlaq Rənglər Qalereyası
 const vibrantGradients = [
-    "linear-gradient(135deg, #FF416C, #FF4B2B)", // Alovlu Qırmızı/Çəhrayı
-    "linear-gradient(135deg, #10b981, #059669)", // Zümrüd Yaşılı
-    "linear-gradient(135deg, #38bdf8, #6366f1)", // Neon Mavi/İndiqo
-    "linear-gradient(135deg, #f59e0b, #ef4444)", // Qızılı Narıncı
-    "linear-gradient(135deg, #8b5cf6, #ec4899)", // Bənövşəyi/Magenta
-    "linear-gradient(135deg, #06b6d4, #3b82f6)"  // Okean Mavisi
+    "linear-gradient(135deg, #FF416C, #FF4B2B)",
+    "linear-gradient(135deg, #10b981, #059669)",
+    "linear-gradient(135deg, #38bdf8, #6366f1)",
+    "linear-gradient(135deg, #f59e0b, #ef4444)",
+    "linear-gradient(135deg, #8b5cf6, #ec4899)"
 ];
 
-const container = document.getElementById("social-proof-container");
+let feedItems = [];
 let currentIndex = 0;
 
-function showNextNotification() {
+async function initSocialProof() {
+    const container = document.getElementById("social-proof-container");
     if (!container) return;
 
-    const data = supportersList[currentIndex];
-    
-    // Təsadüfi bir spontan rəng seçirik
-    const randomGradient = vibrantGradients[Math.floor(Math.random() * vibrantGradients.length)];
+    const { data } = await supabase
+        .from("social_proof")
+        .select("*")
+        .eq("is_active", true)
+        .order("id", { ascending: false });
 
-    // Kart elementini yaradırıq
+    feedItems = (data && data.length > 0) ? data : fallbackList;
+    setTimeout(showNextNotification, 4000);
+}
+
+function showNextNotification() {
+    const container = document.getElementById("social-proof-container");
+    if (!container || feedItems.length === 0) return;
+
+    const item = feedItems[currentIndex];
+    const initial = item.name.charAt(0).toUpperCase();
+    const randomGrad = vibrantGradients[Math.floor(Math.random() * vibrantGradients.length)];
+
     const card = document.createElement("div");
     card.className = "sp-card";
     card.innerHTML = `
-        <div class="sp-avatar" style="background: ${randomGradient};">
-            ${data.initial}
-        </div>
+        <div class="sp-avatar" style="background: ${randomGrad};">${initial}</div>
         <div class="sp-details">
-            <span class="sp-name">${data.name}</span>
-            <span class="sp-action">${data.action}</span>
-            <span class="sp-time"><i class="fas fa-check-circle" style="color: #10b981;"></i> ${data.time}</span>
-        </div>
-    `;
+            <span class="sp-name">${item.name}</span>
+            <span class="sp-action">${item.action}</span>
+            <span class="sp-time"><i class="fas fa-check-circle" style="color: #10b981;"></i> ${item.time_text}</span>
+        </div>`;
 
     container.appendChild(card);
+    setTimeout(() => card.classList.add("show"), 100);
 
-    // 1. Zərif şəkildə altdan daxil olur
-    setTimeout(() => {
-        card.classList.add("show");
-    }, 100);
-
-    // 2. 4 saniyə ekranda qalır, sonra yuxarı qalxaraq buxarlanır
     setTimeout(() => {
         card.classList.remove("show");
         card.classList.add("exit");
-
-        // 3. Animasiya bitəndən sonra DOM-dan tam silirik
-        setTimeout(() => {
-            card.remove();
-        }, 600);
+        setTimeout(() => card.remove(), 600);
     }, 4500);
 
-    // Növbəti dəstəkçiyə keç (dövr edir)
-    currentIndex = (currentIndex + 1) % supportersList.length;
-
-    // 4. Növbəti bildiriş 7 ilə 11 saniyə arasında təsadüfi vaxtda çıxır (çox təbii görünür)
-    const nextInterval = Math.floor(Math.random() * 4000) + 7000;
-    setTimeout(showNextNotification, nextInterval);
+    currentIndex = (currentIndex + 1) % feedItems.length;
+    setTimeout(showNextNotification, Math.floor(Math.random() * 4000) + 7500);
 }
 
-// Sayt açılandan 4 saniyə sonra ilk bildiriş başlasın
-document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(showNextNotification, 4000);
-});
+document.addEventListener("DOMContentLoaded", initSocialProof);
