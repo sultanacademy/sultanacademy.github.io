@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Video Classroom | Sultan Academy</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: #0a0f1d; color: #f8fafc; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .room-topbar {
+            background: #0f172a; border-bottom: 1px solid #1e293b; padding: 10px 20px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+        }
+        .room-brand { display: flex; align-items: center; gap: 12px; }
+        .room-brand a { color: #38bdf8; text-decoration: none; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+        .room-badge { background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .room-actions { display: flex; align-items: center; gap: 10px; }
+        .copy-btn { background: #1e293b; color: #f8fafc; border: 1px solid #334155; padding: 7px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .copy-btn:hover { background: #38bdf8; color: #0f172a; }
+        #jitsi-container { flex: 1; width: 100%; height: 100%; background: #000; }
+        .room-tip { background: rgba(56, 189, 248, 0.08); color: #94a3b8; font-size: 11px; text-align: center; padding: 5px; border-bottom: 1px solid #1e293b; }
+    </style>
+</head>
+<body>
+
+    <div class="room-topbar">
+        <div class="room-brand">
+            <a href="tutors.html"><i class="fas fa-arrow-left"></i> Back to Academy</a>
+            <span class="room-badge"><i class="fas fa-video"></i> <span id="roomTitle">Sultan Academy Classroom</span></span>
+        </div>
+        <div class="room-actions">
+            <button class="copy-btn" id="copyRoomBtn"><i class="fas fa-link"></i> Copy Classroom Link</button>
+            <a href="YOUR_WISE_LINK_HERE" target="_blank" rel="noopener" style="background: #10b981; color: white; text-decoration: none; padding: 7px 14px; border-radius: 10px; font-size: 12px; font-weight: 600;">
+                <i class="fas fa-heart"></i> Support
+            </a>
+        </div>
+    </div>
+    <div class="room-tip">
+        💡 Note: If you are the Educator starting a new room, Jitsi may ask for a quick 1-click Google login to verify you as the room host. Students can join freely!
+    </div>
+
+    <div id="jitsi-container"></div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const rawRoom = params.get("room") || "SultanAcademy-OpenLobby";
+        const safeRoom = rawRoom.replace(/[^a-zA-Z0-9-_]/g, "");
+
+        document.getElementById("roomTitle").innerText = safeRoom;
+
+        document.getElementById("copyRoomBtn").addEventListener("click", () => {
+            navigator.clipboard.writeText(window.location.href);
+            const btn = document.getElementById("copyRoomBtn");
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => btn.innerHTML = '<i class="fas fa-link"></i> Copy Classroom Link', 2500);
+        });
+
+        const api = new JitsiMeetExternalAPI("meet.jit.si", {
+            roomName: safeRoom,
+            width: "100%",
+            height: "100%",
+            parentNode: document.querySelector("#jitsi-container"),
+            configOverwrite: {
+                startWithAudioMuted: true,
+                prejoinPageEnabled: true
+            },
+            interfaceConfigOverwrite: {
+                SHOW_JITSI_WATERMARK: false,
+                DEFAULT_BACKGROUND: "#0f172a"
+            }
+        });
+    </script>
+</body>
+</html>
