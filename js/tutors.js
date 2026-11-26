@@ -1,230 +1,38 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const supabaseUrl = 'https://ezccynahgubalainoqkf.supabase.co';
-const supabaseKey = 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX';
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(
+    'https://ezccynahgubalainoqkf.supabase.co',
+    'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX'
+);
 
-// --- DISCORD WEBHOOK LINKINI BURA YAPIŞDIR ---
-const DISCORD_WEBHOOK_URL = "BURAYA_OZ_DISCORD_WEBHOOK_LINKINI_YAPISDIR";
+let allReviews = [];
 
-// --- 1. ELEMENTLƏRİN SEÇİLMƏSİ (TƏKRARSIZ VƏ TƏMİZ) ---
-const navActionBtn = document.getElementById("navActionBtn");
-const navActionText = document.getElementById("navActionText");
-
-const joinModal = document.getElementById("joinModal");
-const closeJoinModal = document.getElementById("closeJoinModal");
-const joinUsernameInput = document.getElementById("joinUsernameInput");
-const joinSubmitBtn = document.getElementById("joinSubmitBtn");
-
-const dashboardModal = document.getElementById("dashboardModal");
-const closeDashboardModal = document.getElementById("closeDashboardModal");
-const dashUsernameDisplay = document.getElementById("dashUsernameDisplay");
-
-const btnStudentMode = document.getElementById("btnStudentMode");
-const btnEducatorMode = document.getElementById("btnEducatorMode");
-const studentDashboardArea = document.getElementById("studentDashboardArea");
-const educatorDashboardArea = document.getElementById("educatorDashboardArea");
-
-let activeUser = localStorage.getItem("sultan_user") || null;
-let activeRole = localStorage.getItem("sultan_role") || "student";
-
-// --- 2. NAVİQASİYA DÜYMƏSİNİN VƏZİYYƏTİ ---
-function updateNavUI() {
-    if (activeUser) {
-        if (navActionText) navActionText.innerText = `${activeUser} (Dashboard)`;
-        if (dashUsernameDisplay) dashUsernameDisplay.innerText = activeUser;
-    } else {
-        if (navActionText) navActionText.innerText = "Join Academy";
-    }
-}
-updateNavUI();
-
-// Əsas Düymə: İstifadəçi yoxdursa "Join" açılır, varsa "Dashboard"
-if (navActionBtn) {
-    navActionBtn.addEventListener("click", () => {
-        if (!activeUser) {
-            if (joinModal) {
-                joinModal.classList.remove("hidden");
-                document.body.classList.add("modal-open");
-            }
-        } else {
-            if (dashboardModal) {
-                dashboardModal.classList.remove("hidden");
-                document.body.classList.add("modal-open");
-                setRole(activeRole);
-            }
-        }
-    });
-}
-
-// Qeydiyyatı təsdiq etmək (Frictionsuz Username ilə)
-if (joinSubmitBtn) {
-    joinSubmitBtn.addEventListener("click", () => {
-        const username = joinUsernameInput ? joinUsernameInput.value.trim().toLowerCase() : "";
-        if (!username) return alert("Please enter a username!");
-
-        activeUser = username;
-        localStorage.setItem("sultan_user", username);
-        updateNavUI();
-
-        if (joinModal) joinModal.classList.add("hidden");
-        if (dashboardModal) {
-            dashboardModal.classList.remove("hidden");
-            setRole(activeRole);
-        }
-    });
-}
-
-// --- 3. İKİLİ ROL KEÇİDİ (STUDENT 🔁 EDUCATOR) ---
-function setRole(role) {
-    activeRole = role;
-    localStorage.setItem("sultan_role", role);
-
-    if (role === "student") {
-        if (btnStudentMode) btnStudentMode.classList.add("active");
-        if (btnEducatorMode) btnEducatorMode.classList.remove("active");
-        if (studentDashboardArea) studentDashboardArea.classList.remove("hidden");
-        if (educatorDashboardArea) educatorDashboardArea.classList.add("hidden");
-    } else {
-        if (btnEducatorMode) btnEducatorMode.classList.add("active");
-        if (btnStudentMode) btnStudentMode.classList.remove("active");
-        if (educatorDashboardArea) educatorDashboardArea.classList.remove("hidden");
-        if (studentDashboardArea) studentDashboardArea.classList.add("hidden");
-    }
-}
-
-if (btnStudentMode) btnStudentMode.addEventListener("click", () => setRole("student"));
-if (btnEducatorMode) btnEducatorMode.addEventListener("click", () => setRole("educator"));
-
-// Pəncərələri (Modalları) bağlamaq
-if (closeJoinModal && joinModal) {
-    closeJoinModal.addEventListener("click", () => {
-        joinModal.classList.add("hidden");
-        document.body.classList.remove("modal-open");
-    });
-}
-
-if (closeDashboardModal && dashboardModal) {
-    closeDashboardModal.addEventListener("click", () => {
-        dashboardModal.classList.add("hidden");
-        document.body.classList.remove("modal-open");
-    });
-}
-
-// --- 4. DISCORD WEBHOOK BİLDİRİŞİ ---
-async function notifyDiscordOnNewTutor(tutorData) {
-    if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes("BURAYA")) return;
-
-    const payload = {
-        username: "Sultan Academy Bot",
-        avatar_url: "https://sultanalizada.github.io/logo.png",
-        embeds: [{
-            title: "🎓 Yeni Mentor / Tutor Müraciəti!",
-            color: 3711992,
-            fields: [
-                { name: "👤 Ad / Soyad", value: tutorData.name, inline: true },
-                { name: "📧 Email (Gizli)", value: tutorData.email || "Qeyd edilməyib", inline: true },
-                { name: "🌍 Dil", value: tutorData.language, inline: true },
-                { name: "📚 Fənn / Sahə", value: tutorData.subject, inline: true },
-                { name: "💰 Qiymət", value: tutorData.price, inline: true },
-                { name: "🔴 Canlı Dərs / Yayım?", value: tutorData.offers_live_sessions ? "✅ Bəli" : "❌ Xeyr", inline: true },
-                { name: "💬 Discord Otağı", value: tutorData.discord_channel, inline: false },
-                { name: "📅 Cal.com", value: tutorData.cal_link || "Qoşulmayıb", inline: false }
-            ],
-            footer: { text: "admin.html portalından təsdiqləyin və ya rədd edin." },
-            timestamp: new Date().toISOString()
-        }]
-    };
-
-    try {
-        await fetch(DISCORD_WEBHOOK_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-    } catch (err) {
-        console.error("Discord Webhook Error:", err);
-    }
-}
-
-// --- 5. MÜƏLLİM MÜRACİƏTİ VƏ KART REDAKTƏSİ (SUBMIT & EDIT) ---
-const tutorForm = document.getElementById("tutorApplicationForm");
-
-if (tutorForm) {
-    tutorForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const submitBtn = e.submitter || tutorForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn ? submitBtn.innerHTML : "Submit";
-        if (submitBtn) {
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-            submitBtn.disabled = true;
-        }
-
-        const emailInput = document.getElementById("tutorEmail");
-        const tutorEmail = emailInput ? emailInput.value.trim() : "";
-
-        const tutorData = {
-            name: document.getElementById("tutorName").value.trim(),
-            email: tutorEmail,
-            avatar_url: document.getElementById("tutorAvatar").value.trim(),
-            language: document.getElementById("tutorLanguage").value.trim(),
-            subject: document.getElementById("tutorSubject").value.trim(),
-            price: document.getElementById("tutorPrice").value.trim(),
-            discord_channel: document.getElementById("tutorDiscordChannel").value.trim(),
-            offers_live_sessions: document.getElementById("tutorOffersLive").checked,
-            cal_link: document.getElementById("tutorCalLink").value.trim(),
-            status: "pending"
-        };
-
-        const { data: existing } = await supabase.from("tutors").select("id").eq("email", tutorEmail).single();
-
-        let operationError = null;
-
-        if (existing) {
-            const { error } = await supabase.from("tutors").update(tutorData).eq("id", existing.id);
-            operationError = error;
-        } else {
-            const { error } = await supabase.from("tutors").insert([tutorData]);
-            operationError = error;
-        }
-
-        if (!operationError) {
-            await notifyDiscordOnNewTutor(tutorData);
-            alert("🎉 Your Educator card has been saved and is now PENDING admin approval!");
-            if (dashboardModal) dashboardModal.classList.add("hidden");
-            document.body.classList.remove("modal-open");
-            tutorForm.reset();
-        } else {
-            alert("Error saving profile. Please check your connection and fields.");
-        }
-
-        if (submitBtn) {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }
-    });
-}
-
-// --- 6. DİNAMİK MÜƏLLİM KARTLARI VƏ FİLTRLƏR ---
 async function loadEducators() {
     const tutorsGrid = document.getElementById("tutorsGrid");
     const dynamicFilters = document.getElementById("dynamicFilters");
-
     if (!tutorsGrid) return;
 
+    // 1. Yalnız açıq (public) sütunları çəkirik (email və edit_pin bazada gizli qalır!)
     const { data: tutors, error } = await supabase
         .from("tutors")
+        .select("id, name, avatar_url, language, subject, price, discord_channel, offers_live_sessions, cal_link, status")
+        .eq("status", "approved")
+        .order("id", { ascending: false });
+
+    // 2. Bütün rəyləri çəkirik
+    const { data: reviews } = await supabase
+        .from("reviews")
         .select("*")
-        .eq("status", "approved");
+        .order("created_at", { ascending: false });
+
+    allReviews = reviews || [];
 
     if (error || !tutors || tutors.length === 0) {
         tutorsGrid.innerHTML = `
             <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">
                 <i class="fas fa-user-clock" style="font-size: 32px; margin-bottom: 12px; color: #38bdf8;"></i>
-                <p>No active educators right now. Apply above to be featured!</p>
-            </div>
-        `;
+                <p>No active educators right now. Be the first to apply in the Dashboard!</p>
+            </div>`;
         return;
     }
 
@@ -235,6 +43,15 @@ async function loadEducators() {
         const langClean = t.language.toLowerCase().trim();
         uniqueLanguages.add(langClean);
 
+        // Orta balın hesablanması
+        const tutorRevs = allReviews.filter(r => r.tutor_id === t.id);
+        let ratingText = `<strong>New</strong> <span class="rating-count">(No reviews yet)</span>`;
+        if (tutorRevs.length > 0) {
+            const avg = (tutorRevs.reduce((sum, r) => sum + r.rating, 0) / tutorRevs.length).toFixed(1);
+            const stars = "⭐".repeat(Math.round(avg));
+            ratingText = `<span class="stars">${stars}</span> <strong>${avg}</strong> <span class="rating-count">(${tutorRevs.length} reviews)</span>`;
+        }
+
         const card = document.createElement("div");
         card.className = "tutor-card";
         card.setAttribute("data-category", langClean);
@@ -243,23 +60,25 @@ async function loadEducators() {
             <div class="tutor-header">
                 <img src="${t.avatar_url || 'your-photo.jpg'}" alt="${t.name}" class="tutor-avatar" onerror="this.src='your-photo.jpg'">
                 <div class="tutor-main-info">
-                    <h3>${t.name} <i class="fas fa-check-circle verified-badge" title="Verified Mentor"></i></h3>
+                    <h3>${t.name} <i class="fas fa-check-circle verified-badge" title="Verified Educator"></i></h3>
                     <p class="tutor-title">${t.subject}</p>
-                    <div class="tutor-rating">
-                        <span class="stars">⭐⭐⭐⭐⭐</span>
-                        <strong>5.0</strong> <span class="rating-count">(Verified)</span>
-                    </div>
+                    <div class="tutor-rating">${ratingText}</div>
                 </div>
             </div>
-            <p class="tutor-bio">Teaching <b>${t.language}</b>. Lessons held directly on Sultan Academy Discord.</p>
+            <p class="tutor-bio">Teaching <b>${t.language}</b> directly on Sultan Academy Discord.</p>
             <div class="tutor-tags">
                 <span>${t.language}</span>
                 ${t.offers_live_sessions ? '<span style="color:#10b981; border-color:#10b981;">🔴 Live Discord Sessions</span>' : ''}
             </div>
             <div class="tutor-footer">
-                <div class="tutor-price">${t.price}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="tutor-price">${t.price}</div>
+                    <button class="btn-reviews open-reviews-btn" data-id="${t.id}" data-name="${t.name}" type="button">
+                        <i class="fas fa-star"></i> Reviews (${tutorRevs.length})
+                    </button>
+                </div>
                 <div class="tutor-action-group">
-                    <button class="unlock-tutor-btn" data-target="${t.discord_channel}" data-type="Discord Room">
+                    <button class="unlock-tutor-btn" data-target="${t.discord_channel}" data-type="Discord Room" data-name="${t.name}" data-lang="${t.language}" data-subj="${t.subject}">
                         <i class="fab fa-discord"></i> Discord Room (Watch AD)
                     </button>
                     ${t.cal_link ? `
@@ -272,8 +91,9 @@ async function loadEducators() {
         tutorsGrid.appendChild(card);
     });
 
+    // Dinamik Filtrlər
     if (dynamicFilters) {
-        dynamicFilters.innerHTML = `<button class="filter-btn active" data-filter="all">All Mentors</button>`;
+        dynamicFilters.innerHTML = `<button class="filter-btn active" data-filter="all">All Educators</button>`;
         uniqueLanguages.forEach(lang => {
             const btn = document.createElement("button");
             btn.className = "filter-btn";
@@ -287,16 +107,14 @@ async function loadEducators() {
                 dynamicFilters.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
                 const filter = btn.getAttribute("data-filter");
-
-                document.querySelectorAll(".tutor-card").forEach(card => {
-                    const cat = card.getAttribute("data-category");
-                    card.style.display = (filter === "all" || cat.includes(filter)) ? "flex" : "none";
+                document.querySelectorAll(".tutor-card").forEach(c => {
+                    c.style.display = (filter === "all" || c.getAttribute("data-category").includes(filter)) ? "flex" : "none";
                 });
             });
         });
     }
 
-    // Reklamla Açılış
+    // Reklamla Açılış + Dashboard-da Yadda Saxlama
     document.querySelectorAll(".unlock-tutor-btn, .unlock-cal-btn").forEach(btn => {
         btn.addEventListener("click", function(e) {
             e.preventDefault();
@@ -323,12 +141,86 @@ async function loadEducators() {
                     this.innerHTML = `<i class="fas fa-check"></i> ${targetType} Opened`;
                     this.style.background = "#10b981";
                     this.style.pointerEvents = "auto";
+
+                    // Əgər Discord otağıdırsa, Student Dashboard siyahısına əlavə et
+                    if (this.classList.contains("unlock-tutor-btn")) {
+                        const saved = JSON.parse(localStorage.getItem("sultan_unlocked_tutors") || "[]");
+                        const name = this.getAttribute("data-name");
+                        if (!saved.some(x => x.name === name)) {
+                            saved.push({
+                                name,
+                                language: this.getAttribute("data-lang"),
+                                subject: this.getAttribute("data-subj"),
+                                link: targetUrl
+                            });
+                            localStorage.setItem("sultan_unlocked_tutors", JSON.stringify(saved));
+                        }
+                    }
+
                     window.open(targetUrl, "_blank");
                 }
             }, 1000);
         });
     });
+
+    // Rəylər Modalını Açmaq
+    document.querySelectorAll(".open-reviews-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const id = parseInt(btn.getAttribute("data-id"));
+            const name = btn.getAttribute("data-name");
+            openReviewsModal(id, name);
+        });
+    });
 }
 
-// Səhifə yüklənəndə müəllimləri avtomatik çağırırıq
+const reviewsModal = document.getElementById("reviewsModal");
+const closeReviewsModal = document.getElementById("closeReviewsModal");
+if (closeReviewsModal) {
+    closeReviewsModal.addEventListener("click", () => reviewsModal.classList.add("hidden"));
+}
+
+function openReviewsModal(tutorId, tutorName) {
+    document.getElementById("reviewsModalTitle").innerText = `Reviews for ${tutorName}`;
+    document.getElementById("revTutorId").value = tutorId;
+
+    const list = document.getElementById("reviewsList");
+    const tutorRevs = allReviews.filter(r => r.tutor_id === tutorId);
+
+    if (tutorRevs.length === 0) {
+        list.innerHTML = `<p style="color:#94a3b8; font-size:13px;">No reviews yet. Be the first to leave feedback!</p>`;
+    } else {
+        list.innerHTML = tutorRevs.map(r => `
+            <div class="review-item">
+                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <strong style="color:#f8fafc; font-size:13px;">${r.student_name}</strong>
+                    <span style="font-size:12px;">${"⭐".repeat(r.rating)}</span>
+                </div>
+                <p style="color:#cbd5e1; font-size:12px; margin:0;">${r.comment}</p>
+            </div>
+        `).join("");
+    }
+    reviewsModal.classList.remove("hidden");
+}
+
+const reviewForm = document.getElementById("reviewForm");
+if (reviewForm) {
+    reviewForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const tutorId = parseInt(document.getElementById("revTutorId").value);
+        const studentName = document.getElementById("revStudentName").value.trim();
+        const rating = parseInt(document.getElementById("revRating").value);
+        const comment = document.getElementById("revComment").value.trim();
+
+        const { error } = await supabase.from("reviews").insert([{ tutor_id: tutorId, student_name: studentName, rating, comment }]);
+        if (!error) {
+            alert("⭐ Thank you for your review!");
+            reviewForm.reset();
+            reviewsModal.classList.add("hidden");
+            loadEducators();
+        } else {
+            alert("Could not post review. Try again.");
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", loadEducators);
