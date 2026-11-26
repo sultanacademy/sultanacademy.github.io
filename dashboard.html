@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4H914F5E57"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4H914F5E57');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Workspace | Sultan Academy</title>
@@ -9,30 +17,43 @@
     <link rel="stylesheet" href="personal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body style="background: #0a0f1d;">
+<body style="background: #0a0f1d; color: #f8fafc;">
 
-    
-   <header id="main-header"></header><script src="js/navbar.js"></script>
+    <header id="main-header"></header>
 
-    <!-- GENİŞ DASHBOARD PLATFORMASI -->
-    <main class="section" style="padding-top: 130px; max-width: 900px;">
+    <main class="section" style="padding-top: 130px; max-width: 950px; text-align: left;">
         
-        <!-- İSTİFADƏÇİ BAŞLIĞI -->
-        <div class="dash-user-bar" style="background: #1e293b; padding: 20px 25px; border-radius: 20px; border: 1px solid #334155;">
+        <!-- İSTİFADƏÇİ PANELİ -->
+        <div class="dash-user-bar" style="background: #1e293b; padding: 20px 25px; border-radius: 20px; border: 1px solid #334155; flex-wrap: wrap; gap: 15px;">
             <div class="dash-user-identity">
-                <i class="fas fa-user-circle" style="font-size: 45px; color: #38bdf8;"></i>
+                <i class="fas fa-user-circle" style="font-size: 44px; color: #38bdf8;"></i>
                 <div>
-                    <h3 id="dashUserGreeting" style="color: white; margin: 0; font-size: 20px;">Welcome Back!</h3>
-                    <span class="user-subtag" style="color: #94a3b8;">All-in-One Dual Ecosystem Account</span>
+                    <h3 id="dashUserGreeting" style="color: white; margin: 0; font-size: 19px;">Welcome to Your Workspace</h3>
+                    <span class="user-subtag" style="color: #94a3b8;">One Account • Dual Role Ecosystem</span>
                 </div>
             </div>
-            <div class="dash-balance-chip">
-                <i class="fas fa-coins"></i> <span id="dashUserSP">0</span> SP Points
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="dash-balance-chip">
+                    <i class="fas fa-coins"></i> <span id="dashUserSP">0</span> SP
+                </div>
+                <button id="switchUserBtn" class="btn-secondary-sm" type="button">
+                    <i class="fas fa-exchange-alt"></i> Switch User
+                </button>
             </div>
         </div>
 
-        <!-- 🌟 ƏSAS İKİLİ KEÇİD DÜYMƏLƏRİ (DUAL ROLE TOGGLE) 🌟 -->
-        <div class="dual-role-toggle" style="margin-top: 30px;">
+        <!-- İSTİFADƏÇİ ADI YOXDURSA GİRİŞ QUTUSU -->
+        <div id="identitySetupBox" class="dash-card hidden" style="margin-top: 20px; text-align: center;">
+            <h4 style="color: #38bdf8; margin-bottom: 8px;">Connect Your Academy Handle</h4>
+            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 15px;">Enter your Shop username (or create a new one) to sync your SP points across the platform.</p>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <input type="text" id="dashHandleInput" placeholder="Enter your username..." style="padding: 10px 15px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; min-width: 240px;">
+                <button id="saveDashHandleBtn" class="submit-profile-btn" style="margin: 0; padding: 10px 22px;">Connect Handle</button>
+            </div>
+        </div>
+
+        <!-- İKİLİ ROL KEÇİDİ -->
+        <div class="dual-role-toggle" style="margin-top: 25px;">
             <button type="button" class="role-switch-btn active" id="tabStudent">
                 <i class="fas fa-graduation-cap"></i> Student Workspace
             </button>
@@ -41,64 +62,348 @@
             </button>
         </div>
 
-        <!-- 1. TƏLƏBƏ SAHƏSİ (İçini təsvir etdikcə dolduracağıq) -->
+        <!-- 1. STUDENT WORKSPACE -->
         <div id="studentSection" class="role-area">
-            <div class="role-placeholder-box" style="padding: 60px 20px;">
-                <i class="fas fa-book-reader" style="font-size: 50px;"></i>
-                <h4>Student Learning Space</h4>
-                <p>Track your saved educators, study targets, and conversation lounge events.</p>
-                <span class="stage-tag">Student Mode Active</span>
+            <div class="dash-grid-2">
+                <!-- Açılmış Müəllimlər -->
+                <div class="dash-card">
+                    <h4><i class="fab fa-discord" style="color: #5865F2;"></i> Unlocked Discord Classrooms</h4>
+                    <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Educator rooms you unlocked via sponsor ads appear here for instant access.</p>
+                    <div id="unlockedMentorsList" style="display: flex; flex-direction: column; gap: 10px;">
+                        <span style="color: #64748b; font-size: 13px;">No educators unlocked yet. Visit Find Educators!</span>
+                    </div>
+                </div>
+
+                <!-- Akademiya İcma & Resurslar -->
+                <div class="dash-card">
+                    <h4><i class="fas fa-compass" style="color: #10b981;"></i> Quick Academy Actions</h4>
+                    <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Practice in live Discord lounges, earn SP points, or unlock materials.</p>
+                    <div class="dash-quick-links">
+                        <a href="tutors.html" class="dash-action-btn"><i class="fas fa-search"></i> Find an Educator</a>
+                        <a href="shop.html" class="dash-action-btn secondary"><i class="fas fa-shopping-bag"></i> Earn SP & Open Shop</a>
+                        <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="dash-action-btn secondary" style="border-color: #5865F2; color: #818cf8 !important;">
+                            <i class="fab fa-discord"></i> Join Live Community Lounge
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- 2. MÜƏLLİM SAHƏSİ (İçini təsvir etdikcə dolduracağıq) -->
+        <!-- 2. EDUCATOR STUDIO -->
         <div id="educatorSection" class="role-area hidden">
-            <div class="role-placeholder-box educator-box" style="padding: 60px 20px;">
-                <i class="fas fa-chalkboard" style="font-size: 50px;"></i>
-                <h4>Educator Teaching Studio</h4>
-                <p>Control your Sultan Academy Discord classroom link, booking availability, and live workshops.</p>
-                <span class="stage-tag educator-tag">Educator Mode Active</span>
+            
+            <!-- Kart Statusunu Yoxla / Redaktə Et -->
+            <div class="dash-card" style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                    <h4 style="margin: 0;"><i class="fas fa-id-card" style="color: #38bdf8;"></i> Already Applied? Manage Your Card</h4>
+                    <span id="eduStatusBadge" class="status-pill">Not Loaded</span>
+                </div>
+                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">Enter your private Email and 4-digit Edit PIN to check approval status or load your card for editing.</p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="email" id="checkEduEmail" placeholder="Your private email..." style="flex: 1; min-width: 180px; padding: 10px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white;">
+                    <input type="password" id="checkEduPin" placeholder="4-digit PIN" maxlength="8" style="width: 130px; padding: 10px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white;">
+                    <button type="button" id="loadMyCardBtn" class="btn-secondary-sm" style="background: #38bdf8; color: #0f172a; border: none;">Load My Card</button>
+                </div>
+            </div>
+
+            <!-- Discord Məlumat Banneri -->
+            <div class="discord-advantage-banner">
+                <i class="fab fa-discord"></i>
+                <div>
+                    <strong>Sultan Academy Discord Exclusivity</strong>
+                    <p>💡 Opening your personal classroom inside Sultan Academy Discord boosts student trust & traffic 3x!</p>
+                </div>
+            </div>
+
+            <!-- Müəllim Qeydiyyat / Redaktə Forması -->
+            <div class="dash-card">
+                <h4 id="eduFormTitle" style="margin-bottom: 15px;"><i class="fas fa-plus-circle" style="color: #10b981;"></i> Create New Educator Card</h4>
+                <form id="tutorApplicationForm" class="educator-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name / Display Name *</label>
+                            <input type="text" id="tutorName" required placeholder="e.g. Leyla Mammadova">
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Email (Private — Admin Only) *</label>
+                            <input type="email" id="tutorEmail" required placeholder="your.email@gmail.com">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Secret Edit PIN (4–6 digits to edit later) *</label>
+                            <input type="text" id="tutorPin" required placeholder="e.g. 4829" maxlength="8">
+                        </div>
+                        <div class="form-group">
+                            <label>Hourly Price / Fee *</label>
+                            <input type="text" id="tutorPrice" required placeholder="e.g. $15/hr or Free Trial">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Profile Photo (Direct Image URL) *</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="url" id="tutorAvatar" required placeholder="https://i.postimg.cc/.../photo.png" style="flex: 1;">
+                            <a href="https://postimages.org/" target="_blank" rel="noopener" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; padding: 10px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload Photo
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Language Taught *</label>
+                            <input type="text" id="tutorLanguage" required placeholder="e.g. German">
+                        </div>
+                        <div class="form-group">
+                            <label>Subject / Specialized Field *</label>
+                            <input type="text" id="tutorSubject" required placeholder="e.g. C1 TELC / Grammar">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Your Sultan Academy Discord Channel Link *</label>
+                        <input type="url" id="tutorDiscordChannel" required placeholder="https://discord.com/channels/1506203530023931977/...">
+                        <small style="color: #94a3b8; font-size: 11px;">Ask an admin in Sultan Academy Discord to create your classroom channel, then paste its link here.</small>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="tutorOffersLive">
+                        <label for="tutorOffersLive">I offer free/paid live sessions or workshops on Sultan Academy Discord.</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cal.com Booking Link (Optional)</label>
+                        <input type="url" id="tutorCalLink" placeholder="https://cal.com/your-name/session">
+                        <a href="https://youtu.be/80enIW1-26w?si=gdKzJYIsT5YGtfOl" target="_blank" class="cal-video-link" rel="noopener">
+                            <i class="fab fa-youtube"></i> How to set up Cal.com? (Video Guide)
+                        </a>
+                    </div>
+
+                    <button type="submit" class="submit-profile-btn" id="eduSubmitBtn">
+                        <i class="fas fa-check-circle"></i> Submit Educator Card for Approval
+                    </button>
+                </form>
             </div>
         </div>
 
     </main>
 
-    <!-- METALLİK YAŞIL DƏSTƏK DÜYMƏSİ -->
+    <footer class="footer">
+        <p>© 2026 Sultan Alizada. All rights reserved.</p>
+    </footer>
+
     <a href="YOUR_WISE_LINK_HERE" class="metallic-support-btn" target="_blank" rel="noopener">
         <i class="fas fa-hand-holding-heart"></i> Support Our Work
     </a>
 
-    <script>
-        // ROL KEÇİDİ (STUDENT <-> EDUCATOR)
+    <script src="js/navbar.js"></script>
+    <script src="js/cookie-consent.js"></script>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
+        const DISCORD_WEBHOOK_URL = "BURAYA_OZ_DISCORD_WEBHOOK_LINKINI_YAPISDIR";
+
+        // 1. TAB KEÇİDLƏRİ
         const tabStudent = document.getElementById("tabStudent");
         const tabEducator = document.getElementById("tabEducator");
         const studentSec = document.getElementById("studentSection");
         const educatorSec = document.getElementById("educatorSection");
 
-        tabStudent.addEventListener("click", () => {
-            tabStudent.classList.add("active");
-            tabEducator.classList.remove("active");
-            studentSec.classList.remove("hidden");
-            educatorSec.classList.add("hidden");
-        });
+        function setMode(mode) {
+            localStorage.setItem("sultan_role", mode);
+            if (mode === "educator") {
+                tabEducator.classList.add("active");
+                tabStudent.classList.remove("active");
+                educatorSec.classList.remove("hidden");
+                studentSec.classList.add("hidden");
+            } else {
+                tabStudent.classList.add("active");
+                tabEducator.classList.remove("active");
+                studentSec.classList.remove("hidden");
+                educatorSec.classList.add("hidden");
+            }
+        }
+        tabStudent.addEventListener("click", () => setMode("student"));
+        tabEducator.addEventListener("click", () => setMode("educator"));
 
-        tabEducator.addEventListener("click", () => {
-            tabEducator.classList.add("active");
-            tabStudent.classList.remove("active");
-            educatorSec.classList.remove("hidden");
-            studentSec.classList.add("hidden");
-        });
+        const urlParams = new URLSearchParams(window.location.search);
+        setMode(urlParams.get("mode") || localStorage.getItem("sultan_role") || "student");
 
-        // Çıxış düyməsi
-        document.getElementById("logoutBtn").addEventListener("click", () => {
+        // 2. İSTİFADƏÇİ & SP BALANSI SİNXRONİZASİYASI
+        let activeUser = localStorage.getItem("sultan_user");
+        const greeting = document.getElementById("dashUserGreeting");
+        const spDisplay = document.getElementById("dashUserSP");
+        const identityBox = document.getElementById("identitySetupBox");
+
+        async function loadUserState() {
+            if (!activeUser) {
+                greeting.innerText = "Guest Workspace";
+                identityBox.classList.remove("hidden");
+                spDisplay.innerText = "0";
+                return;
+            }
+            identityBox.classList.add("hidden");
+            greeting.innerText = `Welcome, ${activeUser}!`;
+
+            const { data } = await supabase.from("users").select("sp").eq("username", activeUser).single();
+            if (data) spDisplay.innerText = data.sp;
+        }
+        loadUserState();
+
+        document.getElementById("switchUserBtn").addEventListener("click", () => {
             localStorage.removeItem("sultan_user");
-            window.location.href = "index.html";
+            activeUser = null;
+            loadUserState();
+        });
+
+        document.getElementById("saveDashHandleBtn").addEventListener("click", async () => {
+            const username = document.getElementById("dashHandleInput").value.trim().toLowerCase();
+            if (!username) return alert("Please enter a valid username.");
+
+            const { data } = await supabase.from("users").select("sp").eq("username", username).single();
+            if (!data) {
+                await supabase.from("users").insert([{ username, role: "learner", sp: 0 }]);
+            }
+            activeUser = username;
+            localStorage.setItem("sultan_user", username);
+            loadUserState();
+        });
+
+        // 3. AÇILMIŞ MÜƏLLİMLƏR SİYAHISI
+        function renderUnlockedMentors() {
+            const list = document.getElementById("unlockedMentorsList");
+            const unlocked = JSON.parse(localStorage.getItem("sultan_unlocked_tutors") || "[]");
+            if (unlocked.length === 0) return;
+
+            list.innerHTML = unlocked.map(item => `
+                <div class="unlocked-item">
+                    <div>
+                        <strong style="color: #f8fafc; font-size: 14px;">${item.name}</strong>
+                        <span style="display: block; color: #94a3b8; font-size: 11px;">${item.language} • ${item.subject}</span>
+                    </div>
+                    <a href="${item.link}" target="_blank" rel="noopener" class="btn-secondary-sm" style="background: #5865F2; color: white; border: none;">
+                        <i class="fab fa-discord"></i> Open Room
+                    </a>
+                </div>
+            `).join("");
+        }
+        renderUnlockedMentors();
+
+        // 4. EDUCATOR KART STATUSU & REDAKTƏ YÜKLƏMƏ
+        let isEditingMode = false;
+
+        document.getElementById("loadMyCardBtn").addEventListener("click", async () => {
+            const email = document.getElementById("checkEduEmail").value.trim();
+            const pin = document.getElementById("checkEduPin").value.trim();
+            if (!email || !pin) return alert("Enter both your email and 4-digit PIN.");
+
+            const { data, error } = await supabase.rpc("get_my_tutor_profile", { p_email: email, p_pin: pin });
+            if (error || !data || data.length === 0) {
+                return alert("No matching educator profile found. Check your email and PIN.");
+            }
+
+            const t = data[0];
+            isEditingMode = true;
+            document.getElementById("eduFormTitle").innerHTML = '<i class="fas fa-edit" style="color: #f59e0b;"></i> Edit Your Educator Card (Re-approval Required)';
+            document.getElementById("eduSubmitBtn").innerHTML = '<i class="fas fa-save"></i> Save Changes (Submit as Pending)';
+
+            const badge = document.getElementById("eduStatusBadge");
+            badge.innerText = t.status.toUpperCase();
+            badge.style.background = t.status === "approved" ? "rgba(16,185,129,0.2)" : "rgba(245,158,11,0.2)";
+            badge.style.color = t.status === "approved" ? "#10b981" : "#f59e0b";
+
+            document.getElementById("tutorName").value = t.name;
+            document.getElementById("tutorEmail").value = email;
+            document.getElementById("tutorPin").value = pin;
+            document.getElementById("tutorPrice").value = t.price;
+            document.getElementById("tutorAvatar").value = t.avatar_url;
+            document.getElementById("tutorLanguage").value = t.language;
+            document.getElementById("tutorSubject").value = t.subject;
+            document.getElementById("tutorDiscordChannel").value = t.discord_channel;
+            document.getElementById("tutorOffersLive").checked = t.offers_live_sessions;
+            document.getElementById("tutorCalLink").value = t.cal_link || "";
+        });
+
+        // 5. EDUCATOR KART GÖNDƏRMƏ / REDAKTƏ
+        async function notifyDiscord(t) {
+            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes("BURAYA")) return;
+            await fetch(DISCORD_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: "Sultan Academy Bot",
+                    embeds: [{
+                        title: isEditingMode ? "✏️ Educator Card Updated!" : "🎓 New Educator Application!",
+                        color: 3711992,
+                        fields: [
+                            { name: "👤 Name", value: t.name, inline: true },
+                            { name: "📧 Email", value: t.email, inline: true },
+                            { name: "🌍 Language", value: t.language, inline: true },
+                            { name: "📚 Subject", value: t.subject, inline: true },
+                            { name: "💰 Price", value: t.price, inline: true },
+                            { name: "💬 Discord", value: t.discord_channel, inline: false }
+                        ]
+                    }]
+                })
+            }).catch(() => {});
+        }
+
+        const tutorForm = document.getElementById("tutorApplicationForm");
+        tutorForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("eduSubmitBtn");
+            const oldHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            const payload = {
+                name: document.getElementById("tutorName").value.trim(),
+                email: document.getElementById("tutorEmail").value.trim(),
+                edit_pin: document.getElementById("tutorPin").value.trim(),
+                price: document.getElementById("tutorPrice").value.trim(),
+                avatar_url: document.getElementById("tutorAvatar").value.trim(),
+                language: document.getElementById("tutorLanguage").value.trim(),
+                subject: document.getElementById("tutorSubject").value.trim(),
+                discord_channel: document.getElementById("tutorDiscordChannel").value.trim(),
+                offers_live_sessions: document.getElementById("tutorOffersLive").checked,
+                cal_link: document.getElementById("tutorCalLink").value.trim(),
+                status: "pending"
+            };
+
+            let ok = false;
+            if (isEditingMode) {
+                const { data, error } = await supabase.rpc("update_my_tutor_profile", {
+                    p_email: payload.email,
+                    p_pin: payload.edit_pin,
+                    p_name: payload.name,
+                    p_avatar: payload.avatar_url,
+                    p_language: payload.language,
+                    p_subject: payload.subject,
+                    p_price: payload.price,
+                    p_discord: payload.discord_channel,
+                    p_live: payload.offers_live_sessions,
+                    p_cal: payload.cal_link
+                });
+                ok = !error && data === true;
+            } else {
+                const { error } = await supabase.from("tutors").insert([payload]);
+                ok = !error;
+            }
+
+            if (ok) {
+                await notifyDiscord(payload);
+                alert("🎉 Submitted! Your Educator card is now pending Admin approval.");
+                tutorForm.reset();
+                isEditingMode = false;
+            } else {
+                alert("Error saving card. Please verify your email/PIN and connection.");
+            }
+
+            btn.innerHTML = oldHTML;
+            btn.disabled = false;
         });
     </script>
-
-
-<script src="js/cookie-consent.js"></script>
-
-    
 </body>
 </html>
