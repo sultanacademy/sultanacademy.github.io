@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Workspace | Sultan Academy</title>
+    <title>My Workspace | Sultan Academy</title>
     <link rel="icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="personal.css">
@@ -13,106 +13,118 @@
 
     <header id="main-header"></header>
 
-    <main class="section" style="padding-top: 130px; max-width: 950px; text-align: left;">
-        <div class="dash-user-bar" style="background: #1e293b; padding: 20px 25px; border-radius: 20px; border: 1px solid #334155; flex-wrap: wrap; gap: 15px;">
+    <main class="section" style="padding-top: 130px; max-width: 880px; text-align: left;">
+        
+        <!-- TƏMİZ BAŞLIQ PANELİ -->
+        <div class="dash-user-bar" style="background: #1e293b; padding: 18px 24px; border-radius: 20px; border: 1px solid #334155; flex-wrap: wrap; gap: 12px;">
             <div class="dash-user-identity">
-                <i class="fas fa-user-circle" style="font-size: 44px; color: #38bdf8;"></i>
+                <i class="fas fa-user-circle" style="font-size: 40px; color: #38bdf8;"></i>
                 <div>
-                    <h3 id="dashUserGreeting" style="color: white; margin: 0; font-size: 19px;">Workspace</h3>
-                    <span class="user-subtag" style="color: #94a3b8;">All-in-One Dual Role Account</span>
+                    <h3 id="dashUserGreeting" style="color: white; margin: 0; font-size: 18px;">Workspace</h3>
+                    <span id="dashRoleSubtitle" class="user-subtag" style="color: #94a3b8;">Focused Learning Space</span>
                 </div>
             </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
                 <div class="dash-balance-chip"><i class="fas fa-coins"></i> <span id="dashUserSP">0</span> SP</div>
-                <button id="switchUserBtn" class="btn-secondary-sm" type="button"><i class="fas fa-exchange-alt"></i> Switch User</button>
+                <button id="switchUserBtn" class="btn-secondary-sm" type="button"><i class="fas fa-exchange-alt"></i> Switch</button>
             </div>
         </div>
 
-        <div id="identitySetupBox" class="dash-card hidden" style="margin-top: 20px; text-align: center;">
-            <h4 style="color: #38bdf8; margin-bottom: 8px;">Connect Your Academy Handle</h4>
+        <!-- YALNIZ HANDLE YOXDURSA ÇIXAN SADƏ XANA -->
+        <div id="identitySetupBox" class="dash-card hidden" style="margin-top: 18px; text-align: center;">
+            <h4 style="color: #38bdf8; margin-bottom: 8px;">Enter Your Username to Sync SP Points</h4>
             <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                <input type="text" id="dashHandleInput" maxlength="20" placeholder="Username (max 20 chars)..." style="padding: 10px 15px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; min-width: 240px;">
-                <button id="saveDashHandleBtn" class="submit-profile-btn" style="margin: 0; padding: 10px 22px;">Connect Handle</button>
+                <input type="text" id="dashHandleInput" maxlength="20" placeholder="Username (max 20 chars)..." style="padding: 10px 15px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; min-width: 220px;">
+                <button id="saveDashHandleBtn" class="submit-profile-btn" style="margin: 0; padding: 10px 20px;">Save</button>
             </div>
         </div>
 
-        <div class="dual-role-toggle" style="margin-top: 25px;">
-            <button type="button" class="role-switch-btn active" id="tabStudent"><i class="fas fa-graduation-cap"></i> Student Mode</button>
-            <button type="button" class="role-switch-btn" id="tabEducator"><i class="fas fa-chalkboard-teacher"></i> Educator Mode</button>
+        <!-- İKİLİ KEÇİD (YALNIZ EDUCATOR REJİMİ AÇILANDA GÖRÜNÜR!) -->
+        <div id="dualToggleBar" class="dual-role-toggle hidden" style="margin-top: 22px;">
+            <button type="button" class="role-switch-btn active" id="tabStudent"><i class="fas fa-graduation-cap"></i> Student Space</button>
+            <button type="button" class="role-switch-btn" id="tabEducator"><i class="fas fa-chalkboard-teacher"></i> Educator Studio</button>
         </div>
 
-        <div id="studentSection" class="role-area">
+        <!-- 1. TƏLƏBƏ SAHƏSİ (SƏLİQƏLİ VƏ YÜNGÜL) -->
+        <div id="studentSection" class="role-area" style="margin-top: 22px;">
             <div class="dash-grid-2">
+                <!-- Sol: Açılmış Otaqlar -->
                 <div class="dash-card">
-                    <h4><i class="fab fa-discord" style="color: #5865F2;"></i> Unlocked Discord Classrooms</h4>
-                    <div id="unlockedMentorsList" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
-                        <span style="color: #64748b; font-size: 13px;">No educators unlocked yet.</span>
+                    <h4><i class="fab fa-discord" style="color: #5865F2;"></i> Your Unlocked Classrooms</h4>
+                    <div id="unlockedMentorsList" style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                        <span style="color: #64748b; font-size: 13px;">You haven't unlocked any rooms yet.</span>
                     </div>
                 </div>
+
+                <!-- Sağ: Parlaq Quick Actions -->
                 <div class="dash-card">
-                    <h4><i class="fas fa-compass" style="color: #10b981;"></i> Quick Academy Actions</h4>
-                    <div class="dash-quick-links" style="margin-top: 12px;">
-                        <a href="tutors.html" class="dash-action-btn"><i class="fas fa-search"></i> Find Educators & Partners</a>
-                        <a href="shop.html" class="dash-action-btn secondary"><i class="fas fa-shopping-bag"></i> Earn SP & Shop</a>
-                        <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="dash-action-btn secondary" style="border-color: #5865F2; color: #818cf8 !important;"><i class="fab fa-discord"></i> Live Community Lounge</a>
+                    <h4><i class="fas fa-bolt" style="color: #f59e0b;"></i> Quick Actions</h4>
+                    <div class="dash-quick-links" style="margin-top: 14px;">
+                        <button type="button" id="exploreNewSkillBtn" class="glow-skill-btn">
+                            <i class="fas fa-sparkles"></i> ⚡ Explore Another Skill
+                        </button>
+                        <a href="shop.html" class="dash-action-btn"><i class="fas fa-book"></i> Open Books & SP Shop</a>
+                        <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="dash-action-btn secondary" style="border-color: #5865F2; color: #818cf8 !important;">
+                            <i class="fab fa-discord"></i> Live Community Lounge
+                        </a>
                     </div>
                 </div>
+            </div>
+
+            <!-- Tələbəyə Müəllim Olmağı Xatırladan Tək Təmiz Düymə -->
+            <div id="unlockEducatorPrompt" class="unlock-educator-banner">
+                <div>
+                    <strong style="color: #ffffff; font-size: 15px;">Have a skill you can teach? (Languages, Coding, Music...)</strong>
+                    <p style="color: #94a3b8; font-size: 12px; margin-top: 2px;">Unlock Educator Mode inside this same account to create your card & earn directly.</p>
+                </div>
+                <button type="button" id="unlockEducatorBtn" class="glow-educator-btn">
+                    <i class="fas fa-chalkboard-teacher"></i> Unlock Educator Mode
+                </button>
             </div>
         </div>
 
-        <div id="educatorSection" class="role-area hidden">
-            <div class="dash-card" style="margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <h4><i class="fas fa-id-card" style="color: #38bdf8;"></i> Already Applied? Manage Card</h4>
-                    <span id="eduStatusBadge" class="status-pill">Not Loaded</span>
-                </div>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <input type="email" id="checkEduEmail" maxlength="50" placeholder="Private email..." style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white;">
-                    <input type="password" id="checkEduPin" maxlength="6" placeholder="PIN" style="width: 110px; padding: 10px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white;">
-                    <button type="button" id="loadMyCardBtn" class="btn-secondary-sm" style="background: #38bdf8; color: #0f172a; border: none;">Load Card</button>
-                </div>
+        <!-- 2. MÜƏLLİM STUDİYASI (2 TƏMİZ SUB-TAB İLƏ) -->
+        <div id="educatorSection" class="role-area hidden" style="margin-top: 20px;">
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;">
+                <button type="button" class="sub-tab-btn active" id="subTabCard"><i class="fas fa-id-card"></i> Educator Card</button>
+                <button type="button" class="sub-tab-btn" id="subTabClub"><i class="fas fa-broadcast-tower"></i> Host Live Club</button>
+                <button type="button" class="sub-tab-btn" id="subTabManage"><i class="fas fa-edit"></i> Edit Existing Card</button>
             </div>
 
-            <div class="discord-advantage-banner">
-                <i class="fab fa-discord"></i>
-                <div>
-                    <strong>Sultan Academy Discord Exclusivity</strong>
-                    <p>💡 Opening your personal classroom inside Sultan Academy Discord boosts student trust & traffic 3x!</p>
+            <!-- SUB-TAB A: KART YARAT / REDAKTƏ ET -->
+            <div id="panelCard" class="dash-card">
+                <div class="discord-advantage-banner" style="margin-bottom: 20px;">
+                    <i class="fab fa-discord"></i>
+                    <div>
+                        <strong>Sultan Academy Discord Exclusivity</strong>
+                        <p>💡 Opening your personal classroom inside Sultan Academy Discord boosts student trust & traffic 3x!</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="dash-card" style="margin-bottom: 25px;">
-                <h4 id="eduFormTitle" style="margin-bottom: 15px;"><i class="fas fa-plus-circle" style="color: #10b981;"></i> Create Educator Card</h4>
+                <h4 id="eduFormTitle" style="margin-bottom: 14px;">Create Your Educator Card</h4>
                 <form id="tutorApplicationForm" class="educator-form">
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Full Name (max 20) *</label>
-                            <input type="text" id="tutorName" maxlength="20" required placeholder="e.g. Leyla Mammadova">
-                        </div>
-                        <div class="form-group">
-                            <label>Private Email (Admin Only) *</label>
-                            <input type="email" id="tutorEmail" maxlength="50" required placeholder="your@gmail.com">
-                        </div>
+                        <div class="form-group"><label>Full Name (max 20) *</label><input type="text" id="tutorName" maxlength="20" required></div>
+                        <div class="form-group"><label>Private Email (Admin Only) *</label><input type="email" id="tutorEmail" maxlength="50" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Secret Edit PIN (4-6 digits) *</label><input type="text" id="tutorPin" maxlength="6" required placeholder="e.g. 4829"></div>
+                        <div class="form-group"><label>Hourly Price (max 15) *</label><input type="text" id="tutorPrice" maxlength="15" required placeholder="e.g. $15/hr"></div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Secret Edit PIN (4-6 digits) *</label>
-                            <input type="text" id="tutorPin" maxlength="6" required placeholder="e.g. 4829">
+                            <label>Category *</label>
+                            <select id="tutorCategory" style="background: #0f172a; border: 1px solid #334155; padding: 10px; border-radius: 10px; color: white; font-size: 13px;">
+                                <option value="Languages">World Languages</option>
+                                <option value="Tech & Coding">Tech & Coding</option>
+                                <option value="Music & Arts">Music & Arts</option>
+                                <option value="Coaching & Skills">Coaching & Exam Prep</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label>Hourly Price (max 15) *</label>
-                            <input type="text" id="tutorPrice" maxlength="15" required placeholder="e.g. $15/hr">
-                        </div>
+                        <div class="form-group"><label>Language / Skill (max 25) *</label><input type="text" id="tutorLanguage" maxlength="25" required placeholder="e.g. German / Guitar"></div>
                     </div>
-                    <div class="form-group">
-                        <label>Main Category *</label>
-                        <select id="tutorCategory" style="background: #1e293b; border: 1px solid #334155; padding: 10px; border-radius: 10px; color: white; font-size: 13px;">
-                            <option value="Languages">World Languages</option>
-                            <option value="Tech & Coding">Tech & Coding</option>
-                            <option value="Music & Arts">Music & Arts</option>
-                            <option value="Coaching & Skills">Coaching & Exam Prep</option>
-                        </select>
-                    </div>
+                    <div class="form-group"><label>Headline / Subject (max 35) *</label><input type="text" id="tutorSubject" maxlength="35" required placeholder="e.g. C1 TELC & Speaking"></div>
                     <div class="form-group">
                         <label>Profile Photo (Direct URL) *</label>
                         <div style="display: flex; gap: 8px;">
@@ -120,23 +132,9 @@
                             <a href="https://postimages.org/" target="_blank" rel="noopener" style="background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid #38bdf8; padding: 10px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; white-space: nowrap;">Upload Photo</a>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Language / Skill (max 25) *</label>
-                            <input type="text" id="tutorLanguage" maxlength="25" required placeholder="e.g. German">
-                        </div>
-                        <div class="form-group">
-                            <label>Subject Headline (max 35) *</label>
-                            <input type="text" id="tutorSubject" maxlength="35" required placeholder="e.g. C1 TELC Prep">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Sultan Academy Discord Room Link *</label>
-                        <input type="url" id="tutorDiscordChannel" required placeholder="https://discord.com/channels/1506203530023931977/...">
-                    </div>
+                    <div class="form-group"><label>Sultan Academy Discord Room Link *</label><input type="url" id="tutorDiscordChannel" required placeholder="https://discord.com/channels/1506203530023931977/..."></div>
                     <div class="form-group checkbox-group">
-                        <input type="checkbox" id="tutorOffersLive">
-                        <label for="tutorOffersLive">I offer live sessions on Sultan Academy Discord.</label>
+                        <input type="checkbox" id="tutorOffersLive"><label for="tutorOffersLive">I offer live sessions on Sultan Academy Discord.</label>
                     </div>
                     <div class="form-group">
                         <label>Cal.com Link (Optional)</label>
@@ -147,8 +145,9 @@
                 </form>
             </div>
 
-            <div class="dash-card">
-                <h4 style="margin-bottom: 10px;"><i class="fas fa-broadcast-tower" style="color: #818cf8;"></i> Host a Live Club / Workshop</h4>
+            <!-- SUB-TAB B: CANLI KLUB YARAT -->
+            <div id="panelClub" class="dash-card hidden">
+                <h4 style="margin-bottom: 12px;"><i class="fas fa-broadcast-tower" style="color: #818cf8;"></i> Host a Live Club / Workshop</h4>
                 <form id="eventApplicationForm" class="educator-form">
                     <div class="form-row">
                         <div class="form-group"><label>Name (max 20) *</label><input type="text" id="evEducatorName" maxlength="20" required></div>
@@ -157,7 +156,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Category *</label>
-                            <select id="evCategory" style="background: #1e293b; border: 1px solid #334155; padding: 10px; border-radius: 10px; color: white; font-size: 13px;">
+                            <select id="evCategory" style="background: #0f172a; border: 1px solid #334155; padding: 10px; border-radius: 10px; color: white; font-size: 13px;">
                                 <option value="Languages">Languages</option>
                                 <option value="Tech & Coding">Tech & Coding</option>
                                 <option value="Music & Arts">Music & Arts</option>
@@ -172,6 +171,21 @@
                     <button type="submit" id="evSubmitBtn" class="submit-profile-btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">Submit Club</button>
                 </form>
             </div>
+
+            <!-- SUB-TAB C: MÖVCUD KARTI YÜKLƏ VƏ REDAKTƏ ET -->
+            <div id="panelManage" class="dash-card hidden">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h4>Load Your Existing Card</h4>
+                    <span id="eduStatusBadge" class="status-pill">Not Loaded</span>
+                </div>
+                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Enter your private Email and 4-digit PIN to check status and edit your card.</p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="email" id="checkEduEmail" maxlength="50" placeholder="Private email..." style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white;">
+                    <input type="password" id="checkEduPin" maxlength="6" placeholder="PIN" style="width: 110px; padding: 10px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white;">
+                    <button type="button" id="loadMyCardBtn" class="btn-secondary-sm" style="background: #38bdf8; color: #0f172a; border: none;">Load & Edit</button>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -179,7 +193,7 @@
         <p>© 2026 Sultan Alizada • <a href="privacy.html" style="color: #38bdf8;">Privacy & Legal Notice</a></p>
     </footer>
 
-    <a href="https://wise.com/pay/me/sultana1680" class="metallic-support-btn" target="_blank" rel="noopener"><i class="fas fa-hand-holding-heart"></i> Support Our Work</a>
+    <a href="YOUR_WISE_LINK_HERE" class="metallic-support-btn" target="_blank" rel="noopener"><i class="fas fa-hand-holding-heart"></i> Support Our Work</a>
 
     <script src="js/navbar.js"></script>
     <script src="js/cookie-consent.js"></script>
@@ -189,22 +203,56 @@
         const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
         const DISCORD_WEBHOOK_URL = "BURAYA_OZ_DISCORD_WEBHOOK_LINKINI_YAPISDIR";
 
+        const dualToggleBar = document.getElementById("dualToggleBar");
+        const unlockPrompt = document.getElementById("unlockEducatorPrompt");
         const tabStudent = document.getElementById("tabStudent");
         const tabEducator = document.getElementById("tabEducator");
         const studentSec = document.getElementById("studentSection");
         const educatorSec = document.getElementById("educatorSection");
+        const roleSub = document.getElementById("dashRoleSubtitle");
 
         function setMode(mode) {
             localStorage.setItem("sultan_role", mode);
+            const isDual = localStorage.getItem("sultan_dual_unlocked") === "true" || mode === "educator";
+            if (isDual) {
+                localStorage.setItem("sultan_dual_unlocked", "true");
+                dualToggleBar.classList.remove("hidden");
+                unlockPrompt.classList.add("hidden");
+            }
             tabEducator.classList.toggle("active", mode === "educator");
             tabStudent.classList.toggle("active", mode !== "educator");
             educatorSec.classList.toggle("hidden", mode !== "educator");
             studentSec.classList.toggle("hidden", mode === "educator");
+            roleSub.innerText = mode === "educator" ? "Educator Studio Active" : "Student Learning Space";
         }
+
+        document.getElementById("unlockEducatorBtn").addEventListener("click", () => setMode("educator"));
         tabStudent.addEventListener("click", () => setMode("student"));
         tabEducator.addEventListener("click", () => setMode("educator"));
-        setMode(new URLSearchParams(window.location.search).get("mode") || localStorage.getItem("sultan_role") || "student");
 
+        const urlMode = new URLSearchParams(window.location.search).get("mode");
+        setMode(urlMode || localStorage.getItem("sultan_role") || "student");
+
+        // Sub-tabs
+        const subCard = document.getElementById("subTabCard");
+        const subClub = document.getElementById("subTabClub");
+        const subManage = document.getElementById("subTabManage");
+        const pCard = document.getElementById("panelCard");
+        const pClub = document.getElementById("panelClub");
+        const pManage = document.getElementById("panelManage");
+
+        function openSubTab(which) {
+            [subCard, subClub, subManage].forEach(b => b.classList.remove("active"));
+            [pCard, pClub, pManage].forEach(p => p.classList.add("hidden"));
+            if (which === "card") { subCard.classList.add("active"); pCard.classList.remove("hidden"); }
+            if (which === "club") { subClub.classList.add("active"); pClub.classList.remove("hidden"); }
+            if (which === "manage") { subManage.classList.add("active"); pManage.classList.remove("hidden"); }
+        }
+        subCard.addEventListener("click", () => openSubTab("card"));
+        subClub.addEventListener("click", () => openSubTab("club"));
+        subManage.addEventListener("click", () => openSubTab("manage"));
+
+        // Handle & SP
         let activeUser = localStorage.getItem("sultan_user");
         async function loadUserState() {
             const box = document.getElementById("identitySetupBox");
@@ -250,9 +298,8 @@
             if (error || !data || data.length === 0) return alert("No matching card found.");
             const t = data[0];
             isEditingMode = true;
-            document.getElementById("eduFormTitle").innerText = "Edit Your Educator Card";
-            document.getElementById("eduSubmitBtn").innerText = "Save Changes (Pending)";
-            document.getElementById("eduStatusBadge").innerText = t.status.toUpperCase();
+            document.getElementById("eduFormTitle").innerText = `Editing Card (Current Status: ${t.status.toUpperCase()})`;
+            document.getElementById("eduSubmitBtn").innerText = "Save Changes (Submit as Pending)";
             document.getElementById("tutorName").value = t.name;
             document.getElementById("tutorEmail").value = email;
             document.getElementById("tutorPin").value = pin;
@@ -264,6 +311,7 @@
             document.getElementById("tutorDiscordChannel").value = t.discord_channel;
             document.getElementById("tutorOffersLive").checked = t.offers_live_sessions;
             document.getElementById("tutorCalLink").value = t.cal_link || "";
+            openSubTab("card");
         });
 
         document.getElementById("tutorApplicationForm").addEventListener("submit", async (e) => {
