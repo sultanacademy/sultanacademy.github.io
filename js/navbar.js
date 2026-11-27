@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentSearch = window.location.search;
     const activeUser = localStorage.getItem("sultan_user");
 
-    // Bütün menyu elementlərinin bazası
     const menuItemsDB = {
         home: { label: "Home", href: "index.html", icon: "fas fa-home" },
         dashboard: { label: "Dashboard", href: "dashboard.html", icon: "fas fa-th-large" },
@@ -34,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         contact: { label: "Contact & Feedback", href: "contact.html", icon: "fas fa-envelope" }
     };
 
-const defaultLayout = {
+    const defaultLayout = {
         general: ["home", "dashboard", "become_educator", "find_educators", "leaderboard", "skill_swap", "lang_exchange", "projects", "shop"],
         others: ["testimonials", "contact"]
     };
@@ -93,12 +92,10 @@ const defaultLayout = {
     }
 
     headerContainer.innerHTML = `
-        <!-- MOBİL ÜST ZOLAQ VƏ HAMBURGER -->
         <button id="mobileSidebarToggle" class="mobile-sidebar-btn" type="button" aria-label="Open Menu">
             <i class="fas fa-bars"></i>
         </button>
 
-        <!-- YUXARI SAĞ KÜNC: START + USERNAME + SETTINGS ÇARXI -->
         <div class="top-utility-bar">
             <button id="navStartBtn" class="nav-join-btn" type="button">
                 <i class="fas fa-bolt"></i> <span id="navStartText">${activeUser ? `Start • ${activeUser}` : 'Start'}</span>
@@ -108,7 +105,6 @@ const defaultLayout = {
             </button>
         </div>
 
-        <!-- SOL SIDEBAR (STRIPE TƏRZİ) -->
         <aside id="leftSidebar" class="left-sidebar">
             <div class="sidebar-brand">
                 <a href="index.html">
@@ -137,7 +133,6 @@ const defaultLayout = {
             </div>
         </aside>
 
-        <!-- SETTINGS & DELETE ACCOUNT MODALI -->
         <div id="settingsModal" class="auth-modal-overlay hidden">
             <div class="wizard-card" style="max-width:460px;">
                 <button class="auth-close-btn" id="closeSettingsModal" type="button">&times;</button>
@@ -149,7 +144,7 @@ const defaultLayout = {
                 </div>
 
                 <div style="margin-bottom:16px;">
-                    <label style="font-size:12px; color:#cbd5e1; display:block; margin-bottom:6px;">Preferred Language (Multi-language support coming soon)</label>
+                    <label style="font-size:12px; color:#cbd5e1; display:block; margin-bottom:6px;">Preferred Language (Coming Soon)</label>
                     <select id="prefLangSelect" style="width:100%; padding:10px; border-radius:10px; background:#1e293b; border:1px solid #334155; color:white;">
                         <option value="en">🇬🇧 English (Default)</option>
                         <option value="de">🇩🇪 Deutsch (Coming Soon)</option>
@@ -171,8 +166,8 @@ const defaultLayout = {
                         <i class="fas fa-trash-alt"></i> Delete My Account
                     </button>
                     <form id="deleteAccountForm" class="hidden" style="margin-top:12px; display:flex; flex-direction:column; gap:10px;">
-                        <label style="font-size:12px; color:#fca5a5;">Required Feedback: Why are you deleting your account? *</label>
-                        <textarea id="deleteFeedbackInput" rows="2" maxlength="180" required placeholder="Your honest feedback helps us improve (required)..." style="background:#1e293b; border:1px solid #ef4444; color:white; padding:10px; border-radius:10px; font-size:12px;"></textarea>
+                        <label style="font-size:12px; color:#fca5a5;">Required Feedback: Why are you leaving? *</label>
+                        <textarea id="deleteFeedbackInput" rows="2" maxlength="180" required placeholder="Your honest feedback is required..." style="background:#1e293b; border:1px solid #ef4444; color:white; padding:10px; border-radius:10px; font-size:12px;"></textarea>
                         <button type="submit" id="confirmDeleteBtn" style="background:#ef4444; color:white; border:none; padding:10px; border-radius:10px; font-weight:700; font-size:12px; cursor:pointer;">
                             Permanently Delete Account
                         </button>
@@ -182,7 +177,6 @@ const defaultLayout = {
         </div>
     `;
 
-    // Mobil Sidebar Aç/Bağla
     const leftSidebar = document.getElementById("leftSidebar");
     const mobileBtn = document.getElementById("mobileSidebarToggle");
     const closeMobileBtn = document.getElementById("closeMobileSidebar");
@@ -190,7 +184,6 @@ const defaultLayout = {
     if (mobileBtn) mobileBtn.addEventListener("click", () => leftSidebar.classList.add("open"));
     if (closeMobileBtn) closeMobileBtn.addEventListener("click", () => leftSidebar.classList.remove("open"));
 
-    // Projects Accordion Dropdown
     document.querySelectorAll(".sidebar-projects-toggle").forEach(btn => {
         btn.addEventListener("click", () => {
             const sub = btn.closest(".sidebar-item").querySelector(".sidebar-submenu");
@@ -199,59 +192,38 @@ const defaultLayout = {
         });
     });
 
-    // DRAG & DROP SÜRÜŞDÜRÜB YER DƏYİŞMƏ (General <-> Others arası da keçir!)
     let draggedItem = null;
     const lists = document.querySelectorAll(".sidebar-list");
 
-    function bindDragEvents() {
-        document.querySelectorAll(".sidebar-item").forEach(item => {
-            item.addEventListener("dragstart", (e) => {
-                draggedItem = item;
-                setTimeout(() => item.classList.add("dragging"), 0);
-            });
-            item.addEventListener("dragend", () => {
-                item.classList.remove("dragging");
-                draggedItem = null;
-                saveCustomOrder();
-            });
+    document.querySelectorAll(".sidebar-item").forEach(item => {
+        item.addEventListener("dragstart", () => {
+            draggedItem = item;
+            setTimeout(() => item.classList.add("dragging"), 0);
         });
-
-        lists.forEach(list => {
-            list.addEventListener("dragover", (e) => {
-                e.preventDefault();
-                if (!draggedItem) return;
-                const afterElement = getDragAfterElement(list, e.clientY);
-                if (afterElement == null) {
-                    list.appendChild(draggedItem);
-                } else {
-                    list.insertBefore(draggedItem, afterElement);
-                }
-            });
+        item.addEventListener("dragend", () => {
+            item.classList.remove("dragging");
+            draggedItem = null;
+            const generalIds = [...document.querySelectorAll("#sidebarGeneral .sidebar-item")].map(el => el.dataset.id);
+            const othersIds = [...document.querySelectorAll("#sidebarOthers .sidebar-item")].map(el => el.dataset.id);
+            localStorage.setItem("sultan_sidebar_layout", JSON.stringify({ general: generalIds, others: othersIds }));
         });
-    }
+    });
 
-    function getDragAfterElement(container, y) {
-        const draggableElements = [...container.querySelectorAll(".sidebar-item:not(.dragging)")];
-        return draggableElements.reduce((closest, child) => {
-            const box = child.getBoundingClientRect();
-            const offset = y - box.top - box.height / 2;
-            if (offset < 0 && offset > closest.offset) {
-                return { offset: offset, element: child };
-            } else {
-                return closest;
-            }
-        }, { offset: Number.NEGATIVE_INFINITY }).element;
-    }
+    lists.forEach(list => {
+        list.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            if (!draggedItem) return;
+            const draggableElements = [...list.querySelectorAll(".sidebar-item:not(.dragging)")];
+            const afterElement = draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = e.clientY - box.top - box.height / 2;
+                return (offset < 0 && offset > closest.offset) ? { offset, element: child } : closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+            if (afterElement == null) list.appendChild(draggedItem);
+            else list.insertBefore(draggedItem, afterElement);
+        });
+    });
 
-    function saveCustomOrder() {
-        const generalIds = [...document.querySelectorAll("#sidebarGeneral .sidebar-item")].map(el => el.dataset.id);
-        const othersIds = [...document.querySelectorAll("#sidebarOthers .sidebar-item")].map(el => el.dataset.id);
-        localStorage.setItem("sultan_sidebar_layout", JSON.stringify({ general: generalIds, others: othersIds }));
-    }
-
-    bindDragEvents();
-
-    // Settings Modal
     const settingsModal = document.getElementById("settingsModal");
     document.getElementById("openSettingsBtn").addEventListener("click", () => settingsModal.classList.remove("hidden"));
     document.getElementById("closeSettingsModal").addEventListener("click", () => settingsModal.classList.add("hidden"));
