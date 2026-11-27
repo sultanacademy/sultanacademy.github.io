@@ -1939,3 +1939,63 @@ body.modal-open {
         cursor: pointer;
     }
 }
+
+
+/* ==========================================
+   TOP-RIGHT UTILITY BUTTONS (BÖYÜK) & SUPPORT (KİÇİK)
+   ========================================== */
+.top-utility-bar {
+    gap: 12px !important;
+}
+
+.top-shop-btn {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: #ffffff !important;
+    padding: 11px 24px !important;
+    border-radius: 28px !important;
+    font-weight: 700 !important;
+    font-size: 15px !important;
+    box-shadow: 0 5px 18px rgba(16, 185, 129, 0.4) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: all 0.25s ease !important;
+}
+.top-shop-btn:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6) !important; }
+
+.top-start-btn {
+    background: linear-gradient(135deg, #0284c7, #38bdf8) !important;
+    color: #0f172a !important;
+    border: none !important;
+    padding: 11px 24px !important;
+    border-radius: 28px !important;
+    font-weight: 700 !important;
+    font-size: 15px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.45) !important;
+    cursor: pointer !important;
+    transition: all 0.25s ease !important;
+}
+.top-start-btn:hover { transform: translateY(-2px) scale(1.04); color: #ffffff !important; }
+
+.settings-gear-btn {
+    width: 45px !important;
+    height: 45px !important;
+    font-size: 19px !important;
+}
+
+/* SUPPORT DÜYMƏSİNİ BİRAZ KİÇİLTDİK */
+.metallic-support-btn {
+    bottom: 20px !important;
+    right: 20px !important;
+    padding: 9px 17px !important;
+    font-size: 12.5px !important;
+    gap: 7px !important;
+}
+
+@media (max-width: 768px) {
+    .top-shop-btn, .top-start-btn { padding: 9px 15px !important; font-size: 13px !important; }
+    .settings-gear-btn { width: 38px !important; height: 38px !important; font-size: 16px !important; }
+}
