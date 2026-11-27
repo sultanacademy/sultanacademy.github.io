@@ -26,7 +26,7 @@
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <div class="dash-balance-chip"><i class="fas fa-coins"></i> <span id="dashUserSP">0</span> SP</div>
-                <button id="switchUserBtn" class="btn-secondary-sm" type="button"><i class="fas fa-exchange-alt"></i> Switch</button>
+                <button id="switchUserBtn" class="btn-secondary-sm hidden" type="button" style="color: #94a3b8;"><i class="fas fa-sign-out-alt"></i> Log out</button>
             </div>
         </div>
 
@@ -252,24 +252,41 @@
         subClub.addEventListener("click", () => openSubTab("club"));
         subManage.addEventListener("click", () => openSubTab("manage"));
 
-        // Handle & SP
-        let activeUser = localStorage.getItem("sultan_user");
+       let activeUser = localStorage.getItem("sultan_user");
+        const switchBtn = document.getElementById("switchUserBtn");
+
         async function loadUserState() {
             const box = document.getElementById("identitySetupBox");
+            const navTxt = document.getElementById("navStartText");
+
             if (!activeUser) {
                 document.getElementById("dashUserGreeting").innerText = "Guest Workspace";
                 box.classList.remove("hidden");
+                if (switchBtn) switchBtn.classList.add("hidden");
+                if (navTxt) navTxt.innerText = "Start";
                 document.getElementById("dashUserSP").innerText = "0";
                 return;
             }
             box.classList.add("hidden");
+            if (switchBtn) switchBtn.classList.remove("hidden");
+            if (navTxt) navTxt.innerText = `Start • ${activeUser}`;
             document.getElementById("dashUserGreeting").innerText = `Welcome, ${activeUser}!`;
+
             const { data } = await supabase.from("users").select("sp").eq("username", activeUser).single();
             if (data) document.getElementById("dashUserSP").innerText = data.sp;
         }
         loadUserState();
 
-        document.getElementById("switchUserBtn").addEventListener("click", () => { localStorage.removeItem("sultan_user"); activeUser = null; loadUserState(); });
+        if (switchBtn) {
+            switchBtn.addEventListener("click", () => {
+                if (confirm("Are you sure you want to log out of this username?")) {
+                    localStorage.removeItem("sultan_user");
+                    activeUser = null;
+                    loadUserState();
+                }
+            });
+        }
+
         document.getElementById("saveDashHandleBtn").addEventListener("click", async () => {
             const username = document.getElementById("dashHandleInput").value.trim().toLowerCase();
             if (!username) return alert("Enter username.");
@@ -279,7 +296,6 @@
             localStorage.setItem("sultan_user", username);
             loadUserState();
         });
-
         const unlocked = JSON.parse(localStorage.getItem("sultan_unlocked_tutors") || "[]");
         if (unlocked.length > 0) {
             document.getElementById("unlockedMentorsList").innerHTML = unlocked.map(item => `
