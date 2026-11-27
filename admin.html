@@ -56,6 +56,8 @@
                 <button class="tab-btn" data-tab="tabEvents"><i class="fas fa-broadcast-tower"></i> Live Clubs</button>
                 <button class="tab-btn" data-tab="tabTestimonials"><i class="fas fa-quote-left"></i> Testimonials</button>
                 <button class="tab-btn" data-tab="tabPartners"><i class="fas fa-handshake"></i> Partners</button>
+                <button class="tab-btn" data-tab="tabSwaps"><i class="fas fa-exchange-alt"></i> Skill Swaps</button>
+                <button class="tab-btn" data-tab="tabAwards"><i class="fas fa-gift"></i> +100 SP & Feedback</button>
             </div>
 
             <!-- 1. EDUCATORS -->
@@ -138,6 +140,29 @@
            </div>
 
 
+            <div id="tabSwaps" class="tab-panel" style="overflow-x: auto;">
+                <table>
+                    <thead><tr><th>Author / Email</th><th>Type</th><th>Offer ↔ Want</th><th>Action</th></tr></thead>
+                    <tbody id="swapsTableBody"></tbody>
+                </table>
+            </div>
+
+            <div id="tabAwards" class="tab-panel">
+                <h3 style="margin-bottom: 12px; color: #10b981;">🎁 Gift +100 SP to #1 Learner of the Month</h3>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:30px;">
+                    <input type="text" id="giftUsername" placeholder="Enter Winner Username..." style="margin:0;">
+                    <input type="number" id="giftAmount" value="100" style="width:110px; margin:0;">
+                    <button class="btn" id="sendGiftSpBtn" style="background:#10b981; color:white;">Send SP Bonus</button>
+                </div>
+                <h3 style="margin-bottom: 10px; color: #ef4444;">Deleted Account Feedback</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead><tr><th>Username</th><th>Reason</th><th>Date</th></tr></thead>
+                        <tbody id="feedbackTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
             
         </div>
     </div>
@@ -189,6 +214,8 @@
             loadEvents();
             loadTestimonials();
             loadPartners();
+            loadSwapsAdmin();
+            loadFeedbackAdmin();
         }
 
         async function loadTutors() {
@@ -327,6 +354,35 @@
 }
 
 
+
+        async function loadSwapsAdmin() {
+            const { data } = await supabase.from('skill_swaps').select('*').order('id', { ascending: false });
+            document.getElementById("swapsTableBody").innerHTML = (data || []).map(s => `
+                <tr>
+                    <td><b>${s.author_name}</b><br><small style="color:#38bdf8;">${s.email}</small></td>
+                    <td>${s.swap_type}</td>
+                    <td><b>${s.offer_skill}</b> ↔ ${s.want_skill}</td>
+                    <td style="display:flex; gap:6px;">
+                        ${s.status === 'pending' ? `<button class="btn-approve" onclick="approveItem('skill_swaps', ${s.id})">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Live</span>'}
+                        <button class="btn-delete" onclick="deleteRow('skill_swaps', ${s.id})">Delete</button>
+                    </td>
+                </tr>`).join("") || "<tr><td colspan='4'>No swaps yet.</td></tr>";
+        }
+
+        async function loadFeedbackAdmin() {
+            const { data } = await supabase.from('account_feedback').select('*').order('id', { ascending: false });
+            document.getElementById("feedbackTableBody").innerHTML = (data || []).map(f => `
+                <tr><td><b>${f.username}</b></td><td>${f.reason}</td><td>${new Date(f.created_at).toLocaleDateString()}</td></tr>`).join("") || "<tr><td colspan='3'>No deleted account feedback yet.</td></tr>";
+        }
+
+        document.getElementById("sendGiftSpBtn").addEventListener("click", async () => {
+            const uname = document.getElementById("giftUsername").value.trim();
+            const amt = parseInt(document.getElementById("giftAmount").value);
+            if (!uname || !amt) return alert("Enter username & amount!");
+            const { data } = await supabase.rpc("admin_gift_sp", { p_username: uname, p_amount: amt });
+            if (data) alert(`🎉 Sent ${amt} SP to ${uname}!`);
+            else alert("User not found.");
+        });
         
 
         
