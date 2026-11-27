@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dashboard: { label: "Dashboard", href: "dashboard.html", icon: "fas fa-th-large" },
         become_educator: { label: "Become an Educator", href: "dashboard.html?mode=educator", icon: "fas fa-chalkboard-teacher" },
         find_educators: { label: "Find Educators", href: "tutors.html", icon: "fas fa-search" },
+        leaderboard: { label: "Leaderboard", href: "leaderboard.html", icon: "fas fa-trophy" },
         skill_swap: { label: "Skill Swap", href: "skill-swap.html", icon: "fas fa-exchange-alt" },
         lang_exchange: { label: "Language & Cultural Exchange", href: "skill-swap.html?type=exchange", icon: "fas fa-globe" },
         projects: {
@@ -33,8 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
         contact: { label: "Contact & Feedback", href: "contact.html", icon: "fas fa-envelope" }
     };
 
-    const defaultLayout = {
-        general: ["home", "dashboard", "become_educator", "find_educators", "skill_swap", "lang_exchange", "projects", "shop"],
+const defaultLayout = {
+        general: ["home", "dashboard", "become_educator", "find_educators", "leaderboard", "skill_swap", "lang_exchange", "projects", "shop"],
         others: ["testimonials", "contact"]
     };
 
@@ -42,6 +43,13 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
         savedLayout = JSON.parse(localStorage.getItem("sultan_sidebar_layout")) || defaultLayout;
         if (!savedLayout.general || !savedLayout.others) savedLayout = defaultLayout;
+        const existingIds = new Set([...savedLayout.general, ...savedLayout.others]);
+        Object.keys(menuItemsDB).forEach(k => {
+            if (!existingIds.has(k)) {
+                if (defaultLayout.others.includes(k)) savedLayout.others.push(k);
+                else savedLayout.general.push(k);
+            }
+        });
     } catch {
         savedLayout = defaultLayout;
     }
