@@ -1,42 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<!-- Google tag (gtag.js) - Sultan Academy Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4H914F5E57"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-4H914F5E57');
-</script>
-
-  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sultan Academy - Rewards & Shop</title>
-  
-  <!-- Modern Fonts & Icons -->
+  <link rel="icon" href="favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  
   <link rel="stylesheet" href="shop.css">
 </head>
 <body>
 
-  <!-- Navigation Header (Glassmorphism) -->
   <header class="shop-header">
     <div class="header-container">
       <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Main Site</a>
       <h1><i class="fas fa-store"></i> Sultan Academy Shop</h1>
       
-      <!-- Sağ tərəf: İstifadəçi adı və Balans -->
       <div class="user-info-wrapper">
         <div id="loggedInUser" class="logged-user hidden">
           <i class="fas fa-user-circle"></i> <span id="userNameText"></span>
         </div>
-        
         <div class="balance-badge">
           <i class="fas fa-coins"></i>
           <strong id="userPoints">0</strong>
@@ -46,164 +29,113 @@
     </div>
   </header>
 
-  <!-- Əsas Layout: Sol Reklam + Orta Məzmun + Sağ Reklam -->
   <div class="layout-wrapper">
     
-    <!-- SOL REKLAM LÖVHƏSİ -->
     <aside class="ad-sidebar left-ad">
       <div class="ad-placeholder">
         <p><a href="" rel="nofollow"><img alt="banner" src="https://landings-cdn.adsterratech.com/referralBanners/gif/120x600_adsterra_reff.gif" /></a></p>
       </div>
     </aside>
 
-
-
-<main class="shop-container">
+    <main class="shop-container">
       
-      <!-- 🌟 SULTAN ACADEMY OFFICIAL CURATED MATERIALS & CLASSROOMS 🌟 -->
+      <!-- RƏSMİ SULTAN ACADEMY KİTABLARI -->
       <section class="official-academy-section">
         <div class="official-badge">
           <i class="fas fa-certificate"></i> Official Sultan Academy Releases
         </div>
+        <h2 style="font-size: 24px; color: #fff; margin-bottom: 6px;">Academy Digital Library</h2>
+        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 24px;">Original study guides, audio materials, and exam prep resources.</p>
 
-    <!-- BOOKS & CLASSROOM SECTION -->
-    <section id="books" class="section bg-light">
-        <div class="section-header">
-            <h2>Library & Virtual Classrooms</h2>
-            <p>Access our curated educational materials and join our interactive classrooms.</p>
-        </div>
-
-        <!-- BOOKS GRID -->
         <div class="books-grid">
-            <!-- Book 1: ZFA -->
-            <div class="book-card">
-                <div class="book-img-wrapper">
-                    <img src="zfapdf.png" alt="Dental Assistant (ZFA) Communication Guide">
-                </div>
-                <h3>Dental Assistant (ZFA) Communication Guide + Audio</h3>
-                <div class="price-box">
-                    <span class="old-price">$25.99</span>
-                    <span class="new-price">$16.99</span>
-                </div>
-                <a href="https://www.patreon.com/SultanAlizada/posts/dental-assistant-168783495?utm_medium=clipboard_copy&utm_source=copyLink&utm_campaign=postshare_creator&utm_content=join_link" class="book-btn patreon-btn" target="_blank">
-                    <i class="fab fa-patreon"></i> Get on Patreon
-                </a>
+          <!-- Book 1: ZFA -->
+          <div class="book-card">
+            <div class="book-img-wrapper">
+              <img src="zfapdf.png" alt="Dental Assistant (ZFA) Communication Guide">
             </div>
+            <h3>Dental Assistant (ZFA) Communication Guide + Audio</h3>
+            <div class="price-box">
+              <span class="old-price">$25.99</span>
+              <span class="new-price">$16.99</span>
+            </div>
+            <a href="https://www.patreon.com/SultanAlizada/posts/dental-assistant-168783495?utm_medium=clipboard_copy&utm_source=copyLink&utm_campaign=postshare_creator&utm_content=join_link" class="book-btn patreon-btn" target="_blank" rel="noopener">
+              <i class="fab fa-patreon"></i> Get on Patreon
+            </a>
+          </div>
 
-            <!-- Book 2: Premium Material -->
-            <div class="book-card">
-                <div class="book-img-wrapper">
-                    <img src="book2.png" alt="Premium Study Material">
-                </div>
-                <h3>Premium Study Material</h3>
-                <div class="price-box">
-                    <span class="old-price">$28.99</span>
-                    <span class="new-price">$18.99</span>
-                </div>
-                <a href="#" class="book-btn patreon-btn">
-                    <i class="fab fa-patreon"></i> Coming soon!
-                </a>
+          <!-- Book 2 -->
+          <div class="book-card">
+            <div class="book-img-wrapper">
+              <img src="book2.png" alt="Premium Study Material">
             </div>
+            <h3>Premium Study Material</h3>
+            <div class="price-box">
+              <span class="old-price">$28.99</span>
+              <span class="new-price">$18.99</span>
+            </div>
+            <a href="#" class="book-btn patreon-btn">
+              <i class="fab fa-patreon"></i> Coming soon!
+            </a>
+          </div>
 
-            <!-- Book 3: RU PDF -->
-            <div class="book-card">
-                <div class="book-img-wrapper">
-                    <img src="rupdf.png" alt="Russian Language Guide">
-                </div>
-                <h3>Russian Language Guide</h3>
-                <div class="price-box">
-                    <span class="new-price highlight-price">Available Now</span>
-                </div>
-                <a href="#" data-link="YOUR_RU_PDF_LINK_HERE" class="book-btn download-btn watch-ad-btn">
-                    <i class="fas fa-play-circle"></i> Watch AD & Open
-                </a>
+          <!-- Book 3: RU PDF -->
+          <div class="book-card">
+            <div class="book-img-wrapper">
+              <img src="rupdf.png" alt="Russian Language Guide">
             </div>
+            <h3>Russian Language Guide</h3>
+            <div class="price-box">
+              <span class="new-price highlight-price">Available Now</span>
+            </div>
+            <a href="#" data-link="YOUR_RU_PDF_LINK_HERE" class="book-btn download-btn watch-ad-btn">
+              <i class="fas fa-play-circle"></i> Watch AD & Open
+            </a>
+          </div>
 
-            <!-- Book 4: Application -->
-            <div class="book-card">
-                <div class="book-img-wrapper">
-                    <img src="appli.png" alt="Application & Interview Guide">
-                </div>
-                <h3>Application & Interview Guide</h3>
-                <div class="price-box">
-                    <span class="new-price highlight-price">Available Now</span>
-                </div>
-                <a href="#" data-link="YOUR_APPLI_LINK_HERE" class="book-btn download-btn watch-ad-btn">
-                    <i class="fas fa-play-circle"></i> Watch AD & Open
-                </a>
+          <!-- Book 4: Application -->
+          <div class="book-card">
+            <div class="book-img-wrapper">
+              <img src="appli.png" alt="Application & Interview Guide">
             </div>
+            <h3>Application & Interview Guide</h3>
+            <div class="price-box">
+              <span class="new-price highlight-price">Available Now</span>
+            </div>
+            <a href="#" data-link="YOUR_APPLI_LINK_HERE" class="book-btn download-btn watch-ad-btn">
+              <i class="fas fa-play-circle"></i> Watch AD & Open
+            </a>
+          </div>
 
-            <!-- Book 5: C1 Telc -->
-            <div class="book-card">
-                <div class="book-img-wrapper">
-                    <img src="c1telc.png" alt="TELC C1 Preparation">
-                </div>
-                <h3>TELC C1 Preparation Material</h3>
-                <div class="price-box">
-                    <span class="new-price docs-price">Google Docs</span>
-                </div>
-                <a href="#" data-link="YOUR_GOOGLE_DOCS_LINK_HERE" class="book-btn download-btn watch-ad-btn">
-                    <i class="fas fa-play-circle"></i> Watch AD & Open
-                </a>
+          <!-- Book 5: C1 Telc -->
+          <div class="book-card">
+            <div class="book-img-wrapper">
+              <img src="c1telc.png" alt="TELC C1 Preparation">
             </div>
+            <h3>TELC C1 Preparation Material</h3>
+            <div class="price-box">
+              <span class="new-price docs-price">Google Docs</span>
+            </div>
+            <a href="#" data-link="YOUR_GOOGLE_DOCS_LINK_HERE" class="book-btn download-btn watch-ad-btn">
+              <i class="fas fa-play-circle"></i> Watch AD & Open
+            </a>
+          </div>
         </div>
-
-        <!-- CLASSROOM LINKS -->
-        <div class="section-header" style="margin-top: 60px;">
-            <h3>Join Our Virtual Classrooms</h3>
-        </div>
-        <div class="classroom-grid">
-            <a href="#" data-link="https://classroom.google.com/c/ODU3MjczNjAzMTAx?cjc=mqffl3y3" class="classroom-btn watch-ad-btn">
-                <i class="fas fa-chalkboard-teacher"></i>
-                <span>🇩🇪 Watch AD & Join</span>
-            </a>
-            <a href="#" data-link="https://classroom.google.com/c/ODYyMTExODk2NTgw?cjc=22jfum7u" class="classroom-btn watch-ad-btn">
-                <i class="fas fa-chalkboard-teacher"></i>
-                <span>🇺🇸 🇬🇧 Watch AD & Join</span>
-            </a>
-            <a href="#" data-link="https://classroom.google.com/c/ODYzODY2NjgxNDcy?cjc=gzjpavh3" class="classroom-btn watch-ad-btn">
-                <i class="fas fa-chalkboard-teacher"></i>
-                <span>🇹🇷 Watch AD & Join</span>
-            </a>
-            <a href="#" data-link="https://classroom.google.com/c/ODYwODc2MTY5OTI4?cjc=xgyvfazo" class="classroom-btn watch-ad-btn">
-                <i class="fas fa-chalkboard-teacher"></i>
-                <span>🇦🇿 Watch AD & Join</span>
-            </a>
-            <a href="#" data-link="https://classroom.google.com/c/ODY4NzE3ODA0NDA1?cjc=mawwihek" class="classroom-btn watch-ad-btn">
-                <i class="fas fa-chalkboard-teacher"></i>
-                <span>🧸 Watch AD & Join</span>
-            </a>
-        </div>
-
-        <!-- FAIR USE DISCLAIMER -->
-        <div class="fair-use-notice">
-            <div class="icon-box"><i class="fas fa-shield-alt"></i></div>
-            <div class="notice-text">
-                <strong>Fair Use & Copyright Notice</strong>
-                <p>The materials provided in our virtual classrooms and library are strictly for educational purposes under the Fair Use policy. <b>Please ensure that you and your students own the physical copies of these books.</b> Sultan Academy does not claim ownership of copyrighted publications.</p>
-            </div>
-        </div>
-    </section>
-        
       </section>
-      
-      
-      <!-- Top Section: Identification & Rewarded Ads -->
+
+      <!-- SP XALI QAZANMA -->
       <section class="action-card glass-card">
         <div class="card-glow"></div>
         <h2><i class="fas fa-id-badge"></i> 1. Identify & Earn</h2>
         <p class="section-desc">Enter your Username below to make sure your points are saved to your account!</p>
 
         <div class="login-box">
-          <input type="text" id="userInput" placeholder="Create or Enter your Username..." autocomplete="off" />
+          <input type="text" id="userInput" maxlength="20" placeholder="Enter your Username (max 20 chars)..." autocomplete="off" />
           <button id="loginBtn"><i class="fas fa-save"></i> Save Identity</button>
         </div>
 
-        <!-- Rewarded Ads Container -->
         <div class="offerwall-container">
           <h3><i class="fas fa-gift"></i> Watch Ads & Earn Points</h3>
           <p class="offer-desc">Click the button below, view the sponsor advertisement for 10 seconds, and collect your SP points!</p>
-          
           <div class="offerwall-wrapper">
             <button id="watchAdBtn" class="watch-ad-btn">
                <i class="fas fa-play-circle"></i> Watch Sponsor Ad (+10 SP)
@@ -215,23 +147,19 @@
 
       <hr class="divider">
 
-      <!-- Bottom Section: Sultan Shop Items -->
+      <!-- SP İLƏ AÇILAN MƏHSULLAR -->
       <section class="shop-section">
         <div class="section-title-wrapper">
           <h2><i class="fas fa-shopping-cart"></i> 2. Rewards Shop</h2>
-          <p class="shop-subtitle">Redeem your earned points for premium study materials and exclusive resources!</p>
+          <p class="shop-subtitle">Redeem your earned SP points for study materials and exclusive resources!</p>
         </div>
-
         <div class="products-grid" id="productsGrid">
-          <div class="loading-spinner">
-            <i class="fas fa-spinner fa-spin"></i> Loading shop items...
-          </div>
+          <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading shop items...</div>
         </div>
       </section>
 
     </main>
 
-    <!-- SAĞ REKLAM LÖVHƏSİ -->
     <aside class="ad-sidebar right-ad">
       <div class="ad-placeholder">
         <p><a href="" rel="nofollow"><img alt="banner" src="https://landings-cdn.adsterratech.com/referralBanners/gif/120x600_adsterra_reff.gif" /></a></p>
@@ -240,8 +168,12 @@
 
   </div>
 
-  <script type="module" src="js/shop.js"></script>
+  <footer style="text-align: center; padding: 30px 20px; color: #64748b; font-size: 13px; border-top: 1px solid #1e293b;">
+    © 2026 Sultan Alizada • <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Legal Notice</a>
+  </footer>
+
   <script src="js/cookie-consent.js"></script>
-  
+  <script src="js/books.js"></script>
+  <script type="module" src="js/shop.js"></script>
 </body>
 </html>
