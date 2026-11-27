@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Swap & Cultural Exchange | Sultan Academy</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="personal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header id="main-header"></header>
+
+    <main class="section" style="padding-top: 100px;">
+        <div class="section-header">
+            <h2>Skill Swap & Cultural Exchange</h2>
+            <p>Trade knowledge for free! Teach what you know, learn what you love—zero tuition needed.</p>
+        </div>
+
+        <div class="mode-tabs-bar">
+            <button type="button" class="mode-tab-big active" id="tabAllSwaps">All Swaps</button>
+            <button type="button" class="mode-tab-big" id="tabLangExchange"><i class="fas fa-globe"></i> Language & Cultural Exchange</button>
+            <button type="button" class="mode-tab-big" id="tabSkillBarter"><i class="fas fa-exchange-alt"></i> Skill Swap</button>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <button type="button" id="openSwapModalBtn" class="inline-blue-btn" style="padding: 11px 24px; font-size: 14px; border:none; background: #10b981;">
+                <i class="fas fa-plus-circle"></i> Post Your Skill Swap Card
+            </button>
+        </div>
+
+        <div class="tutors-grid" id="swapsGrid">
+            <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading Skill Swaps...</p>
+        </div>
+    </main>
+
+    <!-- SKILL SWAP FORM MODALI -->
+    <div id="swapModal" class="auth-modal-overlay hidden">
+        <div class="dashboard-modal-card" style="max-width: 520px; text-align: left;">
+            <button class="auth-close-btn" id="closeSwapModal" type="button">&times;</button>
+            <h3 style="color:#fff; margin-bottom:6px;"><i class="fas fa-exchange-alt" style="color:#10b981;"></i> Post a Skill Swap Card</h3>
+            <p style="font-size:12px; color:#94a3b8; margin-bottom:16px;">Share what you can offer and what you'd love to learn in return.</p>
+
+            <form id="swapForm" class="educator-form">
+                <div class="form-row">
+                    <div class="form-group"><label>Your Name (max 20) *</label><input type="text" id="swName" maxlength="20" required></div>
+                    <div class="form-group"><label>Private Email (Admin Only) *</label><input type="email" id="swEmail" maxlength="50" required></div>
+                </div>
+                <div class="form-group">
+                    <label>Exchange Type *</label>
+                    <select id="swType" style="background:#1e293b; border:1px solid #334155; padding:10px; border-radius:10px; color:white; font-size:13px;">
+                        <option value="Skill Swap">🔄 Skill Swap (Coding, Music, Math, etc.)</option>
+                        <option value="Language & Cultural Exchange">🌍 Language & Cultural Exchange</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>I Can Teach (max 25) *</label><input type="text" id="swOffer" maxlength="25" required placeholder="e.g. German B2 / Guitar"></div>
+                    <div class="form-group"><label>I Want to Learn (max 25) *</label><input type="text" id="swWant" maxlength="25" required placeholder="e.g. Python / English"></div>
+                </div>
+                <div class="form-group"><label>Short Bio / Details (max 160) *</label><textarea id="swDesc" rows="2" maxlength="160" required style="background:#1e293b; border:1px solid #334155; color:white; padding:10px; border-radius:10px; font-size:13px;"></textarea></div>
+                <div class="form-group"><label>Sultan Academy Discord Room Link *</label><input type="url" id="swDiscord" required placeholder="https://discord.com/channels/..."></div>
+                <button type="submit" id="swSubmitBtn" class="submit-profile-btn" style="background: linear-gradient(135deg, #10b981, #059669);">Publish Skill Swap</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2026 Sultan Alizada • <a href="privacy.html" style="color: #38bdf8;">Privacy & Legal Notice</a></p>
+    </footer>
+
+    <a href="YOUR_WISE_LINK_HERE" class="metallic-support-btn" target="_blank" rel="noopener"><i class="fas fa-hand-holding-heart"></i> Support Our Work</a>
+
+    <script src="js/navbar.js"></script>
+    <script src="js/cookie-consent.js"></script>
+    <script type="module" src="js/wizard.js"></script>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
+
+        let allSwaps = [];
+        let currentFilter = new URLSearchParams(window.location.search).get("type") === "exchange" ? "Language & Cultural Exchange" : "all";
+
+        const tabAll = document.getElementById("tabAllSwaps");
+        const tabEx = document.getElementById("tabLangExchange");
+        const tabBar = document.getElementById("tabSkillBarter");
+
+        function updateTabs() {
+            [tabAll, tabEx, tabBar].forEach(t => t.classList.remove("active"));
+            if (currentFilter === "Language & Cultural Exchange") tabEx.classList.add("active");
+            else if (currentFilter === "Skill Swap") tabBar.classList.add("active");
+            else tabAll.classList.add("active");
+            renderSwaps();
+        }
+
+        tabAll.addEventListener("click", () => { currentFilter = "all"; updateTabs(); });
+        tabEx.addEventListener("click", () => { currentFilter = "Language & Cultural Exchange"; updateTabs(); });
+        tabBar.addEventListener("click", () => { currentFilter = "Skill Swap"; updateTabs(); });
+
+        async function loadSwaps() {
+            const { data: swaps } = await supabase.from("skill_swaps").select("id, author_name, swap_type, offer_skill, want_skill, description, discord_link").eq("status", "approved").order("id", { ascending: false });
+            const { data: eduSwaps } = await supabase.from("tutors").select("id, name, language, subject, discord_channel, skill_swap_wanted").eq("status", "approved").not("skill_swap_wanted", "is", null).neq("skill_swap_wanted", "");
+
+            const mappedEdu = (eduSwaps || []).map(t => ({
+                author_name: `${t.name} (Educator)`,
+                swap_type: "Skill Swap",
+                offer_skill: `${t.language} / ${t.subject}`,
+                want_skill: t.skill_swap_wanted,
+                description: "Verified educator open to direct skill exchange!",
+                discord_link: t.discord_channel
+            }));
+
+            allSwaps = [...(swaps || []), ...mappedEdu];
+            updateTabs();
+        }
+
+        function renderSwaps() {
+            const grid = document.getElementById("swapsGrid");
+            const filtered = currentFilter === "all" ? allSwaps : allSwaps.filter(s => s.swap_type === currentFilter);
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p style="grid-column:1/-1; color:#64748b;">No cards here yet. Post the first one above!</p>`;
+                return;
+            }
+            grid.innerHTML = filtered.map(s => `
+                <div class="tutor-card">
+                    <div class="tutor-tags" style="margin-bottom:10px;">
+                        <span style="color:#38bdf8; border-color:#38bdf8;">${s.swap_type}</span>
+                        <span>${s.author_name}</span>
+                    </div>
+                    <h4 style="color:#0f172a; font-size:15px; margin-bottom:8px;">
+                        <span style="color:#10b981;">Teaches:</span> ${s.offer_skill} <br>
+                        <span style="color:#f59e0b;">Wants:</span> ${s.want_skill}
+                    </h4>
+                    <p class="tutor-bio">${s.description}</p>
+                    <div class="tutor-footer">
+                        <button class="unlock-tutor-btn swap-unlock-btn" data-target="${s.discord_link}">
+                            <i class="fab fa-discord"></i> Connect to Swap (Watch AD)
+                        </button>
+                    </div>
+                </div>`).join("");
+
+            document.querySelectorAll(".swap-unlock-btn").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    const url = this.dataset.target;
+                    if (this.dataset.unlocked === "true") return window.open(url, "_blank");
+                    const ad = window.open("https://www.profitableratecpmnetwork.com/fspm49jkm?key=88e5821febc3aed060a93ce3587926fc", "_blank");
+                    if (!ad || ad.closed) return alert("⚠️ Pop-up blocked! Please allow pop-ups.");
+                    this.style.pointerEvents = "none";
+                    let t = 10;
+                    this.innerText = `Unlocking... ${t}s`;
+                    const iv = setInterval(() => {
+                        t--;
+                        if (t > 0) this.innerText = `Unlocking... ${t}s`;
+                        else {
+                            clearInterval(iv);
+                            this.dataset.unlocked = "true";
+                            this.innerText = "Ready! Tap to Open";
+                            this.style.background = "#10b981";
+                            this.style.pointerEvents = "auto";
+                            window.open(url, "_blank");
+                        }
+                    }, 1000);
+                });
+            });
+        }
+
+        const swapModal = document.getElementById("swapModal");
+        document.getElementById("openSwapModalBtn").addEventListener("click", () => { swapModal.classList.remove("hidden"); document.body.classList.add("modal-open"); });
+        document.getElementById("closeSwapModal").addEventListener("click", () => { swapModal.classList.add("hidden"); document.body.classList.remove("modal-open"); });
+
+        document.getElementById("swapForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("swSubmitBtn");
+            btn.disabled = true;
+            const { error } = await supabase.from("skill_swaps").insert([{
+                author_name: document.getElementById("swName").value.trim(),
+                email: document.getElementById("swEmail").value.trim(),
+                swap_type: document.getElementById("swType").value,
+                offer_skill: document.getElementById("swOffer").value.trim(),
+                want_skill: document.getElementById("swWant").value.trim(),
+                description: document.getElementById("swDesc").value.trim(),
+                discord_link: document.getElementById("swDiscord").value.trim(),
+                status: "pending"
+            }]);
+            if (!error) { alert("🎉 Skill Swap card submitted!"); e.target.reset(); swapModal.classList.add("hidden"); document.body.classList.remove("modal-open"); }
+            else { alert("Error submitting."); }
+            btn.disabled = false;
+        });
+
+        loadSwaps();
+    </script>
+</body>
+</html>
