@@ -1,20 +1,20 @@
-// --- SULTAN ACADEMY: DRAG & DROP LEFT SIDEBAR + SETTINGS & DELETE ACCOUNT ---
+// --- SULTAN ACADEMY: DIVIDED SIDEBAR + TOP-RIGHT SHOP/START/SETTINGS ---
 document.addEventListener("DOMContentLoaded", () => {
     const headerContainer = document.getElementById("main-header");
     if (!headerContainer) return;
 
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
-    const currentSearch = window.location.search;
     const activeUser = localStorage.getItem("sultan_user");
- 
+
+    // HƏR DÜYMƏNİN ÖZ AYRI HTML SƏHİFƏSİ VAR (Shop sağ yuxarıya çıxarıldı!)
     const menuItemsDB = {
         home: { label: "Home", href: "index.html", icon: "fas fa-home" },
         dashboard: { label: "Dashboard", href: "dashboard.html", icon: "fas fa-th-large" },
-        become_educator: { label: "Become an Educator", href: "dashboard.html?mode=educator", icon: "fas fa-chalkboard-teacher" },
+        become_educator: { label: "Become an Educator", href: "become-educator.html", icon: "fas fa-chalkboard-teacher" },
         find_educators: { label: "Find Educators", href: "tutors.html", icon: "fas fa-search" },
         leaderboard: { label: "Leaderboard", href: "leaderboard.html", icon: "fas fa-trophy" },
         skill_swap: { label: "Skill Swap", href: "skill-swap.html", icon: "fas fa-exchange-alt" },
-        lang_exchange: { label: "Language & Cultural Exchange", href: "skill-swap.html?type=exchange", icon: "fas fa-globe" },
+        lang_exchange: { label: "Language & Cultural Exchange", href: "exchange.html", icon: "fas fa-globe" },
         projects: {
             label: "Projects",
             type: "dropdown",
@@ -28,13 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 { label: "MUSICO (Global)", href: "musico.html" }
             ]
         },
-        shop: { label: "Shop", href: "shop.html", icon: "fas fa-shopping-bag", isShop: true },
-        testimonials: { label: "Testimonials", href: "index.html#testimonials", icon: "fas fa-comment-alt" },
+        testimonials: { label: "Testimonials", href: "testimonials.html", icon: "fas fa-comment-alt" },
         contact: { label: "Contact & Feedback", href: "contact.html", icon: "fas fa-envelope" }
     };
 
     const defaultLayout = {
-        general: ["home", "dashboard", "become_educator", "find_educators", "leaderboard", "skill_swap", "lang_exchange", "projects", "shop"],
+        general: ["home", "dashboard", "become_educator", "find_educators", "leaderboard", "skill_swap", "lang_exchange", "projects"],
         others: ["testimonials", "contact"]
     };
 
@@ -42,6 +41,10 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
         savedLayout = JSON.parse(localStorage.getItem("sultan_sidebar_layout")) || defaultLayout;
         if (!savedLayout.general || !savedLayout.others) savedLayout = defaultLayout;
+        // Köhnə 'shop' sol menyuda qalıbsa təmizləyirik (çünki artıq sağ yuxarıdadır)
+        savedLayout.general = savedLayout.general.filter(id => menuItemsDB[id]);
+        savedLayout.others = savedLayout.others.filter(id => menuItemsDB[id]);
+
         const existingIds = new Set([...savedLayout.general, ...savedLayout.others]);
         Object.keys(menuItemsDB).forEach(k => {
             if (!existingIds.has(k)) {
@@ -58,31 +61,30 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!item) return "";
 
         if (item.type === "dropdown") {
+            const isChildActive = item.children.some(c => c.href === currentPage);
             const subHTML = item.children.map(c =>
                 `<a href="${c.href}" class="sidebar-sublink ${currentPage === c.href ? 'active' : ''}">${c.label}</a>`
             ).join("");
             return `
                 <li class="sidebar-item" draggable="true" data-id="${id}">
                     <div class="sidebar-row">
-                        <button type="button" class="sidebar-link sidebar-projects-toggle">
+                        <button type="button" class="sidebar-link sidebar-projects-toggle ${isChildActive ? 'active' : ''}">
                             <i class="${item.icon}"></i>
                             <span>${item.label}</span>
-                            <i class="fas fa-chevron-down drop-arrow"></i>
+                            <i class="fas fa-chevron-down drop-arrow ${isChildActive ? 'rotated' : ''}"></i>
                         </button>
                         <span class="drag-handle" title="Hold & drag to reorder"><i class="fas fa-grip-vertical"></i></span>
                     </div>
-                    <div class="sidebar-submenu hidden">${subHTML}</div>
+                    <div class="sidebar-submenu ${isChildActive ? '' : 'hidden'}">${subHTML}</div>
                 </li>`;
         }
 
-        const fullCurrent = currentPage + currentSearch;
-        const isActive = (item.href === fullCurrent) || (item.href === currentPage && !currentSearch && item.href !== "index.html#testimonials");
-        const shopClass = item.isShop ? "sidebar-shop-btn" : "";
+        const isActive = (item.href === currentPage) || (currentPage === "" && item.href === "index.html");
 
         return `
             <li class="sidebar-item" draggable="true" data-id="${id}">
                 <div class="sidebar-row">
-                    <a href="${item.href}" class="sidebar-link ${shopClass} ${isActive ? 'active' : ''}">
+                    <a href="${item.href}" class="sidebar-link ${isActive ? 'active' : ''}">
                         <i class="${item.icon}"></i>
                         <span>${item.label}</span>
                     </a>
@@ -96,8 +98,12 @@ document.addEventListener("DOMContentLoaded", () => {
             <i class="fas fa-bars"></i>
         </button>
 
+        <!-- SAĞ YUXARI KÜNC: SHOP + START + SETTINGS (BÖYÜDÜLMÜŞ) -->
         <div class="top-utility-bar">
-            <button id="navStartBtn" class="nav-join-btn" type="button">
+            <a href="shop.html" class="top-shop-btn">
+                <i class="fas fa-shopping-bag"></i> Shop
+            </a>
+            <button id="navStartBtn" class="top-start-btn" type="button">
                 <i class="fas fa-bolt"></i> <span id="navStartText">${activeUser ? `Start • ${activeUser}` : 'Start'}</span>
             </button>
             <button id="openSettingsBtn" class="settings-gear-btn" type="button" title="Settings & Account">
