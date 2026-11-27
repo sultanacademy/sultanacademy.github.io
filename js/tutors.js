@@ -7,13 +7,17 @@ const supabase = createClient(
 
 let allReviews = [];
 
-// TABLAR (EDUCATORS vs PARTNERS)
+// ==========================================
+// 1. TAB KEÇİDLƏRİ (EDUCATORS vs PARTNERS)
+// ==========================================
 const tabDirEdu = document.getElementById("tabDirEducators");
 const tabDirPart = document.getElementById("tabDirPartners");
 const areaEdu = document.getElementById("dirEducatorsArea");
 const areaPart = document.getElementById("dirPartnersArea");
 
 function switchDirectoryTab(tab) {
+    if (!tabDirEdu || !tabDirPart || !areaEdu || !areaPart) return;
+
     if (tab === "partners") {
         tabDirPart.classList.add("active");
         tabDirEdu.classList.remove("active");
@@ -32,26 +36,39 @@ if (tabDirEdu && tabDirPart) {
     tabDirEdu.addEventListener("click", () => switchDirectoryTab("educators"));
     tabDirPart.addEventListener("click", () => switchDirectoryTab("partners"));
     const params = new URLSearchParams(window.location.search);
-    if (params.get("tab") === "partners") switchDirectoryTab("partners");
+    if (params.get("tab") === "partners") {
+        switchDirectoryTab("partners");
+    }
 }
 
-// 1. EDUCATORS YÜKLƏMƏ
+// ==========================================
+// 2. EDUCATORS YÜKLƏMƏ, FİLTR VƏ SHARE LİNK
+// ==========================================
 async function loadEducators() {
     const tutorsGrid = document.getElementById("tutorsGrid");
     const dynamicFilters = document.getElementById("dynamicFilters");
     if (!tutorsGrid) return;
 
-    const { data: tutors, error } = await supabase
-        .from("tutors")
-        .select("id, name, avatar_url, category, language, subject, price, discord_channel, offers_live_sessions, cal_link, status")
-        .eq("status", "approved")
-        .order("id", { ascending: false });
+    const [{ data: tutors, error }, { data: reviews }] = await Promise.all([
+        supabase
+            .from("tutors")
+            .select("id, name, avatar_url, category, language, subject, price, discord_channel, offers_live_sessions, cal_link, skill_swap_wanted, status")
+            .eq("status", "approved")
+            .order("id", { ascending: false }),
+        supabase
+            .from("reviews")
+            .select("*")
+            .order("created_at", { ascending: false })
+    ]);
 
-    const { data: reviews } = await supabase.from("reviews").select("*").order("created_at", { ascending: false });
     allReviews = reviews || [];
 
     if (error || !tutors || tutors.length === 0) {
-        tutorsGrid.innerHTML = `<p style="grid-column:1/-1; color:#64748b; padding:30px;">No active educators right now.</p>`;
+        tutorsGrid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">
+                <i class="fas fa-user-clock" style="font-size: 32px; margin-bottom: 12px; color: #38bdf8;"></i>
+                <p>No active educators right now. Be the first to apply in the Dashboard!</p>
+            </div>`;
         return;
     }
 
@@ -63,6 +80,7 @@ async function loadEducators() {
         const langClean = t.language.trim();
         filterCategories.add(mainCat);
 
+        // Rəy ortalaması
         const tutorRevs = allReviews.filter(r => r.tutor_id === t.id);
         let ratingText = `<strong>New</strong> <span class="rating-count">(No reviews yet)</span>`;
         if (tutorRevs.length > 0) {
@@ -70,18 +88,20 @@ async function loadEducators() {
             ratingText = `<span class="stars">${"⭐".repeat(Math.round(avg))}</span> <strong>${avg}</strong> <span class="rating-count">(${tutorRevs.length} reviews)</span>`;
         }
 
+        // Unikal Jitsi Otağı
         const safeRoomName = `SultanAcad-${t.id}-${t.name.replace(/[^a-zA-Z0-9]/g, "")}`;
         const jitsiUrl = `classroom.html?room=${safeRoomName}`;
 
         const card = document.createElement("div");
         card.className = "tutor-card";
+        card.id = `tutor-card-${t.id}`;
         card.setAttribute("data-category", `${mainCat.toLowerCase()} ${langClean.toLowerCase()}`);
 
         card.innerHTML = `
             <div class="tutor-header">
                 <img src="${t.avatar_url || 'your-photo.jpg'}" alt="${t.name}" class="tutor-avatar" onerror="this.src='your-photo.jpg'">
                 <div class="tutor-main-info">
-                    <h3>${t.name} <i class="fas fa-check-circle verified-badge"></i></h3>
+                    <h3>${t.name} <i class="fas fa-check-circle verified-badge" title="Verified Educator"></i></h3>
                     <p class="tutor-title">${t.subject}</p>
                     <div class="tutor-rating">${ratingText}</div>
                 </div>
@@ -91,27 +111,37 @@ async function loadEducators() {
                 <span>${mainCat}</span>
                 <span>${t.language}</span>
                 ${t.offers_live_sessions ? '<span style="color:#10b981; border-color:#10b981;">🔴 Live Sessions</span>' : ''}
+                ${t.skill_swap_wanted ? `<span style="color:#f59e0b; border-color:#f59e0b;">🔄 Swap: ${t.skill_swap_wanted}</span>` : ''}
             </div>
             <div class="tutor-footer">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <div class="tutor-price">${t.price}</div>
-                    <button class="btn-reviews open-reviews-btn" data-id="${t.id}" data-name="${t.name}" type="button">
-                        <i class="fas fa-star"></i> Reviews (${tutorRevs.length})
-                    </button>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-reviews open-reviews-btn" data-id="${t.id}" data-name="${t.name}" type="button">
+                            <i class="fas fa-star"></i> Reviews (${tutorRevs.length})
+                        </button>
+                        <button class="btn-secondary-sm share-tutor-btn" data-id="${t.id}" type="button" title="Copy Share Link">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="tutor-action-group">
-                    <button class="unlock-tutor-btn ad-gate-btn" data-target="${t.discord_channel}" data-type="Discord Room" data-name="${t.name}" data-lang="${t.language}" data-subj="${t.subject}">
+                    <button class="unlock-tutor-btn ad-gate-btn" data-tutor-id="${t.id}" data-target="${t.discord_channel}" data-type="Discord Room" data-name="${t.name}" data-lang="${t.language}" data-subj="${t.subject}">
                         <i class="fab fa-discord"></i> Discord Room (Watch AD)
                     </button>
-                    <button class="video-room-btn ad-gate-btn" data-target="${jitsiUrl}" data-type="Video Classroom">
+                    <button class="video-room-btn ad-gate-btn" data-tutor-id="${t.id}" data-target="${jitsiUrl}" data-type="Video Classroom">
                         <i class="fas fa-video"></i> Video Classroom (Watch AD)
                     </button>
-                    ${t.cal_link ? `<button class="cal-booking-btn ad-gate-btn" data-target="${t.cal_link}" data-type="Cal.com Booking"><i class="fas fa-calendar-alt"></i> Book on Cal.com (Watch AD)</button>` : ''}
+                    ${t.cal_link ? `
+                    <button class="cal-booking-btn ad-gate-btn" data-tutor-id="${t.id}" data-target="${t.cal_link}" data-type="Cal.com Booking">
+                        <i class="fas fa-calendar-alt"></i> Book on Cal.com (Watch AD)
+                    </button>` : ''}
                 </div>
             </div>`;
         tutorsGrid.appendChild(card);
     });
 
+    // Dinamik Kateqoriya Filtrləri
     if (dynamicFilters) {
         dynamicFilters.innerHTML = `<button class="filter-btn active" data-filter="all">All Disciplines</button>`;
         filterCategories.forEach(cat => {
@@ -132,15 +162,47 @@ async function loadEducators() {
                 });
             });
         });
+
+        // Wizard-dan gələn kateqoriya varsa avtomatik seç
+        const urlCat = new URLSearchParams(window.location.search).get("cat");
+        if (urlCat) {
+            const matchingBtn = [...dynamicFilters.querySelectorAll(".filter-btn")].find(b => b.dataset.filter === urlCat.toLowerCase());
+            if (matchingBtn) matchingBtn.click();
+        }
     }
 
-    attachAdGateListeners();
+    // Paylaşma (Share) Linki
+    document.querySelectorAll(".share-tutor-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const link = `${window.location.origin}/tutors.html?educator=${btn.dataset.id}`;
+            navigator.clipboard.writeText(link);
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => btn.innerHTML = '<i class="fas fa-share-alt"></i>', 2000);
+        });
+    });
+
+    // URL-də ?educator=ID varsa həmin kartı parlat və ora sürüşdür
+    const highlightId = new URLSearchParams(window.location.search).get("educator");
+    if (highlightId) {
+        const targetCard = document.getElementById(`tutor-card-${highlightId}`);
+        if (targetCard) {
+            targetCard.style.border = "2px solid #38bdf8";
+            targetCard.style.boxShadow = "0 0 30px rgba(56, 189, 248, 0.35)";
+            setTimeout(() => targetCard.scrollIntoView({ behavior: "smooth", block: "center" }), 300);
+        }
+    }
+
+    // Rəy modalını açmaq
     document.querySelectorAll(".open-reviews-btn").forEach(btn => {
         btn.addEventListener("click", () => openReviewsModal(parseInt(btn.getAttribute("data-id")), btn.getAttribute("data-name")));
     });
+
+    attachAdGateListeners();
 }
 
-// 2. PARTNERS YÜKLƏMƏ & PAYLAŞMA
+// ==========================================
+// 3. PARTNER ELANLARINI YÜKLƏMƏ
+// ==========================================
 async function loadPartners() {
     const grid = document.getElementById("partnersGrid");
     if (!grid) return;
@@ -177,6 +239,9 @@ async function loadPartners() {
     attachAdGateListeners();
 }
 
+// ==========================================
+// 4. REKLAM QAPISI + AKTİVLİK SAYĞACI
+// ==========================================
 function attachAdGateListeners() {
     document.querySelectorAll(".ad-gate-btn").forEach(btn => {
         if (btn.dataset.bound === "true") return;
@@ -186,7 +251,9 @@ function attachAdGateListeners() {
             e.preventDefault();
             const targetUrl = this.getAttribute("data-target");
             const targetType = this.getAttribute("data-type") || "Room";
+            const tutorId = this.getAttribute("data-tutor-id");
 
+            // Artıq açılıbsa birbaşa yönləndir
             if (this.dataset.unlocked === "true") {
                 window.open(targetUrl, "_blank");
                 return;
@@ -214,14 +281,26 @@ function attachAdGateListeners() {
                     this.style.background = "#10b981";
                     this.style.pointerEvents = "auto";
 
+                    // Liderlik cədvəli üçün müəllimin aktivlik sayğacını +1 artır
+                    if (tutorId) {
+                        supabase.rpc("increment_tutor_unlock", { p_tutor_id: parseInt(tutorId) });
+                    }
+
+                    // Student Workspace-də göstərmək üçün yadda saxla
                     if (this.getAttribute("data-name")) {
                         const saved = JSON.parse(localStorage.getItem("sultan_unlocked_tutors") || "[]");
                         const name = this.getAttribute("data-name");
                         if (!saved.some(x => x.name === name)) {
-                            saved.push({ name, language: this.getAttribute("data-lang"), subject: this.getAttribute("data-subj"), link: targetUrl });
+                            saved.push({
+                                name,
+                                language: this.getAttribute("data-lang"),
+                                subject: this.getAttribute("data-subj"),
+                                link: targetUrl
+                            });
                             localStorage.setItem("sultan_unlocked_tutors", JSON.stringify(saved));
                         }
                     }
+
                     window.open(targetUrl, "_blank");
                 }
             }, 1000);
@@ -229,18 +308,20 @@ function attachAdGateListeners() {
     });
 }
 
-// PARTNER MODAL
+// ==========================================
+// 5. PARTNER ELANI MODALI
+// ==========================================
 const partnerModal = document.getElementById("partnerModal");
 const openPartnerModalBtn = document.getElementById("openPartnerModalBtn");
 const closePartnerModal = document.getElementById("closePartnerModal");
 
-if (openPartnerModalBtn) {
+if (openPartnerModalBtn && partnerModal) {
     openPartnerModalBtn.addEventListener("click", () => {
         partnerModal.classList.remove("hidden");
         document.body.classList.add("modal-open");
     });
 }
-if (closePartnerModal) {
+if (closePartnerModal && partnerModal) {
     closePartnerModal.addEventListener("click", () => {
         partnerModal.classList.add("hidden");
         document.body.classList.remove("modal-open");
@@ -277,10 +358,14 @@ if (partnerForm) {
     });
 }
 
-// REVIEWS MODAL
+// ==========================================
+// 6. RƏYLƏR MODALI
+// ==========================================
 const reviewsModal = document.getElementById("reviewsModal");
 const closeReviewsModal = document.getElementById("closeReviewsModal");
-if (closeReviewsModal) closeReviewsModal.addEventListener("click", () => reviewsModal.classList.add("hidden"));
+if (closeReviewsModal && reviewsModal) {
+    closeReviewsModal.addEventListener("click", () => reviewsModal.classList.add("hidden"));
+}
 
 function openReviewsModal(tutorId, tutorName) {
     document.getElementById("reviewsModalTitle").innerText = `Reviews for ${tutorName}`;
