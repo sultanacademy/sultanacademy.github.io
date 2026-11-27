@@ -16,7 +16,7 @@
     <main class="section" style="padding-top: 100px;">
         <div class="section-header">
             <h2>Skill Swap & Cultural Exchange</h2>
-            <p>Trade knowledge for free! Teach what you know, learn what you love—zero tuition needed.</p>
+            <p>Trade knowledge for free! Teach what you know, learn what you love—and rate each session to climb the Leaderboard!</p>
         </div>
 
         <div class="mode-tabs-bar">
@@ -41,7 +41,7 @@
         <div class="dashboard-modal-card" style="max-width: 520px; text-align: left;">
             <button class="auth-close-btn" id="closeSwapModal" type="button">&times;</button>
             <h3 style="color:#fff; margin-bottom:6px;"><i class="fas fa-exchange-alt" style="color:#10b981;"></i> Post a Skill Swap Card</h3>
-            <p style="font-size:12px; color:#94a3b8; margin-bottom:16px;">Share what you can offer and what you'd love to learn in return.</p>
+            <p style="font-size:12px; color:#94a3b8; margin-bottom:16px;">Share what you offer and what you'd love to learn in return.</p>
 
             <form id="swapForm" class="educator-form">
                 <div class="form-row">
@@ -59,9 +59,36 @@
                     <div class="form-group"><label>I Can Teach (max 25) *</label><input type="text" id="swOffer" maxlength="25" required placeholder="e.g. German B2 / Guitar"></div>
                     <div class="form-group"><label>I Want to Learn (max 25) *</label><input type="text" id="swWant" maxlength="25" required placeholder="e.g. Python / English"></div>
                 </div>
-                <div class="form-group"><label>Short Bio / Details (max 160) *</label><textarea id="swDesc" rows="2" maxlength="160" required style="background:#1e293b; border:1px solid #334155; color:white; padding:10px; border-radius:10px; font-size:13px;"></textarea></div>
+                <div class="form-group"><label>Short Bio (max 160) *</label><textarea id="swDesc" rows="2" maxlength="160" required style="background:#1e293b; border:1px solid #334155; color:white; padding:10px; border-radius:10px; font-size:13px;"></textarea></div>
                 <div class="form-group"><label>Sultan Academy Discord Room Link *</label><input type="url" id="swDiscord" required placeholder="https://discord.com/channels/..."></div>
                 <button type="submit" id="swSubmitBtn" class="submit-profile-btn" style="background: linear-gradient(135deg, #10b981, #059669);">Publish Skill Swap</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- BARTER RƏYLƏR MODALI -->
+    <div id="swapReviewsModal" class="auth-modal-overlay hidden">
+        <div class="dashboard-modal-card" style="max-width: 500px; text-align: left;">
+            <button class="auth-close-btn" id="closeSwapReviewsModal" type="button">&times;</button>
+            <h3 id="swapReviewsTitle" style="color: #fff; margin-bottom: 14px;">Session Reviews</h3>
+            <div id="swapReviewsList" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px;"></div>
+            <form id="swapReviewForm" class="educator-form" style="border-top: 1px solid #334155; padding-top: 14px;">
+                <input type="hidden" id="swRevTargetId">
+                <div class="form-row">
+                    <div class="form-group"><label>Your Name (max 20) *</label><input type="text" id="swRevName" maxlength="20" required></div>
+                    <div class="form-group">
+                        <label>Rating *</label>
+                        <select id="swRevRating" style="background:#1e293b; border:1px solid #334155; padding:10px; border-radius:10px; color:#f59e0b; font-weight:600;">
+                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                            <option value="3">⭐⭐⭐ (3/5)</option>
+                            <option value="2">⭐⭐ (2/5)</option>
+                            <option value="1">⭐ (1/5)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group"><label>Session Feedback (max 180) *</label><input type="text" id="swRevComment" maxlength="180" required></div>
+                <button type="submit" class="submit-profile-btn">Post Session Review</button>
             </form>
         </div>
     </div>
@@ -80,6 +107,7 @@
         const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
 
         let allSwaps = [];
+        let allSwapReviews = [];
         let currentFilter = new URLSearchParams(window.location.search).get("type") === "exchange" ? "Language & Cultural Exchange" : "all";
 
         const tabAll = document.getElementById("tabAllSwaps");
@@ -93,16 +121,22 @@
             else tabAll.classList.add("active");
             renderSwaps();
         }
-
         tabAll.addEventListener("click", () => { currentFilter = "all"; updateTabs(); });
         tabEx.addEventListener("click", () => { currentFilter = "Language & Cultural Exchange"; updateTabs(); });
         tabBar.addEventListener("click", () => { currentFilter = "Skill Swap"; updateTabs(); });
 
         async function loadSwaps() {
-            const { data: swaps } = await supabase.from("skill_swaps").select("id, author_name, swap_type, offer_skill, want_skill, description, discord_link").eq("status", "approved").order("id", { ascending: false });
-            const { data: eduSwaps } = await supabase.from("tutors").select("id, name, language, subject, discord_channel, skill_swap_wanted").eq("status", "approved").not("skill_swap_wanted", "is", null).neq("skill_swap_wanted", "");
+            const [{ data: swaps }, { data: eduSwaps }, { data: revs }] = await Promise.all([
+                supabase.from("skill_swaps").select("id, author_name, swap_type, offer_skill, want_skill, description, discord_link").eq("status", "approved").order("id", { ascending: false }),
+                supabase.from("tutors").select("id, name, language, subject, discord_channel, skill_swap_wanted").eq("status", "approved").not("skill_swap_wanted", "is", null).neq("skill_swap_wanted", ""),
+                supabase.from("swap_reviews").select("*").order("created_at", { ascending: false })
+            ]);
+
+            allSwapReviews = revs || [];
 
             const mappedEdu = (eduSwaps || []).map(t => ({
+                id: null,
+                tutorId: t.id,
                 author_name: `${t.name} (Educator)`,
                 swap_type: "Skill Swap",
                 offer_skill: `${t.language} / ${t.subject}`,
@@ -122,23 +156,32 @@
                 grid.innerHTML = `<p style="grid-column:1/-1; color:#64748b;">No cards here yet. Post the first one above!</p>`;
                 return;
             }
-            grid.innerHTML = filtered.map(s => `
+            grid.innerHTML = filtered.map(s => {
+                const revs = s.id ? allSwapReviews.filter(r => r.swap_id === s.id) : [];
+                const avgTxt = revs.length > 0 ? `⭐ ${(revs.reduce((a, b) => a + b.rating, 0) / revs.length).toFixed(1)} (${revs.length})` : "New";
+
+                return `
                 <div class="tutor-card">
-                    <div class="tutor-tags" style="margin-bottom:10px;">
-                        <span style="color:#38bdf8; border-color:#38bdf8;">${s.swap_type}</span>
-                        <span>${s.author_name}</span>
+                    <div class="tutor-tags" style="margin-bottom:10px; justify-content:space-between; width:100%;">
+                        <div>
+                            <span style="color:#38bdf8; border-color:#38bdf8;">${s.swap_type}</span>
+                            <span>${s.author_name}</span>
+                        </div>
+                        <span style="color:#f59e0b; border-color:#f59e0b;">${avgTxt}</span>
                     </div>
                     <h4 style="color:#0f172a; font-size:15px; margin-bottom:8px;">
                         <span style="color:#10b981;">Teaches:</span> ${s.offer_skill} <br>
                         <span style="color:#f59e0b;">Wants:</span> ${s.want_skill}
                     </h4>
                     <p class="tutor-bio">${s.description}</p>
-                    <div class="tutor-footer">
+                    <div class="tutor-footer" style="gap:8px;">
+                        ${s.id ? `<button type="button" class="btn-reviews open-swap-rev-btn" data-id="${s.id}" data-name="${s.author_name}" style="width:100%;"><i class="fas fa-star"></i> Session Reviews (${revs.length})</button>` : `<a href="tutors.html?educator=${s.tutorId}" style="font-size:12px; color:#38bdf8; font-weight:600; text-align:center;">View Educator Card →</a>`}
                         <button class="unlock-tutor-btn swap-unlock-btn" data-target="${s.discord_link}">
                             <i class="fab fa-discord"></i> Connect to Swap (Watch AD)
                         </button>
                     </div>
-                </div>`).join("");
+                </div>`;
+            }).join("");
 
             document.querySelectorAll(".swap-unlock-btn").forEach(btn => {
                 btn.addEventListener("click", function() {
@@ -163,11 +206,29 @@
                     }, 1000);
                 });
             });
+
+            document.querySelectorAll(".open-swap-rev-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const id = parseInt(btn.dataset.id);
+                    const name = btn.dataset.name;
+                    document.getElementById("swapReviewsTitle").innerText = `Reviews for ${name}`;
+                    document.getElementById("swRevTargetId").value = id;
+                    const list = document.getElementById("swapReviewsList");
+                    const revs = allSwapReviews.filter(r => r.swap_id === id);
+                    list.innerHTML = revs.length === 0 ? `<p style="color:#94a3b8; font-size:13px;">No session reviews yet.</p>` : revs.map(r => `
+                        <div class="review-item">
+                            <div style="display:flex; justify-content:space-between;"><strong>${r.reviewer_name}</strong><span>${"⭐".repeat(r.rating)}</span></div>
+                            <p style="font-size:12px; color:#cbd5e1; margin-top:4px;">${r.comment}</p>
+                        </div>`).join("");
+                    document.getElementById("swapReviewsModal").classList.remove("hidden");
+                });
+            });
         }
 
         const swapModal = document.getElementById("swapModal");
         document.getElementById("openSwapModalBtn").addEventListener("click", () => { swapModal.classList.remove("hidden"); document.body.classList.add("modal-open"); });
         document.getElementById("closeSwapModal").addEventListener("click", () => { swapModal.classList.add("hidden"); document.body.classList.remove("modal-open"); });
+        document.getElementById("closeSwapReviewsModal").addEventListener("click", () => document.getElementById("swapReviewsModal").classList.add("hidden"));
 
         document.getElementById("swapForm").addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -186,6 +247,18 @@
             if (!error) { alert("🎉 Skill Swap card submitted!"); e.target.reset(); swapModal.classList.add("hidden"); document.body.classList.remove("modal-open"); }
             else { alert("Error submitting."); }
             btn.disabled = false;
+        });
+
+        document.getElementById("swapReviewForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const { error } = await supabase.from("swap_reviews").insert([{
+                swap_id: parseInt(document.getElementById("swRevTargetId").value),
+                reviewer_name: document.getElementById("swRevName").value.trim(),
+                rating: parseInt(document.getElementById("swRevRating").value),
+                comment: document.getElementById("swRevComment").value.trim()
+            }]);
+            if (!error) { alert("⭐ Session review posted!"); e.target.reset(); document.getElementById("swapReviewsModal").classList.add("hidden"); loadSwaps(); }
+            else { alert("Could not post review."); }
         });
 
         loadSwaps();
