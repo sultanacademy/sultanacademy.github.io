@@ -1,25 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sultan Academy | Languages, Tech, Music & Skills</title>
     <link rel="icon" href="favicon.ico">
-    <link rel="shortcut icon" href="favicon.ico">
-    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="personal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 <body>
 
-    <!-- VAHİD NAVBAR (js/navbar.js tərəfindən doldurulur) -->
     <header id="main-header"></header>
 
-    <!-- 1. PROJECTS & SUBSIDIARY TREE -->
+    <!-- 1. PROJECTS & HERO -->
     <section id="projects" class="hero-section">
         <div class="hero-bg-glow"></div>
         <div class="hero-container">
@@ -28,7 +22,6 @@
                 <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" class="hero-logo-link" rel="noopener">
                     <img src="logo.png" alt="Sultan Academy Logo" class="hero-logo-img">
                 </a>
-
                 <div class="discord-wrapper">
                     <iframe src="https://discord.com/widget?id=1506203530023931977&theme=dark" width="350" height="400"
                         allowtransparency="true" frameborder="0"
@@ -37,6 +30,11 @@
                     </iframe>
                 </div>
             </div>
+
+            <!-- İLK SANİYƏLƏRDƏ TUTAN SÜRƏTLİ BAŞLANĞIC DÜYMƏSİ -->
+            <button type="button" id="heroStartBtn" class="hero-start-cta">
+                <i class="fas fa-bolt"></i> Start Now — Find Educators, Partners or Teach
+            </button>
 
             <div class="tree-connector">
                 <div class="tree-stem"></div>
@@ -51,7 +49,6 @@
                     <span class="sub-tag">Peer Mentorship</span>
                     <a href="YOUR_STUTOR_LINK_HERE" class="sub-project-btn" target="_blank" rel="noopener">Open Project <i class="fas fa-external-link-alt"></i></a>
                 </div>
-
                 <div class="subsidiary-card">
                     <div class="branch-line"></div>
                     <div class="sub-img-wrap"><img src="sultan-academy-global.png" alt="Sultan Academy Global" class="sub-img"></div>
@@ -59,7 +56,6 @@
                     <span class="sub-tag">Career & Skills</span>
                     <a href="YOUR_GLOBAL_LINK_HERE" class="sub-project-btn" target="_blank" rel="noopener">Open Project <i class="fas fa-external-link-alt"></i></a>
                 </div>
-
                 <div class="subsidiary-card">
                     <div class="branch-line"></div>
                     <div class="sub-img-wrap"><img src="sultan-academy-kids.png" alt="Sultan Academy Kids" class="sub-img"></div>
@@ -67,7 +63,6 @@
                     <span class="sub-tag">Young Learners</span>
                     <a href="YOUR_KIDS_LINK_HERE" class="sub-project-btn" target="_blank" rel="noopener">Open Project <i class="fas fa-external-link-alt"></i></a>
                 </div>
-
                 <div class="subsidiary-card">
                     <div class="branch-line"></div>
                     <div class="sub-img-wrap"><img src="easy-azerbaijani.png" alt="Easy Azerbaijani" class="sub-img"></div>
@@ -80,44 +75,30 @@
         </div>
     </section>
 
-    <!-- 2. ACADEMY STATS & MULTI-DISCIPLINE OVERVIEW -->
+    <!-- 2. ACADEMY STATS & SKILLS -->
     <section id="academy-overview" class="section">
-        <!-- Canlı Statistika Zolağı -->
         <div class="academy-stats-bar">
             <div class="academy-stat-item">
                 <i class="fas fa-chalkboard-teacher" style="color: #38bdf8;"></i>
-                <div>
-                    <strong id="statEducators">Active</strong>
-                    <span>Verified Educators</span>
-                </div>
+                <div><strong id="statEducators">Active</strong><span>Verified Educators</span></div>
             </div>
             <div class="academy-stat-item">
                 <i class="fas fa-star" style="color: #f59e0b;"></i>
-                <div>
-                    <strong id="statReviews">5.0 ★</strong>
-                    <span>Community Reviews</span>
-                </div>
+                <div><strong id="statReviews">5.0 ★</strong><span>Community Reviews</span></div>
             </div>
             <div class="academy-stat-item">
                 <i class="fas fa-hand-holding-usd" style="color: #10b981;"></i>
-                <div>
-                    <strong>0% Fee</strong>
-                    <span>Zero Middleman Commission</span>
-                </div>
+                <div><strong>0% Fee</strong><span>Zero Middleman Commission</span></div>
             </div>
             <div class="academy-stat-item">
                 <i class="fas fa-layer-group" style="color: #818cf8;"></i>
-                <div>
-                    <strong>All-in-One</strong>
-                    <span>Languages • Tech • Music</span>
-                </div>
+                <div><strong>All-in-One</strong><span>Languages • Tech • Music</span></div>
             </div>
         </div>
 
-        <!-- Sahələr (Disciplines) -->
         <div class="section-header" style="margin-top: 65px;">
-            <h2>Explore Learning Disciplines</h2>
-            <p>One ecosystem for every skill — learn what excites you or share your expertise with the world.</p>
+            <h2>Explore Skills & Subjects</h2>
+            <p>One ecosystem for every skill — learn what excites you, find a study partner, or share your expertise.</p>
         </div>
 
         <div class="disciplines-grid">
@@ -136,119 +117,80 @@
                 <h4>Music & Arts</h4>
                 <p>Instruments, vocal coaching, theory, and creative personal expression.</p>
             </a>
-            <a href="tutors.html" class="discipline-card">
-                <div class="disc-icon" style="background: rgba(129, 140, 248, 0.12); color: #818cf8;"><i class="fas fa-rocket"></i></div>
-                <h4>Coaching & Prep</h4>
-                <p>Time management, career interviews, CV optimization, and study habits.</p>
+            <a href="tutors.html?tab=partners" class="discipline-card">
+                <div class="disc-icon" style="background: rgba(129, 140, 248, 0.12); color: #818cf8;"><i class="fas fa-handshake"></i></div>
+                <h4>Project & Study Partners</h4>
+                <p>Find co-founders, language exchange buddies, and collaborative creators.</p>
             </a>
-        </div>
-
-        <!-- Akademiya Necə İşləyir? (3 Addım) -->
-        <div class="how-it-works-box">
-            <h3>How Sultan Academy Works</h3>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <span class="step-num">01</span>
-                    <h5>Explore or Teach</h5>
-                    <p>Browse independent educators for free, or switch to Educator mode in your <a href="dashboard.html" style="color: #38bdf8; font-weight: 600;">Dashboard</a>.</p>
-                </div>
-                <div class="step-card">
-                    <span class="step-num">02</span>
-                    <h5>Unlock & Connect</h5>
-                    <p>Watch a quick 10s sponsor ad to unlock the educator's official Sultan Academy Discord room or Cal.com.</p>
-                </div>
-                <div class="step-card">
-                    <span class="step-num">03</span>
-                    <h5>Learn & Earn SP</h5>
-                    <p>Attend live sessions with 0% platform fees and earn SP rewards in the <a href="shop.html" style="color: #10b981; font-weight: 600;">Shop</a> for free materials.</p>
-                </div>
-            </div>
         </div>
     </section>
 
-<!-- 3. WEEKLY LIVE CLUBS & WORKSHOPS (DİNAMİK + AVTOMATİK) -->
+    <!-- 3. WEEKLY LIVE CLUBS -->
     <section id="live-clubs" class="section bg-light">
         <div class="section-header">
             <h2>Weekly Live Clubs & Workshops</h2>
-            <p>Join interactive speaking lounges, coding labs, and creative sessions hosted by our educators on Discord.</p>
+            <p>Join interactive lounges, coding labs, and creative sessions hosted by our educators on Discord.</p>
             <div style="margin-top: 15px;">
                 <a href="dashboard.html?mode=educator" class="inline-blue-btn" style="padding: 8px 18px; font-size: 13px;">
                     <i class="fas fa-plus-circle"></i> Host a Live Club
                 </a>
             </div>
         </div>
-
         <div class="clubs-grid" id="clubsGrid">
-            <!-- Supabase-dən avtomatik yüklənəcək (boşdursa başlanğıc klublar qalacaq) -->
             <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading live workshops...</p>
         </div>
     </section>
 
-    <!-- 4. CUSTOM TESTIMONIALS (Giscus SİLİNDİ, ADMİN TƏSDİQLİ ÖZ SİSTEMİMİZ GƏLDİ!) -->
+    <!-- 4. CUSTOM TESTIMONIALS -->
     <section id="testimonials" class="section">
         <div class="section-header">
             <h2>Student & Educator Testimonials</h2>
-            <p>Real voices from our global learning community. Every review is verified before publishing.</p>
+            <p>Real voices from our global learning community.</p>
         </div>
 
-        <!-- Təsdiqlənmiş Rəylər Şəbəkəsi -->
         <div class="testimonials-grid" id="testimonialsGrid">
             <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading testimonials...</p>
         </div>
 
-        <!-- Yeni Rəy Yazma Forması -->
         <div class="testimonial-form-box">
             <h3><i class="fas fa-comment-dots" style="color: #38bdf8;"></i> Share Your Experience</h3>
-            <p>Loved a session or our resources? Leave a testimonial (published after admin review).</p>
+            <p>Loved a session or our resources? Leave a testimonial below.</p>
             <form id="testimonialForm" class="testi-form">
                 <div class="testi-row">
-                    <input type="text" id="testiName" required placeholder="Your Name (e.g. Aysel M.)">
-                    <input type="text" id="testiRole" required placeholder="Your Role (e.g. German Learner)">
+                    <input type="text" id="testiName" maxlength="20" required placeholder="Your Name (max 20 chars)">
+                    <input type="text" id="testiRole" maxlength="25" required placeholder="Your Role (e.g. Learner)">
                     <select id="testiRating">
                         <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
                         <option value="4">⭐⭐⭐⭐ (4/5)</option>
                         <option value="3">⭐⭐⭐ (3/5)</option>
                     </select>
                 </div>
-                <textarea id="testiMsg" rows="3" required placeholder="Write your honest feedback about Sultan Academy..."></textarea>
+                <textarea id="testiMsg" rows="3" maxlength="180" required placeholder="Write your feedback (max 180 chars)..."></textarea>
                 <button type="submit" id="testiSubmitBtn" class="submit-profile-btn">
-                    <i class="fas fa-paper-plane"></i> Submit Testimonial
+                    <i class="fas fa-paper-plane"></i> Send Testimonial
                 </button>
             </form>
         </div>
     </section>
 
-    <!-- 5. AI & SEARCH OPTIMIZATION BLOCK -->
-    <section id="ai-info" class="section ai-section">
-        <article class="ai-overview">
-            <h2>About Sultan Academy Ecosystem</h2>
-            <p><strong>Sultan Academy</strong> is an all-in-one virtual educational ecosystem designed for self-improvement, language learning, coding, music, and skill mastery. It connects learners, independent educators, and content creators through a structured, zero-commission community hub.</p>
-        </article>
-    </section>
-
-    <!-- FOOTER -->
     <footer class="footer">
-        <p>© 2026 Sultan Alizada. All rights reserved.</p>
+        <p>© 2026 Sultan Alizada • <a href="privacy.html" style="color: #38bdf8;">Privacy & Legal Notice</a></p>
     </footer>
 
-    <!-- METALLİK YAŞIL DƏSTƏK DÜYMƏSİ -->
     <a href="YOUR_WISE_LINK_HERE" class="metallic-support-btn" target="_blank" rel="noopener">
         <i class="fas fa-hand-holding-heart"></i> Support Our Work
     </a>
 
-    <!-- Live Social Proof Notifications -->
     <div id="social-proof-container"></div>
 
-    <!-- SKRİPTLƏR -->
     <script src="js/navbar.js"></script>
     <script src="js/cookie-consent.js"></script>
+    <script type="module" src="js/wizard.js"></script>
     <script type="module" src="js/social-proof.js"></script>
-  
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
         const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
 
-        // 1. Canlı Statistika
         async function loadLiveStats() {
             const { count: tutorCount } = await supabase.from('tutors').select('id', { count: 'exact', head: true }).eq('status', 'approved');
             const { count: revCount } = await supabase.from('reviews').select('id', { count: 'exact', head: true });
@@ -258,38 +200,32 @@
             if (elRev && revCount !== null && revCount > 0) elRev.innerText = `${revCount} Reviews`;
         }
 
-        // 2. Dinamik Canlı Klublar
         async function loadEvents() {
             const grid = document.getElementById('clubsGrid');
             if (!grid) return;
-
-            const { data: events } = await supabase
-                .from('events')
-                .select('id, educator_name, category, title, description, schedule_text, discord_link')
-                .eq('status', 'approved')
-                .order('id', { ascending: false });
+            const { data: events } = await supabase.from('events').select('id, educator_name, category, title, description, schedule_text, discord_link').eq('status', 'approved').order('id', { ascending: false });
 
             if (!events || events.length === 0) {
                 grid.innerHTML = `
                     <div class="club-card">
                         <div class="club-badge live-lang"><i class="fas fa-comments"></i> Languages</div>
                         <h4>Polyglot Speaking Lounge</h4>
-                        <p>Practice German, English, Turkish & Azerbaijani in friendly moderated voice rooms for all levels.</p>
-                        <div class="club-meta"><span><i class="far fa-clock"></i> Weekly Community Rooms</span><span><i class="fab fa-discord"></i> Free Access</span></div>
+                        <p>Practice German, English, Turkish & Azerbaijani in friendly moderated voice rooms.</p>
+                        <div class="club-meta"><span><i class="far fa-clock"></i> Weekly Rooms</span><span><i class="fab fa-discord"></i> Free Access</span></div>
                         <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Discord Lounge</a>
                     </div>
                     <div class="club-card">
                         <div class="club-badge live-tech"><i class="fas fa-laptop-code"></i> Tech & Study</div>
                         <h4>Coding & Productivity Lab</h4>
-                        <p>Co-working Pomodoro sessions, beginner web dev help, and structured study-planning workshops.</p>
-                        <div class="club-meta"><span><i class="far fa-clock"></i> Weekend Focus Sessions</span><span><i class="fab fa-discord"></i> Open Stage</span></div>
+                        <p>Co-working Pomodoro sessions, beginner web dev help, and study-planning workshops.</p>
+                        <div class="club-meta"><span><i class="far fa-clock"></i> Weekend Focus</span><span><i class="fab fa-discord"></i> Open Stage</span></div>
                         <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Discord Lounge</a>
                     </div>
                     <div class="club-card">
                         <div class="club-badge live-music"><i class="fas fa-guitar"></i> Music & Arts</div>
                         <h4>Creative & Music Hangout</h4>
-                        <p>Acoustic jams, music theory discussions, and hobby sharing with fellow academy members.</p>
-                        <div class="club-meta"><span><i class="far fa-clock"></i> Community Jam Hours</span><span><i class="fab fa-discord"></i> All Talents Welcome</span></div>
+                        <p>Acoustic jams, music theory discussions, and hobby sharing with academy members.</p>
+                        <div class="club-meta"><span><i class="far fa-clock"></i> Community Jam</span><span><i class="fab fa-discord"></i> All Welcome</span></div>
                         <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Discord Lounge</a>
                     </div>`;
                 return;
@@ -300,27 +236,15 @@
                     <div class="club-badge live-lang">${ev.category}</div>
                     <h4>${ev.title}</h4>
                     <p>${ev.description}</p>
-                    <div class="club-meta">
-                        <span><i class="far fa-clock"></i> ${ev.schedule_text}</span>
-                        <span><i class="fas fa-user"></i> ${ev.educator_name}</span>
-                    </div>
-                    <a href="${ev.discord_link}" target="_blank" rel="noopener" class="club-join-btn">
-                        <i class="fab fa-discord"></i> Join Live Room
-                    </a>
-                </div>
-            `).join('');
+                    <div class="club-meta"><span><i class="far fa-clock"></i> ${ev.schedule_text}</span><span><i class="fas fa-user"></i> ${ev.educator_name}</span></div>
+                    <a href="${ev.discord_link}" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Live Room</a>
+                </div>`).join('');
         }
 
-        // 3. Təsdiqlənmiş Testimonials Yükləmə & Göndərmə
         async function loadTestimonials() {
             const grid = document.getElementById('testimonialsGrid');
             if (!grid) return;
-
-            const { data } = await supabase
-                .from('testimonials')
-                .select('*')
-                .eq('status', 'approved')
-                .order('id', { ascending: false });
+            const { data } = await supabase.from('testimonials').select('*').eq('status', 'approved').order('id', { ascending: false });
 
             if (!data || data.length === 0) {
                 grid.innerHTML = `<p style="grid-column: 1/-1; color: #64748b; font-size: 14px;">Be the first to share your experience below!</p>`;
@@ -334,13 +258,9 @@
                     <p class="testi-body">"${t.message}"</p>
                     <div class="testi-author">
                         <div class="testi-avatar">${t.author_name.charAt(0).toUpperCase()}</div>
-                        <div>
-                            <strong>${t.author_name}</strong>
-                            <span>${t.author_role}</span>
-                        </div>
+                        <div><strong>${t.author_name}</strong><span>${t.author_role}</span></div>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
         const testiForm = document.getElementById('testimonialForm');
@@ -361,10 +281,10 @@
                 }]);
 
                 if (!error) {
-                    alert("🎉 Thank you! Your testimonial has been submitted and will appear once approved by Admin.");
+                    alert("Thank you! Your testimonial has been sent.");
                     testiForm.reset();
                 } else {
-                    alert("Error submitting testimonial. Please try again.");
+                    alert("Error sending testimonial. Please try again.");
                 }
                 btn.innerHTML = oldHTML;
                 btn.disabled = false;
@@ -375,6 +295,5 @@
         loadEvents();
         loadTestimonials();
     </script>
-    
 </body>
 </html>
