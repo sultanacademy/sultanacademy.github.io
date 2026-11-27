@@ -5,12 +5,6 @@ const supabase = createClient(
     'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX'
 );
 
-const fallbackList = [
-    { name: "Eldar M.", action: "bought Dental Assistant Guide", time_text: "Recently" },
-    { name: "Sarah K.", action: "donated $15 via Wise", time_text: "Recently" },
-    { name: "Lukas W.", action: "joined German Classroom", time_text: "Recently" }
-];
-
 const vibrantGradients = [
     "linear-gradient(135deg, #FF416C, #FF4B2B)",
     "linear-gradient(135deg, #10b981, #059669)",
@@ -32,7 +26,10 @@ async function initSocialProof() {
         .eq("is_active", true)
         .order("id", { ascending: false });
 
-    feedItems = (data && data.length > 0) ? data : fallbackList;
+    // Hüquqi qaydaya görə: yalnız bazadakı real təsdiqlənmiş dəstəkçiləri göstəririk
+    if (!data || data.length === 0) return;
+
+    feedItems = data;
     setTimeout(showNextNotification, 4000);
 }
 
@@ -64,7 +61,7 @@ function showNextNotification() {
     }, 4500);
 
     currentIndex = (currentIndex + 1) % feedItems.length;
-    setTimeout(showNextNotification, Math.floor(Math.random() * 4000) + 7500);
+    setTimeout(showNextNotification, Math.floor(Math.random() * 4000) + 8000);
 }
 
 document.addEventListener("DOMContentLoaded", initSocialProof);
