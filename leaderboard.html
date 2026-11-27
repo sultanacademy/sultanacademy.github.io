@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard & Top Performers | Sultan Academy</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="personal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .leader-spotlight {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.16), rgba(15, 23, 42, 0.95));
+            border: 2px solid #f59e0b;
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.18);
+            text-align: left;
+        }
+        .crown-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #f59e0b; color: #0f172a; font-weight: 700; font-size: 12px;
+            padding: 5px 14px; border-radius: 20px; margin-bottom: 10px;
+        }
+        .rank-list { display: flex; flex-direction: column; gap: 12px; }
+        .rank-row {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 16px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            text-align: left;
+            transition: 0.25s;
+        }
+        .rank-row:hover { transform: translateY(-2px); border-color: #38bdf8; box-shadow: 0 8px 25px rgba(56,189,248,0.1); }
+        .rank-left { display: flex; align-items: center; gap: 15px; }
+        .rank-num {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: #f1f5f9; color: #0f172a; font-weight: 700; font-size: 15px;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .rank-1 { background: linear-gradient(135deg, #fbbf24, #d97706); color: #fff; }
+        .rank-2 { background: linear-gradient(135deg, #cbd5e1, #64748b); color: #fff; }
+        .rank-3 { background: linear-gradient(135deg, #f97316, #9a3412); color: #fff; }
+        .rank-score-pill {
+            background: #0f172a; color: #38bdf8; font-weight: 700; font-size: 14px;
+            padding: 8px 16px; border-radius: 20px;
+        }
+        .formula-box {
+            margin-top: 40px; background: #0f172a; color: #cbd5e1; border-radius: 20px;
+            padding: 24px; text-align: left; border: 1px solid #334155; font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header"></header>
+
+    <main class="section" style="padding-top: 90px; max-width: 950px;">
+        <div class="section-header">
+            <h2>🏆 Academy Leaderboard</h2>
+            <p>Recognizing our highest-rated educators and most active community learners!</p>
+        </div>
+
+        <!-- TABLAR -->
+        <div class="mode-tabs-bar">
+            <button type="button" class="mode-tab-big active" id="tabTopEducators"><i class="fas fa-chalkboard-teacher"></i> Top Educators</button>
+            <button type="button" class="mode-tab-big" id="tabTopStudents"><i class="fas fa-graduation-cap"></i> Top Learners</button>
+        </div>
+
+        <!-- 1. TOP EDUCATORS PANELİ -->
+        <div id="panelTopEducators">
+            <div class="leader-spotlight" id="eduWinnerSpotlight">
+                <div>
+                    <span class="crown-badge"><i class="fas fa-crown"></i> #1 EDUCATOR OF THE MONTH</span>
+                    <h3 id="topEduName" style="color: #ffffff; font-size: 24px;">Calculating...</h3>
+                    <p id="topEduStats" style="color: #94a3b8; font-size: 13px; margin-top: 4px;"></p>
+                </div>
+                <div style="background: rgba(255,255,255,0.06); padding: 14px 18px; border-radius: 16px; border: 1px solid rgba(245,158,11,0.3);">
+                    <strong style="color: #fbbf24; font-size: 12px; display: block; margin-bottom: 4px;">🎁 #1 Monthly Prize:</strong>
+                    <span style="color: #e2e8f0; font-size: 12px; display: block;">• Gold Homepage Spotlight<br>• Free YouTube / IG / TG Promo<br>• @Top Educator VIP Discord Role</span>
+                </div>
+            </div>
+
+            <div class="rank-list" id="educatorsRankList">
+                <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading Educator Rankings...</p>
+            </div>
+        </div>
+
+        <!-- 2. TOP LEARNERS PANELİ -->
+        <div id="panelTopStudents" class="hidden">
+            <div class="leader-spotlight" style="border-color: #10b981; background: linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(15, 23, 42, 0.95));">
+                <div>
+                    <span class="crown-badge" style="background: #10b981; color: #fff;"><i class="fas fa-bolt"></i> #1 LEARNER OF THE MONTH</span>
+                    <h3 id="topStuName" style="color: #ffffff; font-size: 24px;">Calculating...</h3>
+                    <p id="topStuStats" style="color: #94a3b8; font-size: 13px; margin-top: 4px;"></p>
+                </div>
+                <div style="background: rgba(255,255,255,0.06); padding: 14px 18px; border-radius: 16px; border: 1px solid rgba(16,185,129,0.35);">
+                    <strong style="color: #34d399; font-size: 12px; display: block; margin-bottom: 4px;">🎁 #1 Monthly Prize:</strong>
+                    <span style="color: #e2e8f0; font-size: 12px; display: block;">• <b>+100 SP Bonus Gift</b> for the Shop<br>• @Academy Champion Discord Role</span>
+                </div>
+            </div>
+
+            <div class="rank-list" id="studentsRankList">
+                <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading Learner Rankings...</p>
+            </div>
+        </div>
+
+        <!-- ŞƏFFAF XAL HESABLAMA QAYDASI -->
+        <div class="formula-box">
+            <h4 style="color: #38bdf8; margin-bottom: 10px;"><i class="fas fa-calculator"></i> How Ranking Points Work (Quality + Real Activity)</h4>
+            <p style="margin-bottom: 6px;"><b>Educators:</b> 5★ Review (+50 pts) • 4★ Review (+30 pts) • Hosting Live Club (+40 pts) • Student Room Unlock (+5 pts) • Skill Swap Enabled (+15 pts)</p>
+            <p><b>Learners:</b> Shop SP Balance (1 SP = 1 pt) • Leaving Honest Reviews (+15 pts each) • Skill Swap 5★/4★ Ratings (+30 / +20 pts)</p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Sultan Alizada • <a href="privacy.html" style="color: #38bdf8;">Privacy & Legal Notice</a></p>
+    </footer>
+
+    <a href="YOUR_WISE_LINK_HERE" class="metallic-support-btn" target="_blank" rel="noopener"><i class="fas fa-hand-holding-heart"></i> Support Our Work</a>
+
+    <script src="js/navbar.js"></script>
+    <script src="js/cookie-consent.js"></script>
+    <script type="module" src="js/wizard.js"></script>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
+
+        const tabEdu = document.getElementById("tabTopEducators");
+        const tabStu = document.getElementById("tabTopStudents");
+        const panEdu = document.getElementById("panelTopEducators");
+        const panStu = document.getElementById("panelTopStudents");
+
+        tabEdu.addEventListener("click", () => {
+            tabEdu.classList.add("active"); tabStu.classList.remove("active");
+            panEdu.classList.remove("hidden"); panStu.classList.add("hidden");
+        });
+        tabStu.addEventListener("click", () => {
+            tabStu.classList.add("active"); tabEdu.classList.remove("active");
+            panStu.classList.remove("hidden"); panEdu.classList.add("hidden");
+        });
+
+        async function loadLeaderboards() {
+            const [
+                { data: tutors },
+                { data: reviews },
+                { data: events },
+                { data: swaps },
+                { data: swapReviews },
+                { data: users }
+            ] = await Promise.all([
+                supabase.from("tutors").select("id, name, avatar_url, category, subject, unlock_count, skill_swap_wanted").eq("status", "approved"),
+                supabase.from("reviews").select("tutor_id, student_name, rating"),
+                supabase.from("events").select("educator_name").eq("status", "approved"),
+                supabase.from("skill_swaps").select("id, author_name").eq("status", "approved"),
+                supabase.from("swap_reviews").select("swap_id, reviewer_name, rating"),
+                supabase.rpc("get_student_leaderboard")
+            ]);
+
+            // 1. EDUCATOR SCORING
+            const eduList = (tutors || []).map(t => {
+                const revs = (reviews || []).filter(r => r.tutor_id === t.id);
+                let revPts = 0;
+                revs.forEach(r => {
+                    if (r.rating === 5) revPts += 50;
+                    else if (r.rating === 4) revPts += 30;
+                    else if (r.rating === 3) revPts += 10;
+                    else revPts -= 15;
+                });
+
+                const clubCount = (events || []).filter(ev => ev.educator_name.toLowerCase() === t.name.toLowerCase()).length;
+                const unlockPts = (t.unlock_count || 0) * 5;
+                const clubPts = clubCount * 40;
+                const swapBonus = (t.skill_swap_wanted && t.skill_swap_wanted.trim()) ? 15 : 0;
+
+                const totalScore = Math.max(0, revPts + unlockPts + clubPts + swapBonus);
+                return { ...t, totalScore, revCount: revs.length, clubCount };
+            }).sort((a, b) => b.totalScore - a.totalScore);
+
+            const eduBox = document.getElementById("educatorsRankList");
+            if (eduList.length > 0) {
+                const top = eduList[0];
+                document.getElementById("topEduName").innerText = top.name;
+                document.getElementById("topEduStats").innerText = `${top.totalScore} pts • ${top.revCount} reviews • ${top.unlock_count || 0} student connects`;
+
+                eduBox.innerHTML = eduList.map((t, i) => `
+                    <div class="rank-row">
+                        <div class="rank-left">
+                            <div class="rank-num ${i < 3 ? 'rank-' + (i + 1) : ''}">${i + 1}</div>
+                            <img src="${t.avatar_url || 'your-photo.jpg'}" onerror="this.src='your-photo.jpg'" style="width:45px; height:45px; border-radius:50%; object-fit:cover;">
+                            <div>
+                                <strong style="color:#0f172a; font-size:15px;">${t.name}</strong>
+                                <span style="display:block; font-size:12px; color:#64748b;">${t.category} • ${t.subject} (${t.revCount} reviews, ${t.clubCount} clubs)</span>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span class="rank-score-pill">${t.totalScore} pts</span>
+                            <a href="tutors.html?educator=${t.id}" style="color:#38bdf8; font-weight:600; font-size:12px;">View →</a>
+                        </div>
+                    </div>`).join("");
+            } else {
+                document.getElementById("topEduName").innerText = "Open Spot!";
+                eduBox.innerHTML = `<p style="color:#64748b;">No ranked educators yet.</p>`;
+            }
+
+            // 2. STUDENT / LEARNER SCORING
+            const stuList = (users || []).map(u => {
+                const uname = u.username.toLowerCase();
+                const revWritten = (reviews || []).filter(r => r.student_name.toLowerCase() === uname).length
+                                 + (swapReviews || []).filter(r => r.reviewer_name.toLowerCase() === uname).length;
+
+                const mySwaps = (swaps || []).filter(s => s.author_name.toLowerCase() === uname).map(s => s.id);
+                let swapPts = 0;
+                (swapReviews || []).filter(sr => mySwaps.includes(sr.swap_id)).forEach(sr => {
+                    if (sr.rating === 5) swapPts += 30;
+                    else if (sr.rating === 4) swapPts += 20;
+                });
+
+                const totalScore = (u.sp || 0) + (revWritten * 15) + swapPts;
+                return { username: u.username, sp: u.sp || 0, revWritten, totalScore };
+            }).sort((a, b) => b.totalScore - a.totalScore);
+
+            const stuBox = document.getElementById("studentsRankList");
+            if (stuList.length > 0) {
+                const topS = stuList[0];
+                document.getElementById("topStuName").innerText = topS.username;
+                document.getElementById("topStuStats").innerText = `${topS.totalScore} pts • ${topS.sp} SP • ${topS.revWritten} reviews given`;
+
+                stuBox.innerHTML = stuList.map((s, i) => `
+                    <div class="rank-row">
+                        <div class="rank-left">
+                            <div class="rank-num ${i < 3 ? 'rank-' + (i + 1) : ''}">${i + 1}</div>
+                            <div>
+                                <strong style="color:#0f172a; font-size:15px;">${s.username}</strong>
+                                <span style="display:block; font-size:12px; color:#64748b;">${s.sp} SP • ${s.revWritten} reviews shared</span>
+                            </div>
+                        </div>
+                        <span class="rank-score-pill" style="color:#10b981;">${s.totalScore} pts</span>
+                    </div>`).join("");
+            } else {
+                document.getElementById("topStuName").innerText = "Open Spot!";
+                stuBox.innerHTML = `<p style="color:#64748b;">Be the first learner to earn SP!</p>`;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadLeaderboards);
+    </script>
+</body>
+</html>
