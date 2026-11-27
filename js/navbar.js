@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="nav-actions">
                     <a href="shop.html" class="nav-shop-btn"><i class="fas fa-shopping-bag"></i> Shop</a>
                     <button id="navStartBtn" class="nav-join-btn" type="button">
-                        <i class="fas fa-bolt"></i> <span id="navStartText">${activeUser ? activeUser : 'Start'}</span>
+                        <i class="fas fa-bolt"></i> <span id="navStartText">${activeUser ? `Start • ${activeUser}` : 'Start'}</span>
                     </button>
                 </div>
             </div>
