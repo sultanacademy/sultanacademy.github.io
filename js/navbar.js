@@ -1,45 +1,294 @@
+// --- SULTAN ACADEMY: DRAG & DROP LEFT SIDEBAR + SETTINGS & DELETE ACCOUNT ---
 document.addEventListener("DOMContentLoaded", () => {
     const headerContainer = document.getElementById("main-header");
     if (!headerContainer) return;
 
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
+    const currentSearch = window.location.search;
     const activeUser = localStorage.getItem("sultan_user");
 
+    // Bütün menyu elementlərinin bazası
+    const menuItemsDB = {
+        home: { label: "Home", href: "index.html", icon: "fas fa-home" },
+        dashboard: { label: "Dashboard", href: "dashboard.html", icon: "fas fa-th-large" },
+        become_educator: { label: "Become an Educator", href: "dashboard.html?mode=educator", icon: "fas fa-chalkboard-teacher" },
+        find_educators: { label: "Find Educators", href: "tutors.html", icon: "fas fa-search" },
+        skill_swap: { label: "Skill Swap", href: "skill-swap.html", icon: "fas fa-exchange-alt" },
+        lang_exchange: { label: "Language & Cultural Exchange", href: "skill-swap.html?type=exchange", icon: "fas fa-globe" },
+        projects: {
+            label: "Projects",
+            type: "dropdown",
+            icon: "fas fa-layer-group",
+            children: [
+                { label: "STUTOR", href: "stutor.html" },
+                { label: "Global Professionals", href: "global.html" },
+                { label: "Sultan Academy Kids", href: "kids.html" },
+                { label: "Easy Azerbaijani", href: "easy-azerbaijani.html" },
+                { label: "TARAZ (Music)", href: "taraz.html" },
+                { label: "MUSICO (Global)", href: "musico.html" }
+            ]
+        },
+        shop: { label: "Shop", href: "shop.html", icon: "fas fa-shopping-bag", isShop: true },
+        testimonials: { label: "Testimonials", href: "index.html#testimonials", icon: "fas fa-comment-alt" },
+        contact: { label: "Contact & Feedback", href: "contact.html", icon: "fas fa-envelope" }
+    };
+
+    const defaultLayout = {
+        general: ["home", "dashboard", "become_educator", "find_educators", "skill_swap", "lang_exchange", "projects", "shop"],
+        others: ["testimonials", "contact"]
+    };
+
+    let savedLayout;
+    try {
+        savedLayout = JSON.parse(localStorage.getItem("sultan_sidebar_layout")) || defaultLayout;
+        if (!savedLayout.general || !savedLayout.others) savedLayout = defaultLayout;
+    } catch {
+        savedLayout = defaultLayout;
+    }
+
+    function renderItemHTML(id) {
+        const item = menuItemsDB[id];
+        if (!item) return "";
+
+        if (item.type === "dropdown") {
+            const subHTML = item.children.map(c =>
+                `<a href="${c.href}" class="sidebar-sublink ${currentPage === c.href ? 'active' : ''}">${c.label}</a>`
+            ).join("");
+            return `
+                <li class="sidebar-item" draggable="true" data-id="${id}">
+                    <div class="sidebar-row">
+                        <button type="button" class="sidebar-link sidebar-projects-toggle">
+                            <i class="${item.icon}"></i>
+                            <span>${item.label}</span>
+                            <i class="fas fa-chevron-down drop-arrow"></i>
+                        </button>
+                        <span class="drag-handle" title="Hold & drag to reorder"><i class="fas fa-grip-vertical"></i></span>
+                    </div>
+                    <div class="sidebar-submenu hidden">${subHTML}</div>
+                </li>`;
+        }
+
+        const fullCurrent = currentPage + currentSearch;
+        const isActive = (item.href === fullCurrent) || (item.href === currentPage && !currentSearch && item.href !== "index.html#testimonials");
+        const shopClass = item.isShop ? "sidebar-shop-btn" : "";
+
+        return `
+            <li class="sidebar-item" draggable="true" data-id="${id}">
+                <div class="sidebar-row">
+                    <a href="${item.href}" class="sidebar-link ${shopClass} ${isActive ? 'active' : ''}">
+                        <i class="${item.icon}"></i>
+                        <span>${item.label}</span>
+                    </a>
+                    <span class="drag-handle" title="Hold & drag to reorder"><i class="fas fa-grip-vertical"></i></span>
+                </div>
+            </li>`;
+    }
+
     headerContainer.innerHTML = `
-        <nav class="navbar">
-            <div class="navbar-inner">
-                <a href="index.html" class="nav-brand">SULTAN ACADEMY</a>
+        <!-- MOBİL ÜST ZOLAQ VƏ HAMBURGER -->
+        <button id="mobileSidebarToggle" class="mobile-sidebar-btn" type="button" aria-label="Open Menu">
+            <i class="fas fa-bars"></i>
+        </button>
 
-                <button class="menu-toggle" id="mobile-menu" aria-label="Toggle Navigation" type="button">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </button>
+        <!-- YUXARI SAĞ KÜNC: START + USERNAME + SETTINGS ÇARXI -->
+        <div class="top-utility-bar">
+            <button id="navStartBtn" class="nav-join-btn" type="button">
+                <i class="fas fa-bolt"></i> <span id="navStartText">${activeUser ? `Start • ${activeUser}` : 'Start'}</span>
+            </button>
+            <button id="openSettingsBtn" class="settings-gear-btn" type="button" title="Settings & Account">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
 
-                <ul class="nav-list" id="nav-list">
-                    <li><a href="index.html" class="${currentPage === 'index.html' || currentPage === '' ? 'active-link' : ''}">Home</a></li>
-                    <li><a href="tutors.html" class="${currentPage === 'tutors.html' ? 'active-link' : ''}">Find Educators</a></li>
-                    <li><a href="contact.html" class="${currentPage === 'contact.html' ? 'active-link' : ''}">Contact</a></li>
+        <!-- SOL SIDEBAR (STRIPE TƏRZİ) -->
+        <aside id="leftSidebar" class="left-sidebar">
+            <div class="sidebar-brand">
+                <a href="index.html">
+                    <img src="logo.png" alt="Logo" style="width:28px; height:28px; border-radius:8px; object-fit:cover;">
+                    <span>SULTAN ACADEMY</span>
+                </a>
+                <button id="closeMobileSidebar" class="mobile-close-sb" type="button">&times;</button>
+            </div>
+
+            <div class="sidebar-scroll">
+                <div class="sidebar-group-title">GENERAL</div>
+                <ul class="sidebar-list" id="sidebarGeneral" data-group="general">
+                    ${savedLayout.general.map(renderItemHTML).join("")}
                 </ul>
 
-                <div class="nav-actions">
-                    <a href="shop.html" class="nav-shop-btn"><i class="fas fa-shopping-bag"></i> Shop</a>
-                    <button id="navStartBtn" class="nav-join-btn" type="button">
-                        <i class="fas fa-bolt"></i> <span id="navStartText">${activeUser ? `Start • ${activeUser}` : 'Start'}</span>
-                    </button>
-                </div>
+                <div class="sidebar-divider"></div>
+
+                <div class="sidebar-group-title">OTHERS</div>
+                <ul class="sidebar-list" id="sidebarOthers" data-group="others">
+                    ${savedLayout.others.map(renderItemHTML).join("")}
+                </ul>
             </div>
-        </nav>
+
+            <div class="sidebar-footer-tip">
+                <i class="fas fa-grip-vertical"></i> Drag <b style="color:#94a3b8;">⋮⋮</b> to customize menu
+            </div>
+        </aside>
+
+        <!-- SETTINGS & DELETE ACCOUNT MODALI -->
+        <div id="settingsModal" class="auth-modal-overlay hidden">
+            <div class="wizard-card" style="max-width:460px;">
+                <button class="auth-close-btn" id="closeSettingsModal" type="button">&times;</button>
+                <h3 style="margin-bottom:14px;"><i class="fas fa-cog" style="color:#38bdf8;"></i> Account & Settings</h3>
+                
+                <div style="background:#1e293b; padding:14px; border-radius:14px; border:1px solid #334155; margin-bottom:16px;">
+                    <span style="font-size:11px; color:#94a3b8; display:block;">Current Identity</span>
+                    <strong style="font-size:16px; color:#ffffff;">${activeUser ? activeUser : 'Guest (Not connected)'}</strong>
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label style="font-size:12px; color:#cbd5e1; display:block; margin-bottom:6px;">Preferred Language (Multi-language support coming soon)</label>
+                    <select id="prefLangSelect" style="width:100%; padding:10px; border-radius:10px; background:#1e293b; border:1px solid #334155; color:white;">
+                        <option value="en">🇬🇧 English (Default)</option>
+                        <option value="de">🇩🇪 Deutsch (Coming Soon)</option>
+                        <option value="tr">🇹🇷 Türkçe (Coming Soon)</option>
+                        <option value="az">🇦🇿 Azərbaycan (Coming Soon)</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
+                    <button type="button" id="resetSidebarBtn" class="btn-secondary-sm" style="flex:1;">
+                        <i class="fas fa-undo"></i> Reset Menu Order
+                    </button>
+                    ${activeUser ? `<button type="button" id="settingsLogoutBtn" class="btn-secondary-sm" style="flex:1; color:#f59e0b; border-color:#f59e0b;"><i class="fas fa-sign-out-alt"></i> Log Out</button>` : ''}
+                </div>
+
+                ${activeUser ? `
+                <div style="border-top:1px solid #334155; padding-top:16px;">
+                    <button type="button" id="toggleDeleteBoxBtn" style="background:transparent; border:1px solid #ef4444; color:#ef4444; width:100%; padding:9px; border-radius:10px; font-weight:600; font-size:12px; cursor:pointer;">
+                        <i class="fas fa-trash-alt"></i> Delete My Account
+                    </button>
+                    <form id="deleteAccountForm" class="hidden" style="margin-top:12px; display:flex; flex-direction:column; gap:10px;">
+                        <label style="font-size:12px; color:#fca5a5;">Required Feedback: Why are you deleting your account? *</label>
+                        <textarea id="deleteFeedbackInput" rows="2" maxlength="180" required placeholder="Your honest feedback helps us improve (required)..." style="background:#1e293b; border:1px solid #ef4444; color:white; padding:10px; border-radius:10px; font-size:12px;"></textarea>
+                        <button type="submit" id="confirmDeleteBtn" style="background:#ef4444; color:white; border:none; padding:10px; border-radius:10px; font-weight:700; font-size:12px; cursor:pointer;">
+                            Permanently Delete Account
+                        </button>
+                    </form>
+                </div>` : ''}
+            </div>
+        </div>
     `;
 
-    const menuToggle = document.getElementById("mobile-menu");
-    const navList = document.getElementById("nav-list");
+    // Mobil Sidebar Aç/Bağla
+    const leftSidebar = document.getElementById("leftSidebar");
+    const mobileBtn = document.getElementById("mobileSidebarToggle");
+    const closeMobileBtn = document.getElementById("closeMobileSidebar");
 
-    if (menuToggle && navList) {
-        menuToggle.addEventListener("click", () => {
-            navList.classList.toggle("active");
-            menuToggle.classList.toggle("open");
-            document.body.classList.toggle("menu-open", navList.classList.contains("active"));
+    if (mobileBtn) mobileBtn.addEventListener("click", () => leftSidebar.classList.add("open"));
+    if (closeMobileBtn) closeMobileBtn.addEventListener("click", () => leftSidebar.classList.remove("open"));
+
+    // Projects Accordion Dropdown
+    document.querySelectorAll(".sidebar-projects-toggle").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const sub = btn.closest(".sidebar-item").querySelector(".sidebar-submenu");
+            sub.classList.toggle("hidden");
+            btn.querySelector(".drop-arrow").classList.toggle("rotated");
+        });
+    });
+
+    // DRAG & DROP SÜRÜŞDÜRÜB YER DƏYİŞMƏ (General <-> Others arası da keçir!)
+    let draggedItem = null;
+    const lists = document.querySelectorAll(".sidebar-list");
+
+    function bindDragEvents() {
+        document.querySelectorAll(".sidebar-item").forEach(item => {
+            item.addEventListener("dragstart", (e) => {
+                draggedItem = item;
+                setTimeout(() => item.classList.add("dragging"), 0);
+            });
+            item.addEventListener("dragend", () => {
+                item.classList.remove("dragging");
+                draggedItem = null;
+                saveCustomOrder();
+            });
+        });
+
+        lists.forEach(list => {
+            list.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                if (!draggedItem) return;
+                const afterElement = getDragAfterElement(list, e.clientY);
+                if (afterElement == null) {
+                    list.appendChild(draggedItem);
+                } else {
+                    list.insertBefore(draggedItem, afterElement);
+                }
+            });
+        });
+    }
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll(".sidebar-item:not(.dragging)")];
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    function saveCustomOrder() {
+        const generalIds = [...document.querySelectorAll("#sidebarGeneral .sidebar-item")].map(el => el.dataset.id);
+        const othersIds = [...document.querySelectorAll("#sidebarOthers .sidebar-item")].map(el => el.dataset.id);
+        localStorage.setItem("sultan_sidebar_layout", JSON.stringify({ general: generalIds, others: othersIds }));
+    }
+
+    bindDragEvents();
+
+    // Settings Modal
+    const settingsModal = document.getElementById("settingsModal");
+    document.getElementById("openSettingsBtn").addEventListener("click", () => settingsModal.classList.remove("hidden"));
+    document.getElementById("closeSettingsModal").addEventListener("click", () => settingsModal.classList.add("hidden"));
+
+    document.getElementById("resetSidebarBtn").addEventListener("click", () => {
+        localStorage.removeItem("sultan_sidebar_layout");
+        window.location.reload();
+    });
+
+    const logoutBtn = document.getElementById("settingsLogoutBtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            localStorage.removeItem("sultan_user");
+            window.location.reload();
+        });
+    }
+
+    const toggleDelBtn = document.getElementById("toggleDeleteBoxBtn");
+    const delForm = document.getElementById("deleteAccountForm");
+    if (toggleDelBtn && delForm) {
+        toggleDelBtn.addEventListener("click", () => delForm.classList.toggle("hidden"));
+        delForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const feedback = document.getElementById("deleteFeedbackInput").value.trim();
+            if (feedback.length < 3) return alert("Please write brief feedback before deleting.");
+
+            const btn = document.getElementById("confirmDeleteBtn");
+            btn.disabled = true;
+            btn.innerText = "Deleting...";
+
+            const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+            const sb = createClient("https://ezccynahgubalainoqkf.supabase.co", "sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX");
+
+            const { data, error } = await sb.rpc("delete_my_account", { p_username: activeUser, p_feedback: feedback });
+            if (!error && data === true) {
+                localStorage.removeItem("sultan_user");
+                localStorage.removeItem("sultan_role");
+                localStorage.removeItem("sultan_dual_unlocked");
+                alert("Your account has been deleted. Thank you for your feedback!");
+                window.location.href = "index.html";
+            } else {
+                alert("Could not delete account right now.");
+                btn.disabled = false;
+                btn.innerText = "Permanently Delete Account";
+            }
         });
     }
 });
