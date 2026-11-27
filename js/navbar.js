@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
     const currentSearch = window.location.search;
     const activeUser = localStorage.getItem("sultan_user");
-
+ 
     const menuItemsDB = {
         home: { label: "Home", href: "index.html", icon: "fas fa-home" },
         dashboard: { label: "Dashboard", href: "dashboard.html", icon: "fas fa-th-large" },
