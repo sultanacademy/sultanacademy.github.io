@@ -58,11 +58,10 @@
     <script src="js/navbar.js"></script>
     <script src="js/cookie-consent.js"></script>
     <script type="module" src="js/wizard.js"></script>
-    <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
+<script type="module">
+        import { SULTAN_CONFIG, supabase, escapeHTML, safeUrl, cleanHandle } from './js/config.js';
 
-async function loadExchange() {
+        async function loadExchange() {
             const grid = document.getElementById("exchangeGrid");
             const { data } = await supabase.from("skill_swaps").select("id, author_name, offer_skill, want_skill, description, discord_link").eq("status", "approved").eq("swap_type", "Language & Cultural Exchange").order("id", { ascending: false });
             if (!data || data.length === 0) {
@@ -73,18 +72,18 @@ async function loadExchange() {
                 <div class="tutor-card">
                     <div class="tutor-tags" style="margin-bottom:10px;">
                         <span style="color:#38bdf8; border-color:#38bdf8;">Cultural Exchange</span>
-                        <span>${s.author_name}</span>
+                        <span>${escapeHTML(s.author_name)}</span>
                     </div>
                     <h4 style="font-size:15px; margin-bottom:8px;">
-                        <span style="color:#10b981;">Speaks:</span> ${s.offer_skill}<br>
-                        <span style="color:#f59e0b;">Learning:</span> ${s.want_skill}
+                        <span style="color:#10b981;">Speaks:</span> ${escapeHTML(s.offer_skill)}<br>
+                        <span style="color:#f59e0b;">Learning:</span> ${escapeHTML(s.want_skill)}
                     </h4>
-                    <p class="tutor-bio">${s.description}</p>
+                    <p class="tutor-bio">${escapeHTML(s.description)}</p>
                     <div class="tutor-footer">
-                        <a href="chat.html?to=${encodeURIComponent(s.author_name)}&ctx=${encodeURIComponent('Language & Cultural Exchange')}" class="cal-booking-btn" style="background:#10b981; color:#fff !important; width:100%;">
+                        <a href="chat.html?to=${encodeURIComponent(cleanHandle(s.author_name))}&ctx=${encodeURIComponent('Language & Cultural Exchange')}" class="cal-booking-btn" style="background:#10b981; color:#fff !important; width:100%;">
                             <i class="fas fa-comment-dots"></i> Send Message Request
                         </a>
-                        <a href="${s.discord_link}" target="_blank" rel="noopener" class="unlock-tutor-btn">
+                        <a href="${safeUrl(s.discord_link, SULTAN_CONFIG.DISCORD_INVITE)}" target="_blank" rel="noopener" class="unlock-tutor-btn">
                             <i class="fab fa-discord"></i> Open Discord Link ↗
                         </a>
                     </div>
@@ -99,18 +98,17 @@ async function loadExchange() {
             e.preventDefault();
             const btn = document.getElementById("exSubmitBtn");
             btn.disabled = true;
+            const authorVal = localStorage.getItem("sultan_user") || document.getElementById("exName").value.trim();
             const { error } = await supabase.from("skill_swaps").insert([{
-                author_name: document.getElementById("exName").value.trim(),
-                email: document.getElementById("exEmail").value.trim(),
+                author_name: authorVal, email: document.getElementById("exEmail").value.trim(),
                 swap_type: "Language & Cultural Exchange",
                 offer_skill: document.getElementById("exOffer").value.trim(),
                 want_skill: document.getElementById("exWant").value.trim(),
                 description: document.getElementById("exDesc").value.trim(),
-                discord_link: document.getElementById("exDiscord").value.trim(),
-                status: "pending"
+                discord_link: document.getElementById("exDiscord").value.trim(), status: "pending"
             }]);
             if (!error) { alert("🎉 Exchange card submitted!"); e.target.reset(); exModal.classList.add("hidden"); document.body.classList.remove("modal-open"); }
-            else { alert("Error submitting."); }
+            else alert("Error submitting.");
             btn.disabled = false;
         });
 
