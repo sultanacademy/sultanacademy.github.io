@@ -60,6 +60,9 @@
                 <div class="form-group checkbox-group">
                     <input type="checkbox" id="tutorOffersLive"><label for="tutorOffersLive">I offer live sessions on Sultan Academy Discord.</label>
                 </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="tutorOffersTrial"><label for="tutorOffersTrial">🎁 I offer a 15-min Free Trial / Intro Call.</label>
+                </div>
                 <div class="form-group">
                     <label>Open to Skill Swap? (Optional — what do you want to learn?)</label>
                     <input type="text" id="tutorSwapWanted" maxlength="25" placeholder="Leave empty or e.g. Guitar / Python">
@@ -84,20 +87,15 @@
     <script src="js/cookie-consent.js"></script>
     <script type="module" src="js/wizard.js"></script>
     <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
-        const DISCORD_WEBHOOK_URL = "BURAYA_OZ_DISCORD_WEBHOOK_LINKINI_YAPISDIR";
+        import { SULTAN_CONFIG, supabase, cleanHandle } from './js/config.js';
 
         document.getElementById("tutorApplicationForm").addEventListener("submit", async (e) => {
             e.preventDefault();
             const btn = document.getElementById("eduSubmitBtn");
             btn.disabled = true;
-let myHandle = localStorage.getItem("sultan_user");
-         if (!myHandle) {
-             myHandle = document.getElementById("tutorName").value.trim().toLowerCase().replace(/\s+/g, "").slice(0, 20);
-             localStorage.setItem("sultan_user", myHandle);
-         }
-         const payload = {
+            const myHandle = cleanHandle(localStorage.getItem("sultan_user") || document.getElementById("tutorName").value);
+
+            const payload = {
                 name: document.getElementById("tutorName").value.trim(),
                 owner_username: myHandle,
                 email: document.getElementById("tutorEmail").value.trim(),
@@ -109,14 +107,15 @@ let myHandle = localStorage.getItem("sultan_user");
                 subject: document.getElementById("tutorSubject").value.trim(),
                 discord_channel: document.getElementById("tutorDiscordChannel").value.trim(),
                 offers_live_sessions: document.getElementById("tutorOffersLive").checked,
+                offers_free_trial: document.getElementById("tutorOffersTrial").checked,
                 skill_swap_wanted: document.getElementById("tutorSwapWanted").value.trim(),
                 cal_link: document.getElementById("tutorCalLink").value.trim(),
                 status: "pending"
             };
             const { error } = await supabase.from("tutors").insert([payload]);
             if (!error) {
-                if (DISCORD_WEBHOOK_URL && !DISCORD_WEBHOOK_URL.includes("BURAYA")) {
-                    fetch(DISCORD_WEBHOOK_URL, {
+                if (SULTAN_CONFIG.ADMIN_DISCORD_WEBHOOK) {
+                    fetch(SULTAN_CONFIG.ADMIN_DISCORD_WEBHOOK, {
                         method: "POST", headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ username: "Sultan Academy Bot", embeds: [{ title: "🎓 New Educator Application", color: 3711992, fields: [{ name: "Name", value: payload.name, inline: true }, { name: "Category", value: payload.category, inline: true }, { name: "Subject", value: payload.subject, inline: true }] }] })
                     }).catch(() => {});
