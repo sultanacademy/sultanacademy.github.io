@@ -78,8 +78,9 @@ watchAdBtn.addEventListener('click', () => {
         return;
     }
 
-    const adUrl = "https://www.profitableratecpmnetwork.com/fspm49jkm?key=88e5821febc3aed060a93ce3587926fc";
-    const adWindow = window.open(adUrl, "_blank");
+// 1. Reklamı dərhal yeni tabda açırıq
+    const adUrl = "https://arwf.org/4/3946e81041ccc9d120f1b729feb68fae";
+    window.open(adUrl, "_blank");
 
     // Əgər telefonda pop-up bloklanıbsa:
     if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
