@@ -125,7 +125,10 @@ async function loadEducators() {
                         </button>
                     </div>
                 </div>
-                <div class="tutor-action-group">
+<div class="tutor-action-group">
+                    <a href="chat.html?to=${encodeURIComponent(t.name)}&ctx=${encodeURIComponent('Book a Lesson')}" class="cal-booking-btn" style="background: #10b981; color: #fff !important;">
+                        <i class="fas fa-comment-dots"></i> Send Message Request
+                    </a>
                     <button class="unlock-tutor-btn ad-gate-btn" data-tutor-id="${t.id}" data-target="${t.discord_channel}" data-type="Discord Room" data-name="${t.name}" data-lang="${t.language}" data-subj="${t.subject}">
                         <i class="fab fa-discord"></i> Discord Room (Watch AD)
                     </button>
@@ -229,12 +232,14 @@ async function loadPartners() {
             </div>
             <h3 style="font-size:17px; color:#0f172a; margin-bottom:8px;">${p.title}</h3>
             <p class="tutor-bio">${p.description}</p>
-            <div class="tutor-footer">
+<div class="tutor-footer">
+                <a href="chat.html?to=${encodeURIComponent(p.author_name)}&ctx=${encodeURIComponent('Project / Study Partner')}" class="cal-booking-btn" style="background: #10b981; color: #fff !important;">
+                    <i class="fas fa-comment-dots"></i> Send Message Request
+                </a>
                 <button class="unlock-tutor-btn ad-gate-btn" data-target="${p.discord_link}" data-type="Partner Contact">
-                    <i class="fab fa-discord"></i> Connect with Partner (Watch AD)
+                    <i class="fab fa-discord"></i> Discord Link (Watch AD)
                 </button>
             </div>
-        </div>`).join("");
 
     attachAdGateListeners();
 }
