@@ -1,3 +1,5 @@
+import { SULTAN_CONFIG } from './config.js';
+
 document.addEventListener("DOMContentLoaded", () => {
     const bookButtons = document.querySelectorAll('a.watch-ad-btn[data-book]');
 
@@ -13,9 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const adUrl = "https://arwf.org/4/3946e81041ccc9d120f1b729feb68fae";
-            const adWindow = window.open(adUrl, "_blank");
-
+            const adWindow = window.open(SULTAN_CONFIG.ADSTERRA_BOOK_URL, "_blank");
             if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
                 alert("⚠️ Pop-up Blocked! Please allow pop-ups in your browser to unlock this material.");
                 return;
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
             this.style.opacity = '0.7';
             this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Loading Sponsor...`;
 
-            const DURATION = 4000; // 4 saniyə (Adsterra tam yüklənməsi üçün kifayətdir!)
+            const DURATION = 4000;
             const startTime = Date.now();
 
             const checkTimer = setInterval(() => {
