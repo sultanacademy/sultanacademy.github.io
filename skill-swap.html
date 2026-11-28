@@ -149,7 +149,7 @@
             updateTabs();
         }
 
-        function renderSwaps() {
+function renderSwaps() {
             const grid = document.getElementById("swapsGrid");
             const filtered = currentFilter === "all" ? allSwaps : allSwaps.filter(s => s.swap_type === currentFilter);
             if (filtered.length === 0) {
@@ -169,46 +169,22 @@
                         </div>
                         <span style="color:#f59e0b; border-color:#f59e0b;">${avgTxt}</span>
                     </div>
-                    <h4 style="color:#0f172a; font-size:15px; margin-bottom:8px;">
+                    <h4 style="font-size:15px; margin-bottom:8px;">
                         <span style="color:#10b981;">Teaches:</span> ${s.offer_skill} <br>
                         <span style="color:#f59e0b;">Wants:</span> ${s.want_skill}
                     </h4>
                     <p class="tutor-bio">${s.description}</p>
-<div class="tutor-footer" style="gap:8px;">
+                    <div class="tutor-footer" style="gap:8px;">
                         <a href="chat.html?to=${encodeURIComponent(s.author_name.replace(' (Educator)', ''))}&ctx=${encodeURIComponent(s.swap_type)}" class="cal-booking-btn" style="background:#10b981; color:#fff !important; width:100%;">
                             <i class="fas fa-comment-dots"></i> Send Message Request
                         </a>
                         ${s.id ? `<button type="button" class="btn-reviews open-swap-rev-btn" data-id="${s.id}" data-name="${s.author_name}" style="width:100%;"><i class="fas fa-star"></i> Session Reviews (${revs.length})</button>` : `<a href="tutors.html?educator=${s.tutorId}" style="font-size:12px; color:#38bdf8; font-weight:600; text-align:center;">View Educator Card →</a>`}
-                        <button class="unlock-tutor-btn swap-unlock-btn" data-target="${s.discord_link}">
-                            <i class="fab fa-discord"></i> Discord Link (Watch AD)
-                        </button>
+                        <a href="${s.discord_link}" target="_blank" rel="noopener" class="unlock-tutor-btn">
+                            <i class="fab fa-discord"></i> Open Discord Link ↗
+                        </a>
                     </div>
                 </div>`;
             }).join("");
-
-            document.querySelectorAll(".swap-unlock-btn").forEach(btn => {
-                btn.addEventListener("click", function() {
-                    const url = this.dataset.target;
-                    if (this.dataset.unlocked === "true") return window.open(url, "_blank");
-                    const ad = window.open("https://www.profitableratecpmnetwork.com/fspm49jkm?key=88e5821febc3aed060a93ce3587926fc", "_blank");
-                    if (!ad || ad.closed) return alert("⚠️ Pop-up blocked! Please allow pop-ups.");
-                    this.style.pointerEvents = "none";
-                    let t = 10;
-                    this.innerText = `Unlocking... ${t}s`;
-                    const iv = setInterval(() => {
-                        t--;
-                        if (t > 0) this.innerText = `Unlocking... ${t}s`;
-                        else {
-                            clearInterval(iv);
-                            this.dataset.unlocked = "true";
-                            this.innerText = "Ready! Tap to Open";
-                            this.style.background = "#10b981";
-                            this.style.pointerEvents = "auto";
-                            window.open(url, "_blank");
-                        }
-                    }, 1000);
-                });
-            });
 
             document.querySelectorAll(".open-swap-rev-btn").forEach(btn => {
                 btn.addEventListener("click", () => {
