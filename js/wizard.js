@@ -1,9 +1,4 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-const supabase = createClient(
-    'https://ezccynahgubalainoqkf.supabase.co',
-    'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX'
-);
+import { supabase, escapeHTML, cleanHandle } from './config.js';
 
 function injectWizardModal() {
     if (document.getElementById("startWizardModal")) return;
@@ -15,16 +10,18 @@ function injectWizardModal() {
         <div class="wizard-card">
             <button class="auth-close-btn" id="closeWizardBtn" type="button">&times;</button>
 
-            <!-- STEP 1: USERNAME -->
+            <!-- STEP 1: SECURE USERNAME + PASSWORD (GOOGLE AUTO-SAVE READY) -->
             <div id="wizStep1">
-                <span class="wizard-step-badge">STEP 1 OF 3 • QUICK START</span>
+                <span class="wizard-step-badge">STEP 1 OF 3 • ACCOUNT & QUICK START</span>
                 <h3 style="font-size:22px; margin-bottom:6px;">Welcome to Sultan Academy</h3>
-                <p style="font-size:13px; color:#94a3b8; margin-bottom:16px;">Enter a username to save SP rewards & get personalized matches.</p>
-                <div style="display:flex; flex-direction:column; gap:10px;">
-                    <input type="text" id="wizUsernameInput" maxlength="20" placeholder="Choose username (max 20 chars)..." style="padding:12px 15px; border-radius:12px; border:1px solid #334155; background:#1e293b; color:white;">
-                    <button type="button" id="wizStep1NextBtn" class="submit-profile-btn" style="margin:0;">Continue <i class="fas fa-arrow-right"></i></button>
-                    <button type="button" id="wizSkipToGoalsBtn" style="background:transparent; border:none; color:#94a3b8; font-size:12px; cursor:pointer; margin-top:4px;">Skip & choose interests →</button>
-                </div>
+                <p style="font-size:13px; color:#94a3b8; margin-bottom:16px;">Sign in or create a new account. Your browser can save your password automatically.</p>
+                
+                <form id="wizAuthForm" autocomplete="on" style="display:flex; flex-direction:column; gap:10px;">
+                    <input type="text" id="wizUsernameInput" name="username" autocomplete="username" maxlength="20" required placeholder="Username (e.g. sultan99)" style="padding:12px 15px; border-radius:12px; border:1px solid #334155; background:#1e293b; color:white;">
+                    <input type="password" id="wizPasswordInput" name="password" autocomplete="current-password" minlength="4" maxlength="32" required placeholder="Password / PIN (min 4 chars)" style="padding:12px 15px; border-radius:12px; border:1px solid #334155; background:#1e293b; color:white;">
+                    <button type="submit" id="wizStep1NextBtn" class="submit-profile-btn" style="margin:0;">Sign In / Create & Continue <i class="fas fa-arrow-right"></i></button>
+                </form>
+                <button type="button" id="wizSkipToGoalsBtn" style="background:transparent; border:none; color:#94a3b8; font-size:12px; cursor:pointer; margin-top:10px; width:100%;">Skip & browse as guest →</button>
             </div>
 
             <!-- STEP 2: MULTIPLE CHOICE INTENT SELECTION -->
@@ -77,10 +74,9 @@ function injectWizardModal() {
                     </button>
                 </div>
 
-                <!-- SARI MƏLUMAT NOTU -->
                 <div class="wizard-yellow-note">
                     <i class="fas fa-lightbulb"></i>
-                    <span>You can join as a Learner, an Educator, or <b>both</b> — and seamlessly switch or unlock the other role anytime inside your Workspace!</span>
+                    <span>You can join as a Learner, an Educator, or <b>both</b> — and seamlessly switch inside your Workspace!</span>
                 </div>
 
                 <button type="button" id="wizShowMatchesBtn" class="submit-profile-btn" style="width:100%; margin-top:14px;">
@@ -88,7 +84,7 @@ function injectWizardModal() {
                 </button>
             </div>
 
-            <!-- STEP 3: INSTANT COMBINED MATCHES -->
+            <!-- STEP 3 -->
             <div id="wizStep3" class="hidden">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <span class="wizard-step-badge" style="margin:0;">STEP 3 OF 3 • YOUR MATCHES</span>
@@ -99,7 +95,6 @@ function injectWizardModal() {
                 <div id="wizResultFooter" style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;"></div>
             </div>
 
-            <!-- KUKİ İCAZƏSİ -->
             <div id="wizCookieBox" class="hidden" style="margin-top:18px; padding-top:14px; border-top:1px solid #334155;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                     <span style="font-size:11px; color:#94a3b8;">
@@ -131,12 +126,15 @@ function injectWizardModal() {
         refreshCookieBox();
 
         const savedUser = localStorage.getItem("sultan_user");
-        if (savedUser || forceStep2) {
+        const savedToken = localStorage.getItem("sultan_token");
+
+        if ((savedUser && savedToken) || forceStep2) {
             document.getElementById("wizUserDisplay").innerText = savedUser || "Explorer";
             step1.classList.add("hidden");
             step2.classList.remove("hidden");
             step3.classList.add("hidden");
         } else {
+            if (savedUser) document.getElementById("wizUsernameInput").value = savedUser;
             step1.classList.remove("hidden");
             step2.classList.add("hidden");
             step3.classList.add("hidden");
@@ -175,16 +173,29 @@ function injectWizardModal() {
     document.getElementById("wizCookieAccept").addEventListener("click", () => { if (window.setCookieChoice) window.setCookieChoice(true); refreshCookieBox(); });
     document.getElementById("wizCookieDecline").addEventListener("click", () => { if (window.setCookieChoice) window.setCookieChoice(false); refreshCookieBox(); });
 
-    document.getElementById("wizStep1NextBtn").addEventListener("click", async () => {
-        const username = document.getElementById("wizUsernameInput").value.trim().toLowerCase();
-        if (!username) return alert("Please enter a username!");
-        const { data } = await supabase.from("users").select("id").eq("username", username).single();
-        if (!data) await supabase.from("users").insert([{ username, role: "learner", sp: 0 }]);
+    document.getElementById("wizAuthForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const username = cleanHandle(document.getElementById("wizUsernameInput").value);
+        const password = document.getElementById("wizPasswordInput").value;
+        const btn = document.getElementById("wizStep1NextBtn");
+        if (!username || password.length < 4) return alert("Enter valid username and password (min 4 chars).");
 
-        localStorage.setItem("sultan_user", username);
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Verifying...`;
+
+        const { data, error } = await supabase.rpc("auth_user", { p_username: username, p_password: password });
+        btn.disabled = false;
+        btn.innerHTML = `Sign In / Create & Continue <i class="fas fa-arrow-right"></i>`;
+
+        if (error || !data || !data.ok) {
+            return alert(data?.error || "Login error. Try again.");
+        }
+
+        localStorage.setItem("sultan_user", data.username);
+        localStorage.setItem("sultan_token", data.token);
         const navTxt = document.getElementById("navStartText");
-        if (navTxt) navTxt.innerText = `Start • ${username}`;
-        document.getElementById("wizUserDisplay").innerText = username;
+        if (navTxt) navTxt.innerText = `Account • ${data.username}`;
+        document.getElementById("wizUserDisplay").innerText = data.username;
         step1.classList.add("hidden");
         step2.classList.remove("hidden");
     });
@@ -197,8 +208,9 @@ function injectWizardModal() {
 
     document.getElementById("wizChangeUserBtn").addEventListener("click", () => {
         localStorage.removeItem("sultan_user");
+        localStorage.removeItem("sultan_token");
         const navTxt = document.getElementById("navStartText");
-        if (navTxt) navTxt.innerText = "Start";
+        if (navTxt) navTxt.innerText = "Sign In / Quick Start";
         step2.classList.add("hidden");
         step1.classList.remove("hidden");
     });
@@ -208,21 +220,14 @@ function injectWizardModal() {
         step2.classList.remove("hidden");
     });
 
-    // MULTIPLE CHOICE TOGGLE
     document.querySelectorAll(".wizard-opt-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const goal = btn.getAttribute("data-goal");
-            if (selectedGoals.has(goal)) {
-                selectedGoals.delete(goal);
-                btn.classList.remove("selected");
-            } else {
-                selectedGoals.add(goal);
-                btn.classList.add("selected");
-            }
+            if (selectedGoals.has(goal)) { selectedGoals.delete(goal); btn.classList.remove("selected"); }
+            else { selectedGoals.add(goal); btn.classList.add("selected"); }
         });
     });
 
-    // NƏTİCƏLƏRİ GÖSTƏR
     document.getElementById("wizShowMatchesBtn").addEventListener("click", async () => {
         if (selectedGoals.size === 0) return alert("Please select at least one option!");
 
@@ -239,7 +244,6 @@ function injectWizardModal() {
             localStorage.setItem("sultan_role", "student");
         }
 
-        // Yalnız "Teach" seçibsə birbaşa Educator Studio-ya apara bilərik
         if (wantsTeach && eduCategories.length === 0 && !wantsPartners) {
             window.location.href = "dashboard.html?mode=educator";
             return;
@@ -258,11 +262,11 @@ function injectWizardModal() {
             if (tutors && tutors.length > 0) {
                 html += tutors.map(t => `
                     <div class="wizard-result-item">
-                        <div><strong style="font-size:13px;">🎓 ${t.name}</strong><span style="display:block; font-size:11px; color:#94a3b8;">${t.category} • ${t.subject} (${t.price})</span></div>
-                        <a href="tutors.html" style="background:#38bdf8; color:#0f172a; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700;">Connect</a>
+                        <div><strong style="font-size:13px;">🎓 ${escapeHTML(t.name)}</strong><span style="display:block; font-size:11px; color:#94a3b8;">${escapeHTML(t.category)} • ${escapeHTML(t.subject)} (${escapeHTML(t.price)})</span></div>
+                        <a href="tutors.html?educator=${t.id}" style="background:#38bdf8; color:#0f172a; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700;">Connect</a>
                     </div>`).join("");
             } else {
-                html += `<div class="wizard-result-item"><div><strong style="font-size:13px;">Educators in ${eduCategories.join(", ")}</strong><span style="display:block; font-size:11px; color:#94a3b8;">Check our growing directory & live Discord rooms!</span></div><a href="tutors.html" style="background:#38bdf8; color:#0f172a; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700;">Browse</a></div>`;
+                html += `<div class="wizard-result-item"><div><strong style="font-size:13px;">Educators in ${escapeHTML(eduCategories.join(", "))}</strong><span style="display:block; font-size:11px; color:#94a3b8;">Check our growing directory & live Discord rooms!</span></div><a href="tutors.html" style="background:#38bdf8; color:#0f172a; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700;">Browse</a></div>`;
             }
         }
 
@@ -282,7 +286,7 @@ function injectWizardModal() {
             if (partners && partners.length > 0) {
                 html += partners.map(p => `
                     <div class="wizard-result-item">
-                        <div><strong style="font-size:13px;">🤝 ${p.title}</strong><span style="display:block; font-size:11px; color:#94a3b8;">By ${p.author_name} • ${p.category}</span></div>
+                        <div><strong style="font-size:13px;">🤝 ${escapeHTML(p.title)}</strong><span style="display:block; font-size:11px; color:#94a3b8;">By ${escapeHTML(p.author_name)} • ${escapeHTML(p.category)}</span></div>
                         <a href="tutors.html?tab=partners" style="background:#10b981; color:white; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:600;">View</a>
                     </div>`).join("");
             } else {
