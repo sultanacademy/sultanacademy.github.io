@@ -42,7 +42,7 @@ if (tabDirEdu && tabDirPart) {
 }
 
 // ==========================================
-// 2. EDUCATORS YÜKLƏMƏ, FİLTR VƏ SHARE LİNK
+// 2. EDUCATORS YÜKLƏMƏ (1-DƏFƏLİK AD + REKLAMSIZ JITSI/CAL.COM)
 // ==========================================
 async function loadEducators() {
     const tutorsGrid = document.getElementById("tutorsGrid");
@@ -72,6 +72,8 @@ async function loadEducators() {
         return;
     }
 
+    const unlockedList = JSON.parse(localStorage.getItem("sultan_unlocked_tutors") || "[]");
+
     tutorsGrid.innerHTML = "";
     const filterCategories = new Set();
 
@@ -80,7 +82,6 @@ async function loadEducators() {
         const langClean = t.language.trim();
         filterCategories.add(mainCat);
 
-        // Rəy ortalaması
         const tutorRevs = allReviews.filter(r => r.tutor_id === t.id);
         let ratingText = `<strong>New</strong> <span class="rating-count">(No reviews yet)</span>`;
         if (tutorRevs.length > 0) {
@@ -88,9 +89,19 @@ async function loadEducators() {
             ratingText = `<span class="stars">${"⭐".repeat(Math.round(avg))}</span> <strong>${avg}</strong> <span class="rating-count">(${tutorRevs.length} reviews)</span>`;
         }
 
-        // Unikal Jitsi Otağı
         const safeRoomName = `SultanAcad-${t.id}-${t.name.replace(/[^a-zA-Z0-9]/g, "")}`;
         const jitsiUrl = `classroom.html?room=${safeRoomName}`;
+
+        // Bu müəllimin Discord otağı əvvəl açılıbmı?
+        const isUnlocked = unlockedList.some(x => x.id === t.id || x.name === t.name);
+
+        const discordBtnHTML = isUnlocked
+            ? `<a href="${t.discord_channel}" target="_blank" rel="noopener" class="unlock-tutor-btn" style="background: #10b981;">
+                   <i class="fab fa-discord"></i> Open Discord Room ↗
+               </a>`
+            : `<button class="unlock-tutor-btn ad-gate-btn" data-tutor-id="${t.id}" data-target="${t.discord_channel}" data-name="${t.name}" data-lang="${t.language}" data-subj="${t.subject}">
+                   <i class="fab fa-discord"></i> Unlock Discord (1-Time AD)
+               </button>`;
 
         const card = document.createElement("div");
         card.className = "tutor-card";
@@ -125,26 +136,23 @@ async function loadEducators() {
                         </button>
                     </div>
                 </div>
-<div class="tutor-action-group">
+                <div class="tutor-action-group">
                     <a href="chat.html?to=${encodeURIComponent(t.name)}&ctx=${encodeURIComponent('Book a Lesson')}" class="cal-booking-btn" style="background: #10b981; color: #fff !important;">
                         <i class="fas fa-comment-dots"></i> Send Message Request
                     </a>
-                    <button class="unlock-tutor-btn ad-gate-btn" data-tutor-id="${t.id}" data-target="${t.discord_channel}" data-type="Discord Room" data-name="${t.name}" data-lang="${t.language}" data-subj="${t.subject}">
-                        <i class="fab fa-discord"></i> Discord Room (Watch AD)
-                    </button>
-                    <button class="video-room-btn ad-gate-btn" data-tutor-id="${t.id}" data-target="${jitsiUrl}" data-type="Video Classroom">
-                        <i class="fas fa-video"></i> Video Classroom (Watch AD)
-                    </button>
+                    ${discordBtnHTML}
+                    <a href="${jitsiUrl}" target="_blank" rel="noopener" class="video-room-btn">
+                        <i class="fas fa-video"></i> Video Classroom ↗
+                    </a>
                     ${t.cal_link ? `
-                    <button class="cal-booking-btn ad-gate-btn" data-tutor-id="${t.id}" data-target="${t.cal_link}" data-type="Cal.com Booking">
-                        <i class="fas fa-calendar-alt"></i> Book on Cal.com (Watch AD)
-                    </button>` : ''}
+                    <a href="${t.cal_link}" target="_blank" rel="noopener" class="cal-booking-btn">
+                        <i class="fas fa-calendar-alt"></i> Book on Cal.com ↗
+                    </a>` : ''}
                 </div>
             </div>`;
         tutorsGrid.appendChild(card);
     });
 
-    // Dinamik Kateqoriya Filtrləri
     if (dynamicFilters) {
         dynamicFilters.innerHTML = `<button class="filter-btn active" data-filter="all">All Disciplines</button>`;
         filterCategories.forEach(cat => {
@@ -166,7 +174,6 @@ async function loadEducators() {
             });
         });
 
-        // Wizard-dan gələn kateqoriya varsa avtomatik seç
         const urlCat = new URLSearchParams(window.location.search).get("cat");
         if (urlCat) {
             const matchingBtn = [...dynamicFilters.querySelectorAll(".filter-btn")].find(b => b.dataset.filter === urlCat.toLowerCase());
@@ -174,7 +181,6 @@ async function loadEducators() {
         }
     }
 
-    // Paylaşma (Share) Linki
     document.querySelectorAll(".share-tutor-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const link = `${window.location.origin}/tutors.html?educator=${btn.dataset.id}`;
@@ -184,7 +190,6 @@ async function loadEducators() {
         });
     });
 
-    // URL-də ?educator=ID varsa həmin kartı parlat və ora sürüşdür
     const highlightId = new URLSearchParams(window.location.search).get("educator");
     if (highlightId) {
         const targetCard = document.getElementById(`tutor-card-${highlightId}`);
@@ -195,16 +200,15 @@ async function loadEducators() {
         }
     }
 
-    // Rəy modalını açmaq
     document.querySelectorAll(".open-reviews-btn").forEach(btn => {
         btn.addEventListener("click", () => openReviewsModal(parseInt(btn.getAttribute("data-id")), btn.getAttribute("data-name")));
     });
 
-    attachAdGateListeners();
+    attachOneTimeDiscordUnlocker();
 }
 
 // ==========================================
-// 3. PARTNER ELANLARINI YÜKLƏMƏ
+// 3. PARTNER ELANLARI (TAM REKLAMSIZ VƏ ANİ!)
 // ==========================================
 async function loadPartners() {
     const grid = document.getElementById("partnersGrid");
@@ -230,24 +234,25 @@ async function loadPartners() {
                 <span style="color:#10b981; border-color:#10b981;">${p.category}</span>
                 <span>By ${p.author_name}</span>
             </div>
-            <h3 style="font-size:17px; color:#0f172a; margin-bottom:8px;">${p.title}</h3>
+            <h3 style="font-size:17px; color:#ffffff; margin-bottom:8px;">${p.title}</h3>
             <p class="tutor-bio">${p.description}</p>
-<div class="tutor-footer">
-                <a href="chat.html?to=${encodeURIComponent(p.author_name)}&ctx=${encodeURIComponent('Project / Study Partner')}" class="cal-booking-btn" style="background: #10b981; color: #fff !important;">
-                    <i class="fas fa-comment-dots"></i> Send Message Request
-                </a>
-                <button class="unlock-tutor-btn ad-gate-btn" data-target="${p.discord_link}" data-type="Partner Contact">
-                    <i class="fab fa-discord"></i> Discord Link (Watch AD)
-                </button>
+            <div class="tutor-footer">
+                <div class="tutor-action-group">
+                    <a href="chat.html?to=${encodeURIComponent(p.author_name)}&ctx=${encodeURIComponent('Project / Study Partner')}" class="cal-booking-btn" style="background: #10b981; color: #fff !important;">
+                        <i class="fas fa-comment-dots"></i> Send Message Request
+                    </a>
+                    <a href="${p.discord_link}" target="_blank" rel="noopener" class="unlock-tutor-btn">
+                        <i class="fab fa-discord"></i> Open Discord Link ↗
+                    </a>
+                </div>
             </div>
-
-    attachAdGateListeners();
+        </div>`).join("");
 }
 
 // ==========================================
-// 4. REKLAM QAPISI + AKTİVLİK SAYĞACI
+// 4. YALNIZ 1-DƏFƏLİK DISCORD OTAQ AÇILISI
 // ==========================================
-function attachAdGateListeners() {
+function attachOneTimeDiscordUnlocker() {
     document.querySelectorAll(".ad-gate-btn").forEach(btn => {
         if (btn.dataset.bound === "true") return;
         btn.dataset.bound = "true";
@@ -255,10 +260,8 @@ function attachAdGateListeners() {
         btn.addEventListener("click", function(e) {
             e.preventDefault();
             const targetUrl = this.getAttribute("data-target");
-            const targetType = this.getAttribute("data-type") || "Room";
-            const tutorId = this.getAttribute("data-tutor-id");
+            const tutorId = parseInt(this.getAttribute("data-tutor-id"));
 
-            // Artıq açılıbsa birbaşa yönləndir
             if (this.dataset.unlocked === "true") {
                 window.open(targetUrl, "_blank");
                 return;
@@ -268,7 +271,7 @@ function attachAdGateListeners() {
             const adWindow = window.open(adUrl, "_blank");
 
             if (!adWindow || adWindow.closed || typeof adWindow.closed === "undefined") {
-                return alert(`⚠️ Pop-up Blocked! Please allow pop-ups to verify the sponsor ad and unlock ${targetType}.`);
+                return alert("⚠️ Pop-up Blocked! Please allow pop-ups to unlock this Discord classroom once.");
             }
 
             this.style.pointerEvents = "none";
@@ -282,28 +285,25 @@ function attachAdGateListeners() {
                 } else {
                     clearInterval(timer);
                     this.dataset.unlocked = "true";
-                    this.innerHTML = `<i class="fas fa-check-circle"></i> Ready! Tap to Open`;
+                    this.innerHTML = `<i class="fas fa-check-circle"></i> Unlocked! Tap to Open ↗`;
                     this.style.background = "#10b981";
                     this.style.pointerEvents = "auto";
 
-                    // Liderlik cədvəli üçün müəllimin aktivlik sayğacını +1 artır
                     if (tutorId) {
-                        supabase.rpc("increment_tutor_unlock", { p_tutor_id: parseInt(tutorId) });
+                        supabase.rpc("increment_tutor_unlock", { p_tutor_id: tutorId });
                     }
 
-                    // Student Workspace-də göstərmək üçün yadda saxla
-                    if (this.getAttribute("data-name")) {
-                        const saved = JSON.parse(localStorage.getItem("sultan_unlocked_tutors") || "[]");
-                        const name = this.getAttribute("data-name");
-                        if (!saved.some(x => x.name === name)) {
-                            saved.push({
-                                name,
-                                language: this.getAttribute("data-lang"),
-                                subject: this.getAttribute("data-subj"),
-                                link: targetUrl
-                            });
-                            localStorage.setItem("sultan_unlocked_tutors", JSON.stringify(saved));
-                        }
+                    const saved = JSON.parse(localStorage.getItem("sultan_unlocked_tutors") || "[]");
+                    const name = this.getAttribute("data-name");
+                    if (!saved.some(x => x.id === tutorId || x.name === name)) {
+                        saved.push({
+                            id: tutorId,
+                            name,
+                            language: this.getAttribute("data-lang"),
+                            subject: this.getAttribute("data-subj"),
+                            link: targetUrl
+                        });
+                        localStorage.setItem("sultan_unlocked_tutors", JSON.stringify(saved));
                     }
 
                     window.open(targetUrl, "_blank");
@@ -314,7 +314,7 @@ function attachAdGateListeners() {
 }
 
 // ==========================================
-// 5. PARTNER ELANI MODALI
+// 5. PARTNER ELANI & RƏY MODALLARI
 // ==========================================
 const partnerModal = document.getElementById("partnerModal");
 const openPartnerModalBtn = document.getElementById("openPartnerModalBtn");
@@ -363,9 +363,6 @@ if (partnerForm) {
     });
 }
 
-// ==========================================
-// 6. RƏYLƏR MODALI
-// ==========================================
 const reviewsModal = document.getElementById("reviewsModal");
 const closeReviewsModal = document.getElementById("closeReviewsModal");
 if (closeReviewsModal && reviewsModal) {
