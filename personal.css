@@ -1999,3 +1999,72 @@ body.modal-open {
     .top-shop-btn, .top-start-btn { padding: 9px 15px !important; font-size: 13px !important; }
     .settings-gear-btn { width: 38px !important; height: 38px !important; font-size: 16px !important; }
 }
+
+
+/* ==========================================
+   UNIFIED DARK NAVY THEME & STICKY FOOTER
+   ========================================== */
+body {
+    background-color: #0a0f1d !important;
+    color: #f8fafc !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.footer {
+    margin-top: auto !important; /* Footer-i həmişə səhifənin ən altına yapışdırır */
+    border-top: 1px solid #1e293b;
+}
+
+.bg-light, .how-it-works-box, .ai-section, .payment-recommendation-box {
+    background-color: #111827 !important;
+    border: 1px solid #1e293b !important;
+    color: #f8fafc !important;
+}
+
+.section-header h2, .how-it-works-box h3, .ai-section h2, .ai-section h3 {
+    color: #ffffff !important;
+}
+.section-header p, .ai-section p, .ai-section li, .pay-text p {
+    color: #94a3b8 !important;
+}
+.pay-text strong { color: #ffffff !important; }
+
+/* Kartların Tünd Mavi Rejimdə Səliqəli Görünüşü */
+.tutor-card, .discipline-card, .club-card, .testi-card, .rank-row, .step-card {
+    background: #1e293b !important;
+    border: 1px solid #334155 !important;
+    color: #f8fafc !important;
+}
+
+.tutor-main-info h3, .discipline-card h4, .club-card h4, .step-card h5,
+.testi-author strong, .tutor-price, .rank-row strong, .tutor-card h3, .tutor-card h4 {
+    color: #ffffff !important;
+}
+
+.tutor-bio, .tutor-title, .discipline-card p, .club-card p, .step-card p,
+.testi-body, .club-meta, .tutor-card p {
+    color: #cbd5e1 !important;
+}
+
+.tutor-tags span {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+.tutor-footer { border-top-color: #334155 !important; }
+
+.filter-btn, .mode-tab-big {
+    background: #1e293b !important;
+    color: #cbd5e1 !important;
+    border-color: #334155 !important;
+}
+.filter-btn.active, .mode-tab-big.active, .filter-btn:hover {
+    background: #38bdf8 !important;
+    color: #0f172a !important;
+    border-color: #38bdf8 !important;
+}
+
+.rank-num { background: #0f172a; color: #f8fafc; }
