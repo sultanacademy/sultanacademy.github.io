@@ -14,7 +14,7 @@
         .chat-main-box { display: flex; flex-direction: column; height: 610px; position: relative; }
         .chat-topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid #334155; }
         .chat-messages { flex: 1; overflow-y: auto; padding: 15px 6px; display: flex; flex-direction: column; gap: 10px; }
-        .msg-bubble { max-width: 78%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.45; }
+        .msg-bubble { max-width: 78%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.45; word-break: break-word; }
         .msg-me { align-self: flex-end; background: #0284c7; color: #fff; border-bottom-right-radius: 4px; }
         .msg-them { align-self: flex-start; background: #0f172a; color: #f8fafc; border: 1px solid #334155; border-bottom-left-radius: 4px; }
         .msg-meta { font-size: 10px; opacity: 0.7; display: block; margin-bottom: 3px; }
@@ -25,31 +25,17 @@
         .tools-popover { position: absolute; bottom: 62px; left: 0; background: #0f172a; border: 1px solid #38bdf8; border-radius: 18px; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 300px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); z-index: 50; }
         .tool-item-btn { background: #1e293b; border: 1px solid #334155; color: #f8fafc; padding: 10px; border-radius: 12px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-align: left; }
         .tool-item-btn:hover { border-color: #38bdf8; background: rgba(56,189,248,0.12); }
-
-        /* FIRST MESSAGE REQUEST WIZARD */
-        .request-builder-box {
-            background: #0f172a; border: 1px solid #38bdf8; border-radius: 18px; padding: 20px; margin: auto 0;
-        }
+        .request-builder-box { background: #0f172a; border: 1px solid #38bdf8; border-radius: 18px; padding: 20px; margin: auto 0; }
         .reason-pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-        .reason-pill {
-            background: #1e293b; border: 1px solid #334155; color: #cbd5e1; padding: 7px 13px;
-            border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s;
-        }
+        .reason-pill { background: #1e293b; border: 1px solid #334155; color: #cbd5e1; padding: 7px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .reason-pill.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
-        .preview-template {
-            background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38bdf8;
-            padding: 10px 14px; border-radius: 8px; font-size: 13px; color: #e2e8f0; margin-bottom: 12px; font-style: italic;
-        }
-
-        /* CALCULATOR */
+        .preview-template { background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38bdf8; padding: 10px 14px; border-radius: 8px; font-size: 13px; color: #e2e8f0; margin-bottom: 12px; font-style: italic; }
         .calc-widget { position: fixed; bottom: 90px; right: 25px; width: 240px; background: #0f172a; border: 1px solid #38bdf8; border-radius: 20px; padding: 14px; z-index: 99995; box-shadow: 0 20px 45px rgba(0,0,0,0.6); }
         .calc-screen { width: 100%; padding: 10px; background: #1e293b; color: #38bdf8; border: 1px solid #334155; border-radius: 10px; text-align: right; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
         .calc-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .calc-keys button { padding: 10px; border-radius: 10px; border: none; background: #1e293b; color: #fff; font-weight: 600; cursor: pointer; font-size: 14px; }
         .calc-op { background: rgba(56,189,248,0.2) !important; color: #38bdf8 !important; }
         .calc-eq { background: #10b981 !important; color: #fff !important; grid-column: span 2; }
-
-        /* FANCY DISCORD WIDGET */
         .fancy-discord-showcase { background: linear-gradient(135deg, rgba(88, 101, 242, 0.25), rgba(56, 189, 248, 0.12), rgba(15, 23, 42, 0.98)); border: 2px solid #5865F2; border-radius: 26px; padding: 22px; box-shadow: 0 0 40px rgba(88, 101, 242, 0.3); }
         .discord-live-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .live-dot { width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 10px #10b981; animation: pulseDot 1.5s infinite; }
@@ -74,14 +60,13 @@
             <button type="button" class="mode-tab-big" id="tabDiscordLive"><i class="fab fa-discord"></i> Live Discord Community Chat</button>
         </div>
 
-        <!-- TAB 1: DIRECT CHAT & REQUESTS -->
         <div id="panelDirectChat" class="chat-layout">
             <div class="chat-sidebar-box">
                 <h4 style="color: #f8fafc; font-size: 14px; margin-bottom: 12px;">
                     <i class="fas fa-inbox" style="color: #10b981;"></i> Your Conversations & Requests
                 </h4>
                 <div id="inboxList" style="display: flex; flex-direction: column; gap: 8px; max-height: 410px; overflow-y: auto;">
-                    <span style="color: #64748b; font-size: 12px;">Click "Message Request" on any Educator, Partner, or Skill Swap card to connect!</span>
+                    <span style="color: #64748b; font-size: 12px;">Loading conversations...</span>
                 </div>
                 <div style="border-top: 1px solid #334155; margin-top: 16px; padding-top: 14px;">
                     <span style="font-size: 11px; color: #64748b; display: block; margin-bottom: 6px;">Or jump directly by username:</span>
@@ -103,27 +88,24 @@
                     </span>
                 </div>
 
-                <!-- SÖHBƏT / SORĞU SAHƏSİ -->
                 <div class="chat-messages" id="chatMessagesBox">
                     <div style="text-align: center; margin: auto; color: #64748b; max-width: 400px;">
                         <i class="fas fa-paper-plane" style="font-size: 34px; color: #38bdf8; margin-bottom: 12px;"></i>
-                        <p style="font-size: 13px;">To prevent spam, first-time messages use a structured Connection Request. Once accepted, real-time chat & tools unlock!</p>
+                        <p style="font-size: 13px;">To prevent spam, first-time messages use a structured Connection Request. Once accepted, real-time & saved chat unlocks!</p>
                     </div>
                 </div>
 
-                <!-- "+" TOOLS POPOVER -->
                 <div id="toolsPopover" class="tools-popover hidden">
                     <button type="button" class="tool-item-btn" id="toolProposeBtn"><i class="fas fa-calendar-check" style="color:#38bdf8;"></i> Propose Lesson</button>
                     <button type="button" class="tool-item-btn" id="toolCalcBtn"><i class="fas fa-calculator" style="color:#10b981;"></i> Calculator</button>
                     <button type="button" class="tool-item-btn" id="toolDocsBtn"><i class="fas fa-file-alt" style="color:#60a5fa;"></i> Google Docs</button>
                     <button type="button" class="tool-item-btn" id="toolTimerBtn"><i class="fas fa-stopwatch" style="color:#f59e0b;"></i> 25m Timer</button>
-                    <button type="button" class="tool-item-btn" id="toolJitsiBtn" style="grid-column: span 2;"><i class="fas fa-video" style="color:#ec4899;"></i> Send Live Jitsi Video Room Invite</button>
+                    <button type="button" class="tool-item-btn" id="toolJitsiBtn" style="grid-column: span 2;"><i class="fas fa-video" style="color:#ec4899;"></i> Send Private Jitsi Room Invite</button>
                 </div>
 
-                <!-- YALNIZ QƏBUL EDİLMİŞ ÇATLARDA AÇILAN YAZI QUTUSU -->
                 <form id="chatSendForm" class="chat-input-bar hidden">
                     <button type="button" id="plusToolsBtn" class="plus-tool-btn" title="Study Tools">+</button>
-                    <input type="text" id="chatMsgInput" maxlength="250" placeholder="Type a message (real-time, 0 DB load)..." style="flex:1; padding: 11px 14px; border-radius: 20px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 13px; outline: none;">
+                    <input type="text" id="chatMsgInput" maxlength="250" placeholder="Type a message..." style="flex:1; padding: 11px 14px; border-radius: 20px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 13px; outline: none;">
                     <button type="submit" style="background: #38bdf8; color: #0f172a; border: none; padding: 10px 18px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer;">
                         Send <i class="fas fa-paper-plane"></i>
                     </button>
@@ -131,7 +113,6 @@
             </div>
         </div>
 
-        <!-- TAB 2: BƏZƏKLİ DISCORD WIDGETBOT -->
         <div id="panelDiscordLive" class="hidden">
             <div class="fancy-discord-showcase">
                 <div class="discord-live-header">
@@ -155,7 +136,6 @@
         </div>
     </main>
 
-    <!-- DƏRS TƏKLİFİ MODALI -->
     <div id="proposeLessonModal" class="auth-modal-overlay hidden">
         <div class="wizard-card" style="max-width: 440px;">
             <button class="auth-close-btn" id="closeProposeModal" type="button">&times;</button>
@@ -169,20 +149,18 @@
         </div>
     </div>
 
-    <!-- GOOGLE DOCS MODALI -->
     <div id="docsShareModal" class="auth-modal-overlay hidden">
         <div class="wizard-card" style="max-width: 440px;">
             <button class="auth-close-btn" id="closeDocsModal" type="button">&times;</button>
             <h3 style="margin-bottom: 8px;"><i class="fas fa-file-alt" style="color: #60a5fa;"></i> Google Docs Tool</h3>
             <a href="https://docs.new" target="_blank" rel="noopener" class="dash-action-btn" style="margin-bottom: 14px; background: #2563eb;"><i class="fas fa-plus"></i> Create New Google Doc (docs.new) ↗</a>
             <div style="display: flex; gap: 8px;">
-                <input type="url" id="shareDocUrl" placeholder="Paste Google Docs URL..." style="flex:1; padding:10px; border-radius:10px; border:1px solid #334155; background:#1e293b; color:white;">
+                <input type="url" id="shareDocUrl" placeholder="Paste Google Docs URL (https://...)..." style="flex:1; padding:10px; border-radius:10px; border:1px solid #334155; background:#1e293b; color:white;">
                 <button type="button" id="sendDocToChatBtn" class="submit-profile-btn" style="margin:0; padding:10px 16px;">Share</button>
             </div>
         </div>
     </div>
 
-    <!-- KALKULYATOR -->
     <div id="calcWidget" class="calc-widget hidden">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <span style="font-size:12px; font-weight:700; color:#94a3b8;">🧮 Calculator</span>
@@ -230,8 +208,7 @@
     </script>
 
     <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
+        import { supabase, escapeHTML, safeUrl, cleanHandle } from './js/config.js';
 
         const tabDirect = document.getElementById("tabDirectChat");
         const tabDiscord = document.getElementById("tabDiscordLive");
@@ -241,18 +218,32 @@
         tabDirect.addEventListener("click", () => { tabDirect.classList.add("active"); tabDiscord.classList.remove("active"); panDirect.classList.remove("hidden"); panDiscord.classList.add("hidden"); });
         tabDiscord.addEventListener("click", () => { tabDiscord.classList.add("active"); tabDirect.classList.remove("active"); panDiscord.classList.remove("hidden"); panDirect.classList.add("hidden"); });
 
-        let me = localStorage.getItem("sultan_user");
+        let me = cleanHandle(localStorage.getItem("sultan_user"));
+        let myToken = localStorage.getItem("sultan_token");
         let currentPartner = null;
         let currentRoomId = null;
         let realtimeChannel = null;
         let activeTimerInterval = null;
-        let urlPresetReason = new URLSearchParams(window.location.search).get("ctx") || "Booking a Lesson";
+        let urlPresetReason = new URLSearchParams(window.location.search).get("ctx") || "Book a Lesson";
 
-        // 1. Gələn Qutusu (Həm Chat Requests, həm Lesson Proposals)
+        function renderFormattedMsg(rawText) {
+            if (rawText.startsWith("[JITSI]:")) {
+                const link = safeUrl(rawText.slice(8), "#");
+                return `<a href="${escapeHTML(link)}" target="_blank" rel="noopener" style="background:#10b981; color:#fff; padding:6px 12px; border-radius:10px; display:inline-block; font-weight:700;"><i class="fas fa-video"></i> Join Private Jitsi Video Room ↗</a>`;
+            }
+            if (rawText.startsWith("[DOC]:")) {
+                const link = safeUrl(rawText.slice(6), "#");
+                return `<a href="${escapeHTML(link)}" target="_blank" rel="noopener" style="color:#fcd34d; font-weight:700;"><i class="fas fa-file-alt"></i> Open Shared Google Doc ↗</a>`;
+            }
+            return escapeHTML(rawText);
+        }
+
         async function loadInbox() {
             const box = document.getElementById("inboxList");
-            if (!me) {
-                box.innerHTML = `<button type="button" onclick="document.getElementById('navStartBtn').click()" class="btn-secondary-sm" style="width:100%;">Click Start to Set Username</button>`;
+            if (!me || !myToken) {
+                box.innerHTML = `<button type="button" id="inboxSignInBtn" class="btn-secondary-sm" style="width:100%;">Sign In to View Messages</button>`;
+                const btn = document.getElementById("inboxSignInBtn");
+                if (btn) btn.addEventListener("click", () => document.getElementById("navStartBtn")?.click());
                 return;
             }
             const [{ data: reqs }, { data: props }] = await Promise.all([
@@ -283,35 +274,36 @@
                 else if (info.status === "accepted") badge = `<span style="color:#10b981; font-size:11px;">💬 Chat</span>`;
 
                 html += `
-                    <button type="button" class="btn-secondary-sm open-inbox-room" data-partner="${partner}" style="width:100%; text-align:left; display:flex; justify-content:space-between; align-items:center;">
-                        <span>👤 ${partner}</span>${badge}
+                    <button type="button" class="btn-secondary-sm open-inbox-room" data-partner="${escapeHTML(partner)}" style="width:100%; text-align:left; display:flex; justify-content:space-between; align-items:center;">
+                        <span>👤 ${escapeHTML(partner)}</span>${badge}
                     </button>`;
             });
             box.innerHTML = html;
 
-            document.querySelectorAll(".open-inbox-room").forEach(b => {
+            box.querySelectorAll(".open-inbox-room").forEach(b => {
                 b.addEventListener("click", () => openRoom(b.dataset.partner));
             });
         }
 
-        // 2. Otağa Bağlanma & Sorğu Yoxlaması
         async function openRoom(partnerName) {
-            if (!me) {
-                alert("Please click Start at the top-right to set your username first!");
-                document.getElementById("navStartBtn").click();
+            me = cleanHandle(localStorage.getItem("sultan_user"));
+            myToken = localStorage.getItem("sultan_token");
+            if (!me || !myToken) {
+                alert("Please sign in first (Quick Start in menu) to chat safely!");
+                document.getElementById("navStartBtn")?.click();
                 return;
             }
-            currentPartner = partnerName.trim().toLowerCase();
-            if (!currentPartner || currentPartner === me) return alert("You cannot chat with yourself!");
+            currentPartner = cleanHandle(partnerName);
+            if (!currentPartner || currentPartner === me) return alert("Invalid partner username.");
 
             currentRoomId = [me, currentPartner].sort().join("__");
             document.getElementById("activeRoomTitle").innerText = `Connecting with ${currentPartner}`;
             document.getElementById("onlinePresenceText").innerText = "Checking connection status...";
 
             if (realtimeChannel) supabase.removeChannel(realtimeChannel);
-            realtimeChannel = supabase.channel(`room:${currentRoomId}`, { config: { broadcast: { self: true } } });
+            realtimeChannel = supabase.channel(`room:${currentRoomId}`, { config: { broadcast: { self: false } } });
             realtimeChannel
-                .on("broadcast", { event: "chat_msg" }, ({ payload }) => { appendLocalChat(payload); renderRoomView(); })
+                .on("broadcast", { event: "chat_msg" }, () => { renderRoomView(); })
                 .on("broadcast", { event: "refresh_proposals" }, () => { renderRoomView(); loadInbox(); })
                 .on("broadcast", { event: "start_timer" }, ({ payload }) => { runSharedTimer(payload.seconds); })
                 .subscribe();
@@ -319,45 +311,29 @@
             renderRoomView();
         }
 
-        function appendLocalChat(msg) {
-            const key = `sultan_chat_${currentRoomId}`;
-            const history = JSON.parse(localStorage.getItem(key) || "[]");
-            history.push(msg);
-            if (history.length > 40) history.shift();
-            localStorage.setItem(key, JSON.stringify(history));
-        }
-
         async function renderRoomView() {
             if (!currentRoomId) return;
             const box = document.getElementById("chatMessagesBox");
             const inputBar = document.getElementById("chatSendForm");
 
-            // 1. Əvvəlcə Chat Request statusunu yoxlayırıq (Anti-Spam Qoruyucu!)
             const { data: req } = await supabase.from("chat_requests").select("*").eq("room_id", currentRoomId).single();
 
             if (!req) {
-                // HƏLƏ SORĞU GÖNDƏRİLMƏYİB -> GUIDED REQUEST BUILDER GÖSTƏR!
                 inputBar.classList.add("hidden");
                 document.getElementById("onlinePresenceText").innerText = "🔒 First-Message Request Builder";
 
-                const reasons = [
-                    "Book a Lesson",
-                    "Language & Cultural Exchange",
-                    "Skill Swap (Barter)",
-                    "Project / Study Partner",
-                    "Live Workshop Info"
-                ];
+                const reasons = ["Book a Lesson", "Language & Cultural Exchange", "Skill Swap (Barter)", "Project / Study Partner", "Live Workshop Info"];
                 let selectedReason = reasons.includes(urlPresetReason) ? urlPresetReason : reasons[0];
 
                 box.innerHTML = `
                     <div class="request-builder-box">
-                        <h4 style="color:#38bdf8; margin-bottom:4px;">Send a Connection Request to ${currentPartner}</h4>
-                        <p style="font-size:12px; color:#94a3b8;">Select why you are reaching out. Real-time chat unlocks once they accept.</p>
+                        <h4 style="color:#38bdf8; margin-bottom:4px;">Send a Connection Request to ${escapeHTML(currentPartner)}</h4>
+                        <p style="font-size:12px; color:#94a3b8;">Select why you are reaching out. Chat unlocks once they accept.</p>
                         <div class="reason-pills" id="reasonPillsBox">
-                            ${reasons.map(r => `<button type="button" class="reason-pill ${r === selectedReason ? 'active' : ''}" data-reason="${r}">${r}</button>`).join("")}
+                            ${reasons.map(r => `<button type="button" class="reason-pill ${r === selectedReason ? 'active' : ''}" data-reason="${escapeHTML(r)}">${escapeHTML(r)}</button>`).join("")}
                         </div>
                         <div class="preview-template" id="templatePreview">
-                            "Hi ${currentPartner}! I'd like to connect with you for <b>${selectedReason}</b>."
+                            "Hi ${escapeHTML(currentPartner)}! I'd like to connect with you for <b>${escapeHTML(selectedReason)}</b>."
                         </div>
                         <input type="text" id="reqOptionalNote" maxlength="120" placeholder="Optional short note (max 120 chars)..." style="width:100%; padding:10px; border-radius:10px; border:1px solid #334155; background:#1e293b; color:white; font-size:12px; margin-bottom:12px;">
                         <button type="button" id="sendConnectionReqBtn" class="submit-profile-btn" style="width:100%; margin:0;">
@@ -365,12 +341,12 @@
                         </button>
                     </div>`;
 
-                document.querySelectorAll(".reason-pill").forEach(pill => {
+                box.querySelectorAll(".reason-pill").forEach(pill => {
                     pill.addEventListener("click", () => {
-                        document.querySelectorAll(".reason-pill").forEach(p => p.classList.remove("active"));
+                        box.querySelectorAll(".reason-pill").forEach(p => p.classList.remove("active"));
                         pill.classList.add("active");
                         selectedReason = pill.dataset.reason;
-                        document.getElementById("templatePreview").innerHTML = `"Hi ${currentPartner}! I'd like to connect with you for <b>${selectedReason}</b>."`;
+                        document.getElementById("templatePreview").innerHTML = `"Hi ${escapeHTML(currentPartner)}! I'd like to connect with you for <b>${escapeHTML(selectedReason)}</b>."`;
                     });
                 });
 
@@ -385,9 +361,7 @@
                         if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
                         loadInbox();
                         renderRoomView();
-                    } else {
-                        alert("Could not send request. Try again.");
-                    }
+                    } else alert("Could not send request. Try again.");
                 });
                 return;
             }
@@ -399,15 +373,24 @@
 
                 box.innerHTML = `
                     <div class="request-builder-box" style="border-color: #f59e0b;">
-                        <span style="font-size:11px; color:#f59e0b; font-weight:700;">REASON: ${req.reason_tag.toUpperCase()}</span>
-                        <p style="font-size:14px; color:#ffffff; margin:10px 0;">"${req.opening_message}"</p>
+                        <span style="font-size:11px; color:#f59e0b; font-weight:700;">REASON: ${escapeHTML(req.reason_tag.toUpperCase())}</span>
+                        <p style="font-size:14px; color:#ffffff; margin:10px 0;">"${escapeHTML(req.opening_message)}"</p>
                         ${isReceiver ? `
                             <div style="display:flex; gap:10px; margin-top:14px;">
-                                <button type="button" onclick="window.answerChatReq(${req.id}, 'accepted')" style="flex:1; background:#10b981; color:#fff; border:none; padding:10px; border-radius:10px; font-weight:700; cursor:pointer;">✅ Accept & Start Chatting</button>
-                                <button type="button" onclick="window.answerChatReq(${req.id}, 'declined')" style="background:#ef4444; color:#fff; border:none; padding:10px 16px; border-radius:10px; font-weight:700; cursor:pointer;">❌ Decline</button>
+                                <button type="button" class="req-ans-btn" data-id="${req.id}" data-status="accepted" style="flex:1; background:#10b981; color:#fff; border:none; padding:10px; border-radius:10px; font-weight:700; cursor:pointer;">✅ Accept & Start Chatting</button>
+                                <button type="button" class="req-ans-btn" data-id="${req.id}" data-status="declined" style="background:#ef4444; color:#fff; border:none; padding:10px 16px; border-radius:10px; font-weight:700; cursor:pointer;">❌ Decline</button>
                             </div>`
-                        : `<p style="font-size:12px; color:#94a3b8;">⏳ Request sent! To prevent spam, full chat & study tools will unlock as soon as <b>${currentPartner}</b> accepts.</p>`}
+                        : `<p style="font-size:12px; color:#94a3b8;">⏳ Request sent! Chat unlocks as soon as <b>${escapeHTML(currentPartner)}</b> accepts.</p>`}
                     </div>`;
+
+                box.querySelectorAll(".req-ans-btn").forEach(btn => {
+                    btn.addEventListener("click", async () => {
+                        await supabase.rpc("respond_chat_request", { p_id: parseInt(btn.dataset.id, 10), p_new_status: btn.dataset.status });
+                        if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                        loadInbox();
+                        renderRoomView();
+                    });
+                });
                 return;
             }
 
@@ -418,17 +401,19 @@
                 return;
             }
 
-            // STATUS === 'accepted' -> TAM CANLI ÇAT & TOOLLAR AÇILIR!
+            // ACCEPTED -> CANLI & OFFLINE CHAT AÇILIR!
             inputBar.classList.remove("hidden");
-            document.getElementById("onlinePresenceText").innerText = "🟢 Connected • Real-Time Chat & Tools Unlocked";
+            document.getElementById("onlinePresenceText").innerText = "🟢 Connected • Messages Saved Securely";
 
-            const localMsgs = JSON.parse(localStorage.getItem(`sultan_chat_${currentRoomId}`) || "[]");
-            const { data: proposals } = await supabase.from("lesson_proposals").select("*").eq("room_id", currentRoomId).order("id", { ascending: true });
+            const [{ data: proposals }, { data: savedMsgs }] = await Promise.all([
+                supabase.from("lesson_proposals").select("*").eq("room_id", currentRoomId).order("id", { ascending: true }),
+                supabase.from("chat_messages").select("*").eq("room_id", currentRoomId).order("id", { ascending: true }).limit(60)
+            ]);
 
             let html = `
                 <div class="msg-bubble msg-them" style="border-color:#10b981; align-self:center; max-width:95%; text-align:center;">
-                    <span class="msg-meta" style="color:#10b981;">✅ Connection Accepted (${req.reason_tag})</span>
-                    <div>"${req.opening_message}"</div>
+                    <span class="msg-meta" style="color:#10b981;">✅ Connection Accepted (${escapeHTML(req.reason_tag)})</span>
+                    <div>"${escapeHTML(req.opening_message)}"</div>
                 </div>`;
 
             (proposals || []).forEach(p => {
@@ -439,100 +424,103 @@
                 if (p.status === "proposed") {
                     actionBtns = isReceiver ? `
                         <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
-                            <button onclick="window.propAction(${p.id}, 'accepted')" style="background:#10b981; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">✅ Accept</button>
-                            <button onclick="window.rescheduleProp(${p.id})" style="background:#f59e0b; color:#0f172a; border:none; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">🔄 Offer New Time</button>
-                            <button onclick="window.propAction(${p.id}, 'rejected')" style="background:#ef4444; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">❌ Reject</button>
-                        </div>` : `<span style="font-size:11px; color:#f59e0b;">⏳ Waiting for ${p.receiver_name}...</span>`;
+                            <button class="prop-act-btn" data-id="${p.id}" data-status="accepted" style="background:#10b981; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">✅ Accept</button>
+                            <button class="prop-resched-btn" data-id="${p.id}" style="background:#f59e0b; color:#0f172a; border:none; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">🔄 Offer New Time</button>
+                            <button class="prop-act-btn" data-id="${p.id}" data-status="rejected" style="background:#ef4444; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">❌ Reject</button>
+                        </div>` : `<span style="font-size:11px; color:#f59e0b;">⏳ Waiting for ${escapeHTML(p.receiver_name)}...</span>`;
                 } else if (p.status === "accepted") {
                     const absentTarget = (p.sender_name === me) ? p.receiver_name : p.sender_name;
                     actionBtns = `
                         <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
-                            <button onclick="window.cancelProp(${p.id})" style="background:#334155; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">Cancel (4h Check)</button>
-                            <button onclick="window.completeProp(${p.id}, '${p.sender_name}')" style="background:#10b981; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">🎓 Confirm Done (+10 SP)</button>
-                            <button onclick="window.noShowProp(${p.id}, '${absentTarget}')" style="background:#ef4444; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">⚠️ Report No-Show</button>
+                            <button class="prop-cancel-btn" data-id="${p.id}" style="background:#334155; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">Cancel (4h Check)</button>
+                            <button class="prop-done-btn" data-id="${p.id}" data-student="${escapeHTML(p.sender_name)}" style="background:#10b981; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">🎓 Confirm Done (+10 SP)</button>
+                            <button class="prop-noshow-btn" data-id="${p.id}" data-absent="${escapeHTML(absentTarget)}" style="background:#ef4444; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">⚠️ Report No-Show</button>
                         </div>`;
                 }
 
                 html += `
                     <div class="proposal-card">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                            <strong style="color:#38bdf8; font-size:13px;">📅 Lesson Proposal: ${p.topic}</strong>
-                            <span style="font-size:10px; padding:3px 8px; border-radius:10px; background:#1e293b; color:#f8fafc;">${p.status.toUpperCase()}</span>
+                            <strong style="color:#38bdf8; font-size:13px;">📅 Lesson Proposal: ${escapeHTML(p.topic)}</strong>
+                            <span style="font-size:10px; padding:3px 8px; border-radius:10px; background:#1e293b; color:#f8fafc;">${escapeHTML(p.status.toUpperCase())}</span>
                         </div>
-                        <p style="font-size:12px; color:#cbd5e1; margin:0;">From <b>${p.sender_name}</b> • Scheduled: <b>${dt}</b></p>
+                        <p style="font-size:12px; color:#cbd5e1; margin:0;">From <b>${escapeHTML(p.sender_name)}</b> • Scheduled: <b>${escapeHTML(dt)}</b></p>
                         ${actionBtns}
                     </div>`;
             });
 
-            localMsgs.forEach(m => {
-                const isMine = m.sender === me;
+            (savedMsgs || []).forEach(m => {
+                const isMine = m.sender_name === me;
+                const timeStr = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 html += `
                     <div class="msg-bubble ${isMine ? 'msg-me' : 'msg-them'}">
-                        <span class="msg-meta">${m.sender} • ${m.time}</span>
-                        <div>${m.html || m.text}</div>
+                        <span class="msg-meta">${escapeHTML(m.sender_name)} • ${escapeHTML(timeStr)}</span>
+                        <div>${renderFormattedMsg(m.message)}</div>
                     </div>`;
             });
 
             box.innerHTML = html;
             box.scrollTop = box.scrollHeight;
+
+            // Təhlükəsiz event dinləyiciləri
+            box.querySelectorAll(".prop-act-btn").forEach(b => b.addEventListener("click", async () => {
+                await supabase.rpc("respond_lesson_proposal", { p_id: parseInt(b.dataset.id, 10), p_new_status: b.dataset.status });
+                realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                renderRoomView();
+            }));
+            box.querySelectorAll(".prop-resched-btn").forEach(b => b.addEventListener("click", async () => {
+                const newIso = prompt("Enter new date & time (YYYY-MM-DD HH:MM, e.g. 2026-12-01 18:00):");
+                if (!newIso) return;
+                const parsed = new Date(newIso.replace(" ", "T"));
+                if (isNaN(parsed)) return alert("Invalid date format.");
+                await supabase.rpc("respond_lesson_proposal", { p_id: parseInt(b.dataset.id, 10), p_new_status: "proposed", p_new_time: parsed.toISOString() });
+                realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                renderRoomView();
+            }));
+            box.querySelectorAll(".prop-cancel-btn").forEach(b => b.addEventListener("click", async () => {
+                const { data } = await supabase.rpc("cancel_lesson_proposal", { p_id: parseInt(b.dataset.id, 10), p_actor: me });
+                if (data === "penalized") alert("⚠️ Late cancellation (< 4h notice)! Penalty applied: -100 Leaderboard pts & -50 SP.");
+                else alert("Cancelled cleanly (> 4h notice). 0 penalty.");
+                realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                renderRoomView();
+            }));
+            box.querySelectorAll(".prop-noshow-btn").forEach(b => b.addEventListener("click", async () => {
+                if (!confirm(`Report ${b.dataset.absent} as No-Show? Applies -100 pts / -50 SP penalty.`)) return;
+                await supabase.rpc("report_lesson_noshow", { p_id: parseInt(b.dataset.id, 10), p_absent_user: b.dataset.absent });
+                alert(`Reported! ${b.dataset.absent} received -100 Leaderboard pts & -50 SP.`);
+                realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                renderRoomView();
+            }));
+            box.querySelectorAll(".prop-done-btn").forEach(b => b.addEventListener("click", async () => {
+                await supabase.rpc("complete_lesson_proposal", { p_id: parseInt(b.dataset.id, 10), p_student: b.dataset.student });
+                alert("🎉 Session completed! +10 SP awarded!");
+                realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                renderRoomView();
+            }));
         }
 
-        window.answerChatReq = async (id, status) => {
-            await supabase.rpc("respond_chat_request", { p_id: id, p_new_status: status });
-            if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
-            loadInbox();
-            renderRoomView();
-        };
-
-        window.propAction = async (id, status) => {
-            await supabase.rpc("respond_lesson_proposal", { p_id: id, p_new_status: status });
-            if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
-            renderRoomView();
-        };
-
-        window.rescheduleProp = async (id) => {
-            const newIso = prompt("Enter new date & time (YYYY-MM-DD HH:MM, e.g. 2026-12-01 18:00):");
-            if (!newIso) return;
-            const parsed = new Date(newIso.replace(" ", "T"));
-            if (isNaN(parsed)) return alert("Invalid date format.");
-            await supabase.rpc("respond_lesson_proposal", { p_id: id, p_new_status: "proposed", p_new_time: parsed.toISOString() });
-            if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
-            renderRoomView();
-        };
-
-        window.cancelProp = async (id) => {
-            const { data } = await supabase.rpc("cancel_lesson_proposal", { p_id: id, p_actor: me });
-            if (data === "penalized") alert("⚠️ Late cancellation (< 4h notice)! Penalty applied: -100 Leaderboard pts & -50 SP.");
-            else alert("Cancelled cleanly (> 4h notice). 0 penalty.");
-            if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
-            renderRoomView();
-        };
-
-        window.noShowProp = async (id, absentUser) => {
-            if (!confirm(`Report ${absentUser} as No-Show? Applies -100 pts / -50 SP penalty.`)) return;
-            await supabase.rpc("report_lesson_noshow", { p_id: id, p_absent_user: absentUser });
-            alert(`Reported! ${absentUser} received -100 Leaderboard pts & -50 SP.`);
-            if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
-            renderRoomView();
-        };
-
-        window.completeProp = async (id, studentName) => {
-            await supabase.rpc("complete_lesson_proposal", { p_id: id, p_student: studentName });
-            alert("🎉 Session completed! +10 SP awarded!");
-            if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
-            renderRoomView();
-        };
+        async function sendSavedMessage(rawText) {
+            if (!currentRoomId || !me || !myToken) return;
+            const { data } = await supabase.rpc("post_chat_message", {
+                p_username: me, p_token: myToken, p_room_id: currentRoomId, p_message: rawText, p_is_html: false
+            });
+            if (data && data.ok) {
+                realtimeChannel?.send({ type: "broadcast", event: "chat_msg", payload: {} });
+                renderRoomView();
+            } else {
+                alert(data?.error || "Could not send message.");
+            }
+        }
 
         document.getElementById("connectRoomBtn").addEventListener("click", () => openRoom(document.getElementById("partnerUsernameInput").value));
 
-        document.getElementById("chatSendForm").addEventListener("submit", (e) => {
+        document.getElementById("chatSendForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-            if (!currentRoomId) return;
             const input = document.getElementById("chatMsgInput");
             const txt = input.value.trim();
             if (!txt) return;
-            realtimeChannel.send({ type: "broadcast", event: "chat_msg", payload: { sender: me, text: txt, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) } });
             input.value = "";
+            await sendSavedMessage(txt);
         });
 
         const toolsPop = document.getElementById("toolsPopover");
@@ -551,7 +539,7 @@
                 topic: document.getElementById("propTopic").value.trim(),
                 scheduled_at: new Date(dtVal).toISOString(), status: "proposed"
             }]);
-            if (!error) { propModal.classList.add("hidden"); e.target.reset(); realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} }); loadInbox(); }
+            if (!error) { propModal.classList.add("hidden"); e.target.reset(); realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} }); loadInbox(); renderRoomView(); }
         });
 
         document.getElementById("toolCalcBtn").addEventListener("click", () => { toolsPop.classList.add("hidden"); document.getElementById("calcWidget").classList.remove("hidden"); });
@@ -559,11 +547,12 @@
         const docsModal = document.getElementById("docsShareModal");
         document.getElementById("toolDocsBtn").addEventListener("click", () => { toolsPop.classList.add("hidden"); docsModal.classList.remove("hidden"); });
         document.getElementById("closeDocsModal").addEventListener("click", () => docsModal.classList.add("hidden"));
-        document.getElementById("sendDocToChatBtn").addEventListener("click", () => {
-            const url = document.getElementById("shareDocUrl").value.trim();
-            if (!url) return;
-            realtimeChannel.send({ type: "broadcast", event: "chat_msg", payload: { sender: me, html: `<a href="${url}" target="_blank" style="color:#fcd34d; font-weight:700;"><i class="fas fa-file-alt"></i> Open Shared Google Doc ↗</a>`, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) } });
-            document.getElementById("shareDocUrl").value = ""; docsModal.classList.add("hidden");
+        document.getElementById("sendDocToChatBtn").addEventListener("click", async () => {
+            const url = safeUrl(document.getElementById("shareDocUrl").value.trim(), "");
+            if (!url) return alert("Please enter a valid https:// Google Docs URL.");
+            document.getElementById("shareDocUrl").value = "";
+            docsModal.classList.add("hidden");
+            await sendSavedMessage(`[DOC]:${url}`);
         });
 
         function runSharedTimer(sec) {
@@ -577,21 +566,22 @@
                 if (rem <= 0) { clearInterval(activeTimerInterval); clock.innerText = "Done!"; }
             }, 1000);
         }
-        document.getElementById("toolTimerBtn").addEventListener("click", () => { toolsPop.classList.add("hidden"); realtimeChannel.send({ type: "broadcast", event: "start_timer", payload: { seconds: 1500 } }); });
-
-        document.getElementById("toolJitsiBtn").addEventListener("click", () => {
+        document.getElementById("toolTimerBtn").addEventListener("click", () => {
             toolsPop.classList.add("hidden");
-            const link = `classroom.html?room=SultanChat-${currentRoomId.replace(/[^a-zA-Z0-9]/g, "")}`;
-            realtimeChannel.send({ type: "broadcast", event: "chat_msg", payload: { sender: me, html: `<a href="${link}" target="_blank" style="background:#10b981; color:#fff; padding:6px 12px; border-radius:10px; display:inline-block; font-weight:700;"><i class="fas fa-video"></i> Join Live Jitsi Video Room ↗</a>`, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) } });
+            runSharedTimer(1500);
+            realtimeChannel?.send({ type: "broadcast", event: "start_timer", payload: { seconds: 1500 } });
+        });
+
+        document.getElementById("toolJitsiBtn").addEventListener("click", async () => {
+            toolsPop.classList.add("hidden");
+            const randToken = Math.random().toString(36).substring(2, 9) + Date.now().toString(36).slice(-4);
+            const link = `classroom.html?room=SultanPrivate-${randToken}`;
+            await sendSavedMessage(`[JITSI]:${link}`);
         });
 
         loadInbox();
-
-        // KARTDAN GƏLƏN ?to=AD&ctx=SƏBƏB PARAMETRİ VARSA DƏRHAL AÇ!
         const urlTo = new URLSearchParams(window.location.search).get("to");
-        if (urlTo) {
-            setTimeout(() => openRoom(urlTo), 250);
-        }
+        if (urlTo) setTimeout(() => openRoom(urlTo), 250);
     </script>
 </body>
 </html>
