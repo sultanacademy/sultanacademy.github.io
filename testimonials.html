@@ -52,9 +52,8 @@
     <script src="js/navbar.js"></script>
     <script src="js/cookie-consent.js"></script>
     <script type="module" src="js/wizard.js"></script>
-    <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
+   <script type="module">
+        import { supabase, escapeHTML } from './js/config.js';
 
         async function loadTestimonials() {
             const grid = document.getElementById('testimonialsGrid');
@@ -67,10 +66,10 @@
                 <div class="testi-card">
                     <div class="testi-quote-icon"><i class="fas fa-quote-left"></i></div>
                     <div class="testi-stars">${"⭐".repeat(t.rating)}</div>
-                    <p class="testi-body">"${t.message}"</p>
+                    <p class="testi-body">"${escapeHTML(t.message)}"</p>
                     <div class="testi-author">
-                        <div class="testi-avatar">${t.author_name.charAt(0).toUpperCase()}</div>
-                        <div><strong>${t.author_name}</strong><span>${t.author_role}</span></div>
+                        <div class="testi-avatar">${escapeHTML(t.author_name.charAt(0).toUpperCase())}</div>
+                        <div><strong>${escapeHTML(t.author_name)}</strong><span>${escapeHTML(t.author_role)}</span></div>
                     </div>
                 </div>`).join('');
         }
@@ -82,7 +81,7 @@
             const { error } = await supabase.from('testimonials').insert([{
                 author_name: document.getElementById('testiName').value.trim(),
                 author_role: document.getElementById('testiRole').value.trim(),
-                rating: parseInt(document.getElementById('testiRating').value),
+                rating: parseInt(document.getElementById('testiRating').value, 10),
                 message: document.getElementById('testiMsg').value.trim(),
                 status: 'pending'
             }]);
