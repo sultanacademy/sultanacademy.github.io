@@ -1,18 +1,22 @@
 // --- SULTAN ACADEMY: DIVIDED SIDEBAR + TOP-RIGHT SHOP/START/SETTINGS ---
 document.addEventListener("DOMContentLoaded", () => {
+    // Bütün səhifələrdə Footer yazısını avtomatik Sultan Academy edirik
+    document.querySelectorAll(".footer p").forEach(p => {
+        p.innerHTML = p.innerHTML.replace("Sultan Alizada", "Sultan Academy");
+    });
+
     const headerContainer = document.getElementById("main-header");
     if (!headerContainer) return;
 
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
     const activeUser = localStorage.getItem("sultan_user");
 
-    // HƏR DÜYMƏNİN ÖZ AYRI HTML SƏHİFƏSİ VAR (Shop sağ yuxarıya çıxarıldı!)
     const menuItemsDB = {
         home: { label: "Home", href: "index.html", icon: "fas fa-home" },
         dashboard: { label: "Dashboard", href: "dashboard.html", icon: "fas fa-th-large" },
         become_educator: { label: "Become an Educator", href: "become-educator.html", icon: "fas fa-chalkboard-teacher" },
         find_educators: { label: "Find Educators", href: "tutors.html", icon: "fas fa-search" },
-        leaderboard: { label: "Leaderboard", href: "leaderboard.html", icon: "fas fa-trophy" },
+        live_clubs: { label: "Weekly Live Clubs & Workshops", href: "clubs.html", icon: "fas fa-broadcast-tower" },
         skill_swap: { label: "Skill Swap", href: "skill-swap.html", icon: "fas fa-exchange-alt" },
         lang_exchange: { label: "Language & Cultural Exchange", href: "exchange.html", icon: "fas fa-globe" },
         projects: {
@@ -28,20 +32,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 { label: "MUSICO (Global)", href: "musico.html" }
             ]
         },
+        leaderboard: { label: "Leaderboard", href: "leaderboard.html", icon: "fas fa-trophy" },
         testimonials: { label: "Testimonials", href: "testimonials.html", icon: "fas fa-comment-alt" },
         contact: { label: "Contact & Feedback", href: "contact.html", icon: "fas fa-envelope" }
     };
 
+    // İSTƏDİYİN YENİ DEFAULT SIRA: Projects və Leaderboard 'Others' bölməsinə düşdü!
     const defaultLayout = {
-        general: ["home", "dashboard", "become_educator", "find_educators", "leaderboard", "skill_swap", "lang_exchange", "projects"],
-        others: ["testimonials", "contact"]
+        general: ["home", "dashboard", "become_educator", "find_educators", "live_clubs", "skill_swap", "lang_exchange"],
+        others: ["projects", "leaderboard", "testimonials", "contact"]
     };
 
+    const STORAGE_KEY = "sultan_sidebar_layout_v2";
     let savedLayout;
     try {
-        savedLayout = JSON.parse(localStorage.getItem("sultan_sidebar_layout")) || defaultLayout;
+        savedLayout = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultLayout;
         if (!savedLayout.general || !savedLayout.others) savedLayout = defaultLayout;
-        // Köhnə 'shop' sol menyuda qalıbsa təmizləyirik (çünki artıq sağ yuxarıdadır)
         savedLayout.general = savedLayout.general.filter(id => menuItemsDB[id]);
         savedLayout.others = savedLayout.others.filter(id => menuItemsDB[id]);
 
@@ -98,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
             <i class="fas fa-bars"></i>
         </button>
 
-        <!-- SAĞ YUXARI KÜNC: SHOP + START + SETTINGS (BÖYÜDÜLMÜŞ) -->
         <div class="top-utility-bar">
             <a href="shop.html" class="top-shop-btn">
                 <i class="fas fa-shopping-bag"></i> Shop
@@ -132,10 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <ul class="sidebar-list" id="sidebarOthers" data-group="others">
                     ${savedLayout.others.map(renderItemHTML).join("")}
                 </ul>
-            </div>
-
-            <div class="sidebar-footer-tip">
-                <i class="fas fa-grip-vertical"></i> Drag <b style="color:#94a3b8;">⋮⋮</b> to customize menu
             </div>
         </aside>
 
@@ -211,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
             draggedItem = null;
             const generalIds = [...document.querySelectorAll("#sidebarGeneral .sidebar-item")].map(el => el.dataset.id);
             const othersIds = [...document.querySelectorAll("#sidebarOthers .sidebar-item")].map(el => el.dataset.id);
-            localStorage.setItem("sultan_sidebar_layout", JSON.stringify({ general: generalIds, others: othersIds }));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ general: generalIds, others: othersIds }));
         });
     });
 
@@ -235,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("closeSettingsModal").addEventListener("click", () => settingsModal.classList.add("hidden"));
 
     document.getElementById("resetSidebarBtn").addEventListener("click", () => {
-        localStorage.removeItem("sultan_sidebar_layout");
+        localStorage.removeItem(STORAGE_KEY);
         window.location.reload();
     });
 
