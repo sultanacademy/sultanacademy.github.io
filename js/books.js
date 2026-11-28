@@ -1,14 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Yalnız <a> kitab düymələrini seçirik ki, shop.js-in #watchAdBtn düyməsi ilə toqquşmasın!
-    const bookButtons = document.querySelectorAll('a.watch-ad-btn[data-link]');
+    const bookButtons = document.querySelectorAll('a.watch-ad-btn[data-book]');
 
     bookButtons.forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
-            const targetLink = this.getAttribute('data-link');
+            const bookKey = this.getAttribute('data-book');
+            const readerUrl = `reader.html?book=${encodeURIComponent(bookKey)}`;
 
             if (this.dataset.unlocked === "true") {
-                window.open(targetLink, "_blank");
+                sessionStorage.setItem("sultan_unlocked_" + bookKey, "true");
+                window.open(readerUrl, "_blank");
                 return;
             }
 
@@ -16,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const adWindow = window.open(adUrl, "_blank");
 
             if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
-                alert("⚠️ Pop-up Blocked! Please allow pop-ups in your browser to unlock this resource.");
+                alert("⚠️ Pop-up Blocked! Please allow pop-ups in your browser to unlock this material.");
                 return;
             }
 
@@ -30,17 +31,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Unlocking... ${timeLeft}s`;
                 } else {
                     clearInterval(timer);
-                    if (targetLink && !targetLink.includes("YOUR_")) {
-                        this.dataset.unlocked = "true";
-                        this.innerHTML = `<i class="fas fa-check-circle"></i> Ready! Tap to Open`;
-                        this.style.background = "#10b981";
-                        this.style.pointerEvents = 'auto';
-                        window.open(targetLink, "_blank");
-                    } else {
-                        alert("Link is coming soon!");
-                        this.innerHTML = `<i class="fas fa-play-circle"></i> Watch AD & Open`;
-                        this.style.pointerEvents = 'auto';
-                    }
+                    sessionStorage.setItem("sultan_unlocked_" + bookKey, "true");
+                    this.dataset.unlocked = "true";
+                    this.innerHTML = `<i class="fas fa-book-open"></i> Ready! Tap to Read`;
+                    this.style.background = "#10b981";
+                    this.style.pointerEvents = 'auto';
+                    window.open(readerUrl, "_blank");
                 }
             }, 1000);
         });
