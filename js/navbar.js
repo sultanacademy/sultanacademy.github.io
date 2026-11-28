@@ -1,4 +1,4 @@
-// --- SULTAN ACADEMY: DIVIDED SIDEBAR + TOP-RIGHT LIBRARY/START/SETTINGS ---
+// --- SULTAN ACADEMY: HOVER ICON-RAIL SIDEBAR + TOP-RIGHT LIBRARY/START/SETTINGS ---
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".footer p").forEach(p => {
         p.innerHTML = p.innerHTML.replace("Sultan Alizada", "Sultan Academy");
@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
     const activeUser = localStorage.getItem("sultan_user");
 
-    // BÜTÜN MENYU ELEMENTLƏRİ (Library kitab ikonu ilə əlavə olundu)
     const menuItemsDB = {
         home: { label: "Home", href: "index.html", icon: "fas fa-home" },
         dashboard: { label: "Dashboard", href: "dashboard.html", icon: "fas fa-th-large" },
@@ -39,12 +38,13 @@ document.addEventListener("DOMContentLoaded", () => {
         contact: { label: "Contact & Feedback", href: "contact.html", icon: "fas fa-envelope" }
     };
 
-const defaultLayout = {
-        general: ["home", "dashboard", "chat", "become_educator", "find_educators", "skill_swap", "lang_exchange", "live_clubs"],
+    // SƏNİN SEÇDİYİN DƏQİQ DEFAULT SIRA (+ library)
+    const defaultLayout = {
+        general: ["home", "dashboard", "chat", "become_educator", "find_educators", "skill_swap", "lang_exchange", "live_clubs", "library"],
         others: ["leaderboard", "projects", "testimonials", "contact"]
     };
 
-    const STORAGE_KEY = "sultan_sidebar_layout_v3";
+    const STORAGE_KEY = "sultan_sidebar_layout_v4";
     let savedLayout;
     try {
         savedLayout = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultLayout;
@@ -75,9 +75,9 @@ const defaultLayout = {
             return `
                 <li class="sidebar-item" draggable="true" data-id="${id}">
                     <div class="sidebar-row">
-                        <button type="button" class="sidebar-link sidebar-projects-toggle ${isChildActive ? 'active' : ''}">
+                        <button type="button" title="${item.label}" class="sidebar-link sidebar-projects-toggle ${isChildActive ? 'active' : ''}">
                             <i class="${item.icon}"></i>
-                            <span>${item.label}</span>
+                            <span class="nav-label-txt">${item.label}</span>
                             <i class="fas fa-chevron-down drop-arrow ${isChildActive ? 'rotated' : ''}"></i>
                         </button>
                         <span class="drag-handle" title="Hold & drag to reorder"><i class="fas fa-grip-vertical"></i></span>
@@ -91,9 +91,9 @@ const defaultLayout = {
         return `
             <li class="sidebar-item" draggable="true" data-id="${id}">
                 <div class="sidebar-row">
-                    <a href="${item.href}" class="sidebar-link ${isActive ? 'active' : ''}">
+                    <a href="${item.href}" title="${item.label}" class="sidebar-link ${isActive ? 'active' : ''}">
                         <i class="${item.icon}"></i>
-                        <span>${item.label}</span>
+                        <span class="nav-label-txt">${item.label}</span>
                     </a>
                     <span class="drag-handle" title="Hold & drag to reorder"><i class="fas fa-grip-vertical"></i></span>
                 </div>
@@ -105,7 +105,6 @@ const defaultLayout = {
             <i class="fas fa-bars"></i>
         </button>
 
-        <!-- SAĞ YUXARI KÜNC: LIBRARY + START + SETTINGS -->
         <div class="top-utility-bar">
             <a href="shop.html" class="top-shop-btn">
                 <i class="fas fa-book-open"></i> Library
@@ -118,12 +117,12 @@ const defaultLayout = {
             </button>
         </div>
 
-<div id="sidebarBackdrop" class="sidebar-backdrop hidden"></div>
+        <div id="sidebarBackdrop" class="sidebar-backdrop hidden"></div>
         <aside id="leftSidebar" class="left-sidebar">
-        <div class="sidebar-brand">
+            <div class="sidebar-brand">
                 <a href="index.html">
-                    <img src="logo.png" alt="Logo" style="width:28px; height:28px; border-radius:8px; object-fit:cover;">
-                    <span>SULTAN ACADEMY</span>
+                    <img src="logo.png" alt="Logo" style="width:30px; height:30px; border-radius:8px; object-fit:cover; flex-shrink:0;">
+                    <span class="brand-text">SULTAN ACADEMY</span>
                 </a>
                 <button id="closeMobileSidebar" class="mobile-close-sb" type="button">&times;</button>
             </div>
@@ -187,26 +186,42 @@ const defaultLayout = {
         </div>
     `;
 
-const leftSidebar = document.getElementById("leftSidebar");
+    // MOBİL SİDEBAR AÇMA / ÇÖLƏ TOXUNANDA BAĞLAMA + SCROLL KİLİDİ
+    const leftSidebar = document.getElementById("leftSidebar");
     const sidebarBackdrop = document.getElementById("sidebarBackdrop");
     const mobileBtn = document.getElementById("mobileSidebarToggle");
     const closeMobileBtn = document.getElementById("closeMobileSidebar");
 
-    function openMobSidebar() {
+    function openMobSidebar(e) {
+        if (e) e.stopPropagation();
         leftSidebar.classList.add("open");
-        if (sidebarBackdrop) sidebarBackdrop.classList.remove("hidden");
+        sidebarBackdrop.classList.remove("hidden");
+        document.documentElement.classList.add("sidebar-mobile-open");
         document.body.classList.add("sidebar-mobile-open");
     }
+
     function closeMobSidebar() {
         leftSidebar.classList.remove("open");
-        if (sidebarBackdrop) sidebarBackdrop.classList.add("hidden");
+        sidebarBackdrop.classList.add("hidden");
+        document.documentElement.classList.remove("sidebar-mobile-open");
         document.body.classList.remove("sidebar-mobile-open");
     }
 
     if (mobileBtn) mobileBtn.addEventListener("click", openMobSidebar);
     if (closeMobileBtn) closeMobileBtn.addEventListener("click", closeMobSidebar);
-    if (sidebarBackdrop) sidebarBackdrop.addEventListener("click", closeMobSidebar);
+    if (sidebarBackdrop) {
+        sidebarBackdrop.addEventListener("click", closeMobSidebar);
+        sidebarBackdrop.addEventListener("touchend", (e) => { e.preventDefault(); closeMobSidebar(); });
+    }
 
+    // İstənilən çöl klikdə də bağlansın
+    document.addEventListener("click", (e) => {
+        if (leftSidebar.classList.contains("open") && !leftSidebar.contains(e.target) && !mobileBtn.contains(e.target)) {
+            closeMobSidebar();
+        }
+    });
+
+    // Projects Accordion
     document.querySelectorAll(".sidebar-projects-toggle").forEach(btn => {
         btn.addEventListener("click", () => {
             const sub = btn.closest(".sidebar-item").querySelector(".sidebar-submenu");
@@ -215,6 +230,7 @@ const leftSidebar = document.getElementById("leftSidebar");
         });
     });
 
+    // DRAG & DROP
     let draggedItem = null;
     const lists = document.querySelectorAll(".sidebar-list");
 
@@ -247,6 +263,7 @@ const leftSidebar = document.getElementById("leftSidebar");
         });
     });
 
+    // Settings
     const settingsModal = document.getElementById("settingsModal");
     document.getElementById("openSettingsBtn").addEventListener("click", () => settingsModal.classList.remove("hidden"));
     document.getElementById("closeSettingsModal").addEventListener("click", () => settingsModal.classList.add("hidden"));
