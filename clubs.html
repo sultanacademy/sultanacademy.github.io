@@ -96,13 +96,13 @@
                 return;
             }
 
-            grid.innerHTML = events.map(ev => `
+ grid.innerHTML = events.map(ev => `
                 <div class="club-card">
-                    <div class="club-badge live-lang">${ev.category}</div>
-                    <h4>${ev.title}</h4>
-                    <p>${ev.description}</p>
-                    <div class="club-meta"><span><i class="far fa-clock"></i> ${ev.schedule_text}</span><span><i class="fas fa-user"></i> ${ev.educator_name}</span></div>
-                    <a href="${ev.discord_link}" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Live Room</a>
+                    <div class="club-badge live-lang">${escapeHTML(ev.category)}</div>
+                    <h4>${escapeHTML(ev.title)}</h4>
+                    <p>${escapeHTML(ev.description)}</p>
+                    <div class="club-meta"><span><i class="far fa-clock"></i> ${escapeHTML(ev.schedule_text)}</span><span><i class="fas fa-user"></i> ${escapeHTML(ev.educator_name)}</span></div>
+                    <a href="${safeUrl(ev.discord_link, SULTAN_CONFIG.DISCORD_INVITE)}" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Live Room</a>
                 </div>`).join('');
         }
         loadEvents();
