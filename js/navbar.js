@@ -1,7 +1,24 @@
-// --- SULTAN ACADEMY: HOVER ICON-RAIL SIDEBAR + TOP-RIGHT LIBRARY/START/SETTINGS ---
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    // 1. PWA Manifest & Service Worker qoşulması
+    if (!document.querySelector('link[rel="manifest"]')) {
+        const mf = document.createElement("link");
+        mf.rel = "manifest";
+        mf.href = "manifest.json";
+        document.head.appendChild(mf);
+    }
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
+
+    // 2. Config & Supabase yükləmə
+    const { SULTAN_CONFIG, escapeHTML, supabase } = await import("./config.js");
+
+    // 3. Footer və Bütün "YOUR_WISE_LINK_HERE" linklərini avtomatik düzəlt!
     document.querySelectorAll(".footer p").forEach(p => {
         p.innerHTML = p.innerHTML.replace("Sultan Alizada", "Sultan Academy");
+    });
+    document.querySelectorAll('a[href="YOUR_WISE_LINK_HERE"], a.metallic-support-btn').forEach(a => {
+        a.href = SULTAN_CONFIG.WISE_LINK;
     });
 
     const headerContainer = document.getElementById("main-header");
@@ -9,17 +26,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
     const activeUser = localStorage.getItem("sultan_user");
+    const activeToken = localStorage.getItem("sultan_token");
 
     const menuItemsDB = {
         home: { label: "Home", href: "index.html", icon: "fas fa-home" },
+        quick_start: { label: activeUser ? `Account • ${escapeHTML(activeUser)}` : "Sign In / Quick Start", type: "action", id: "navStartBtn", icon: "fas fa-bolt" },
         dashboard: { label: "Dashboard", href: "dashboard.html", icon: "fas fa-th-large" },
+        chat: { label: "Messages & Tools", href: "chat.html", icon: "fas fa-comments" },
+        library: { label: "Library & Shop", href: "shop.html", icon: "fas fa-book" },
         become_educator: { label: "Become an Educator", href: "become-educator.html", icon: "fas fa-chalkboard-teacher" },
         find_educators: { label: "Find Educators", href: "tutors.html", icon: "fas fa-search" },
-        chat: { label: "Messages & Tools", href: "chat.html", icon: "fas fa-comments" },
-        live_clubs: { label: "Weekly Live Clubs & Workshops", href: "clubs.html", icon: "fas fa-broadcast-tower" },
         skill_swap: { label: "Skill Swap", href: "skill-swap.html", icon: "fas fa-exchange-alt" },
         lang_exchange: { label: "Language & Cultural Exchange", href: "exchange.html", icon: "fas fa-globe" },
-        library: { label: "Library", href: "shop.html", icon: "fas fa-book" },
+        live_clubs: { label: "Weekly Live Clubs & Workshops", href: "clubs.html", icon: "fas fa-broadcast-tower" },
         projects: {
             label: "Projects",
             type: "dropdown",
@@ -38,13 +57,12 @@ document.addEventListener("DOMContentLoaded", () => {
         contact: { label: "Contact & Feedback", href: "contact.html", icon: "fas fa-envelope" }
     };
 
-    // SƏNİN SEÇDİYİN DƏQİQ DEFAULT SIRA (+ library)
     const defaultLayout = {
-        general: ["home", "dashboard", "chat", "library", "become_educator", "find_educators", "skill_swap", "lang_exchange", "live_clubs"],
+        general: ["home", "quick_start", "dashboard", "chat", "library", "become_educator", "find_educators", "skill_swap", "lang_exchange", "live_clubs"],
         others: ["leaderboard", "projects", "testimonials", "contact"]
     };
 
-    const STORAGE_KEY = "sultan_sidebar_layout_v4";
+    const STORAGE_KEY = "sultan_sidebar_layout_v5";
     let savedLayout;
     try {
         savedLayout = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultLayout;
@@ -67,6 +85,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const item = menuItemsDB[id];
         if (!item) return "";
 
+        if (item.type === "action") {
+            return `
+                <li class="sidebar-item" draggable="true" data-id="${id}">
+                    <div class="sidebar-row">
+                        <button type="button" id="${item.id}" title="${item.label}" class="sidebar-link" style="color:#38bdf8;">
+                            <i class="${item.icon}" style="color:#38bdf8;"></i>
+                            <span class="nav-label-txt" id="navStartText">${item.label}</span>
+                        </button>
+                        <span class="drag-handle" title="Hold & drag to reorder"><i class="fas fa-grip-vertical"></i></span>
+                    </div>
+                </li>`;
+        }
+
         if (item.type === "dropdown") {
             const isChildActive = item.children.some(c => c.href === currentPage);
             const subHTML = item.children.map(c =>
@@ -87,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const isActive = (item.href === currentPage) || (currentPage === "" && item.href === "index.html");
+        const badgeSlot = id === "chat" ? `<span id="navUnreadBadge" class="hidden" style="margin-left:auto; background:#ef4444; color:#fff; font-size:10px; font-weight:700; padding:2px 7px; border-radius:12px;">0</span>` : "";
 
         return `
             <li class="sidebar-item" draggable="true" data-id="${id}">
@@ -94,24 +126,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     <a href="${item.href}" title="${item.label}" class="sidebar-link ${isActive ? 'active' : ''}">
                         <i class="${item.icon}"></i>
                         <span class="nav-label-txt">${item.label}</span>
+                        ${badgeSlot}
                     </a>
                     <span class="drag-handle" title="Hold & drag to reorder"><i class="fas fa-grip-vertical"></i></span>
                 </div>
             </li>`;
     }
 
+    // Yuxarı sağda YALNIZ Settings çarxı saxlayırıq (heç vaxt mobil menyu ilə toqquşmur!)
     headerContainer.innerHTML = `
         <button id="mobileSidebarToggle" class="mobile-sidebar-btn" type="button" aria-label="Open Menu">
             <i class="fas fa-bars"></i>
         </button>
 
         <div class="top-utility-bar">
-            <a href="shop.html" class="top-shop-btn">
-                <i class="fas fa-book-open"></i> Library
-            </a>
-            <button id="navStartBtn" class="top-start-btn" type="button">
-                <i class="fas fa-bolt"></i> <span id="navStartText">${activeUser ? `Start • ${activeUser}` : 'Start'}</span>
-            </button>
             <button id="openSettingsBtn" class="settings-gear-btn" type="button" title="Settings & Account">
                 <i class="fas fa-cog"></i>
             </button>
@@ -149,17 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 <div style="background:#1e293b; padding:14px; border-radius:14px; border:1px solid #334155; margin-bottom:16px;">
                     <span style="font-size:11px; color:#94a3b8; display:block;">Current Identity</span>
-                    <strong style="font-size:16px; color:#ffffff;">${activeUser ? activeUser : 'Guest (Not connected)'}</strong>
-                </div>
-
-                <div style="margin-bottom:16px;">
-                    <label style="font-size:12px; color:#cbd5e1; display:block; margin-bottom:6px;">Preferred Language (Coming Soon)</label>
-                    <select id="prefLangSelect" style="width:100%; padding:10px; border-radius:10px; background:#1e293b; border:1px solid #334155; color:white;">
-                        <option value="en">🇬🇧 English (Default)</option>
-                        <option value="de">🇩🇪 Deutsch (Coming Soon)</option>
-                        <option value="tr">🇹🇷 Türkçe (Coming Soon)</option>
-                        <option value="az">🇦🇿 Azərbaycan (Coming Soon)</option>
-                    </select>
+                    <strong style="font-size:16px; color:#ffffff;">${activeUser ? escapeHTML(activeUser) : 'Guest (Not signed in)'}</strong>
                 </div>
 
                 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
@@ -186,7 +204,23 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
     `;
 
-    // MOBİL SİDEBAR AÇMA / ÇÖLƏ TOXUNANDA BAĞLAMA + SCROLL KİLİDİ
+    // Real-Time Unread Mesaj Badge yoxlaması
+    if (activeUser) {
+        const { data: unreadCount } = await supabase.rpc("get_unread_count", { p_username: activeUser });
+        if (unreadCount && unreadCount > 0) {
+            const badge = document.getElementById("navUnreadBadge");
+            if (badge) {
+                badge.innerText = unreadCount;
+                badge.classList.remove("hidden");
+            }
+            const mobBtn = document.getElementById("mobileSidebarToggle");
+            if (mobBtn) {
+                mobBtn.innerHTML = `<i class="fas fa-bars"></i><span style="position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:9px; font-weight:700; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center;">${unreadCount}</span>`;
+            }
+        }
+    }
+
+    // Mobil Sidebar & Drag-Drop
     const leftSidebar = document.getElementById("leftSidebar");
     const sidebarBackdrop = document.getElementById("sidebarBackdrop");
     const mobileBtn = document.getElementById("mobileSidebarToggle");
@@ -199,7 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.documentElement.classList.add("sidebar-mobile-open");
         document.body.classList.add("sidebar-mobile-open");
     }
-
     function closeMobSidebar() {
         leftSidebar.classList.remove("open");
         sidebarBackdrop.classList.add("hidden");
@@ -213,15 +246,10 @@ document.addEventListener("DOMContentLoaded", () => {
         sidebarBackdrop.addEventListener("click", closeMobSidebar);
         sidebarBackdrop.addEventListener("touchend", (e) => { e.preventDefault(); closeMobSidebar(); });
     }
-
-    // İstənilən çöl klikdə də bağlansın
     document.addEventListener("click", (e) => {
-        if (leftSidebar.classList.contains("open") && !leftSidebar.contains(e.target) && !mobileBtn.contains(e.target)) {
-            closeMobSidebar();
-        }
+        if (leftSidebar.classList.contains("open") && !leftSidebar.contains(e.target) && !mobileBtn.contains(e.target)) closeMobSidebar();
     });
 
-    // Projects Accordion
     document.querySelectorAll(".sidebar-projects-toggle").forEach(btn => {
         btn.addEventListener("click", () => {
             const sub = btn.closest(".sidebar-item").querySelector(".sidebar-submenu");
@@ -230,15 +258,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // DRAG & DROP
     let draggedItem = null;
     const lists = document.querySelectorAll(".sidebar-list");
-
     document.querySelectorAll(".sidebar-item").forEach(item => {
-        item.addEventListener("dragstart", () => {
-            draggedItem = item;
-            setTimeout(() => item.classList.add("dragging"), 0);
-        });
+        item.addEventListener("dragstart", () => { draggedItem = item; setTimeout(() => item.classList.add("dragging"), 0); });
         item.addEventListener("dragend", () => {
             item.classList.remove("dragging");
             draggedItem = null;
@@ -247,7 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({ general: generalIds, others: othersIds }));
         });
     });
-
     lists.forEach(list => {
         list.addEventListener("dragover", (e) => {
             e.preventDefault();
@@ -263,20 +285,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Settings
     const settingsModal = document.getElementById("settingsModal");
     document.getElementById("openSettingsBtn").addEventListener("click", () => settingsModal.classList.remove("hidden"));
     document.getElementById("closeSettingsModal").addEventListener("click", () => settingsModal.classList.add("hidden"));
-
-    document.getElementById("resetSidebarBtn").addEventListener("click", () => {
-        localStorage.removeItem(STORAGE_KEY);
-        window.location.reload();
-    });
+    document.getElementById("resetSidebarBtn").addEventListener("click", () => { localStorage.removeItem(STORAGE_KEY); window.location.reload(); });
 
     const logoutBtn = document.getElementById("settingsLogoutBtn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
             localStorage.removeItem("sultan_user");
+            localStorage.removeItem("sultan_token");
             window.location.reload();
         });
     }
@@ -289,23 +307,22 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             const feedback = document.getElementById("deleteFeedbackInput").value.trim();
             if (feedback.length < 3) return alert("Please write brief feedback before deleting.");
+            if (!activeToken) return alert("Please sign in with your password again to delete your account.");
 
             const btn = document.getElementById("confirmDeleteBtn");
             btn.disabled = true;
             btn.innerText = "Deleting...";
 
-            const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
-            const sb = createClient("https://ezccynahgubalainoqkf.supabase.co", "sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX");
-
-            const { data, error } = await sb.rpc("delete_my_account", { p_username: activeUser, p_feedback: feedback });
+            const { data, error } = await supabase.rpc("delete_my_account", { p_username: activeUser, p_token: activeToken, p_feedback: feedback });
             if (!error && data === true) {
                 localStorage.removeItem("sultan_user");
+                localStorage.removeItem("sultan_token");
                 localStorage.removeItem("sultan_role");
                 localStorage.removeItem("sultan_dual_unlocked");
                 alert("Your account has been deleted. Thank you for your feedback!");
                 window.location.href = "index.html";
             } else {
-                alert("Could not delete account right now.");
+                alert("Session invalid. Please log out and sign in with your password first.");
                 btn.disabled = false;
                 btn.innerText = "Permanently Delete Account";
             }
