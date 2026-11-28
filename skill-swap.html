@@ -174,10 +174,13 @@
                         <span style="color:#f59e0b;">Wants:</span> ${s.want_skill}
                     </h4>
                     <p class="tutor-bio">${s.description}</p>
-                    <div class="tutor-footer" style="gap:8px;">
+<div class="tutor-footer" style="gap:8px;">
+                        <a href="chat.html?to=${encodeURIComponent(s.author_name.replace(' (Educator)', ''))}&ctx=${encodeURIComponent(s.swap_type)}" class="cal-booking-btn" style="background:#10b981; color:#fff !important; width:100%;">
+                            <i class="fas fa-comment-dots"></i> Send Message Request
+                        </a>
                         ${s.id ? `<button type="button" class="btn-reviews open-swap-rev-btn" data-id="${s.id}" data-name="${s.author_name}" style="width:100%;"><i class="fas fa-star"></i> Session Reviews (${revs.length})</button>` : `<a href="tutors.html?educator=${s.tutorId}" style="font-size:12px; color:#38bdf8; font-weight:600; text-align:center;">View Educator Card →</a>`}
                         <button class="unlock-tutor-btn swap-unlock-btn" data-target="${s.discord_link}">
-                            <i class="fab fa-discord"></i> Connect to Swap (Watch AD)
+                            <i class="fab fa-discord"></i> Discord Link (Watch AD)
                         </button>
                     </div>
                 </div>`;
