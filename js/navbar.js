@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dashboard: { label: "Dashboard", href: "dashboard.html", icon: "fas fa-th-large" },
         become_educator: { label: "Become an Educator", href: "become-educator.html", icon: "fas fa-chalkboard-teacher" },
         find_educators: { label: "Find Educators", href: "tutors.html", icon: "fas fa-search" },
+        chat: { label: "Messages & Tools", href: "chat.html", icon: "fas fa-comments" },
         live_clubs: { label: "Weekly Live Clubs & Workshops", href: "clubs.html", icon: "fas fa-broadcast-tower" },
         skill_swap: { label: "Skill Swap", href: "skill-swap.html", icon: "fas fa-exchange-alt" },
         lang_exchange: { label: "Language & Cultural Exchange", href: "exchange.html", icon: "fas fa-globe" },
@@ -37,9 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
         contact: { label: "Contact & Feedback", href: "contact.html", icon: "fas fa-envelope" }
     };
 
-    // İSTƏDİYİN YENİ DEFAULT SIRA: Projects və Leaderboard 'Others' bölməsinə düşdü!
-    const defaultLayout = {
-        general: ["home", "dashboard", "become_educator", "find_educators", "live_clubs", "skill_swap", "lang_exchange"],
+const defaultLayout = {
+        general: ["home", "dashboard", "become_educator", "find_educators", "chat", "live_clubs", "skill_swap", "lang_exchange"],
         others: ["projects", "leaderboard", "testimonials", "contact"]
     };
 
