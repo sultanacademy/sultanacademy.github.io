@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const adUrl = "https://www.profitableratecpmnetwork.com/fspm49jkm?key=88e5821febc3aed060a93ce3587926fc";
+            const adUrl = "https://araplhn.org/4/88e5821febc3aed060a93ce3587926fc";
             const adWindow = window.open(adUrl, "_blank");
 
             if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
