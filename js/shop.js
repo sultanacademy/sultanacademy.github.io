@@ -78,8 +78,8 @@ watchAdBtn.addEventListener('click', () => {
         return;
     }
 
-    const adUrl = "https://araplhn.org/4/88e5821febc3aed060a93ce3587926fc";
-    const adWindow = window.open(adUrl, "_blank");
+            const adUrl = "https://arwf.org/4/3946e81041ccc9d120f1b729feb68fae";
+            const adWindow = window.open(adUrl, "_blank");
 
     if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
         alert("⚠️ Pop-up Blocked! Please allow pop-ups to watch the sponsor ad.");
