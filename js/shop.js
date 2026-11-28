@@ -71,40 +71,60 @@ loginBtn.addEventListener('click', async () => {
     }
 });
 
-// --- 4. ANTI-CHEAT REKLAM SİSTEMİ (POPUP CHECK FIX) ---
+// --- 4. ANTI-CHEAT REKLAM SİSTEMİ (10.5s BAR + TAB BAĞLANMA YOXLAMASI) ---
 watchAdBtn.addEventListener('click', () => {
-    if(!currentUser) {
+    if (!currentUser) {
         alert("Please save your identity first to earn points!");
         return;
     }
 
-// 1. Reklamı dərhal yeni tabda açırıq
-    const adUrl = "https://arwf.org/4/3946e81041ccc9d120f1b729feb68fae";
-    window.open(adUrl, "_blank");
+    const adUrl = "https://araplhn.org/4/88e5821febc3aed060a93ce3587926fc";
+    const adWindow = window.open(adUrl, "_blank");
 
-    // Əgər telefonda pop-up bloklanıbsa:
     if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
-        alert("⚠️ Pop-up Blocked!\nYour browser blocked the sponsor advertisement. Please allow pop-ups in your browser settings to earn SP points.");
-        return; // XAL VERİLMİR!
+        alert("⚠️ Pop-up Blocked! Please allow pop-ups to watch the sponsor ad.");
+        return;
     }
 
     watchAdBtn.disabled = true;
     adStatus.classList.remove('hidden');
-    adStatus.style.color = "#f59e0b"; 
-    
-    let timeLeft = 10;
-    watchAdBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Watching AD... ${timeLeft}s`;
-    adStatus.innerText = "Please wait... Do not close the page!";
+    adStatus.innerHTML = `
+        <div style="max-width:340px; margin:12px auto 0 auto; text-align:left;">
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:#f59e0b; font-weight:600; margin-bottom:5px;">
+                <span id="spBarLabel">Preparing your +10 SP reward...</span>
+                <span id="spBarPct">0%</span>
+            </div>
+            <div style="width:100%; height:9px; background:#0a0f1d; border-radius:10px; overflow:hidden; border:1px solid #334155;">
+                <div id="spBarFill" style="width:0%; height:100%; background:linear-gradient(90deg, #f59e0b, #10b981); transition:width 0.1s linear;"></div>
+            </div>
+        </div>
+    `;
+
+    const DURATION = 10500;
+    const startTime = Date.now();
+    watchAdBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Watching Sponsor Ad...`;
 
     const countdownTimer = setInterval(async () => {
-        timeLeft--;
-        
-        if (timeLeft > 0) {
-            watchAdBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Watching AD... ${timeLeft}s`;
-        } else {
+        const elapsed = Date.now() - startTime;
+
+        if (adWindow.closed && !document.hidden && elapsed < DURATION) {
             clearInterval(countdownTimer);
-            watchAdBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Verifying...`;
-            
+            document.getElementById("spBarFill").style.background = "#ef4444";
+            document.getElementById("spBarLabel").style.color = "#ef4444";
+            document.getElementById("spBarLabel").innerText = "❌ You closed the ad too early! No SP awarded.";
+            watchAdBtn.innerHTML = `<i class="fas fa-play-circle"></i> Watch Sponsor Ad (+10 SP)`;
+            watchAdBtn.disabled = false;
+            return;
+        }
+
+        const pct = Math.min(100, Math.round((elapsed / DURATION) * 100));
+        document.getElementById("spBarFill").style.width = `${pct}%`;
+        document.getElementById("spBarPct").innerText = `${pct}%`;
+
+        if (elapsed >= DURATION) {
+            clearInterval(countdownTimer);
+            document.getElementById("spBarLabel").innerText = "Verifying...";
+
             currentSP += 10;
             const { error } = await supabase
                 .from('users')
@@ -113,23 +133,20 @@ watchAdBtn.addEventListener('click', () => {
 
             if (!error) {
                 userPointsDisplay.innerText = currentSP;
-                adStatus.innerText = "🎉 Success! 10 SP Added to your account!";
-                adStatus.style.color = "#10b981";
+                document.getElementById("spBarLabel").style.color = "#10b981";
+                document.getElementById("spBarLabel").innerText = "🎉 Success! +10 SP Added!";
             } else {
-                adStatus.innerText = "❌ Error saving points. Try again.";
-                adStatus.style.color = "#ef4444";
+                document.getElementById("spBarLabel").style.color = "#ef4444";
+                document.getElementById("spBarLabel").innerText = "❌ Database error.";
             }
 
             watchAdBtn.innerHTML = `<i class="fas fa-play-circle"></i> Watch Sponsor Ad (+10 SP)`;
             watchAdBtn.disabled = false;
-            
-            setTimeout(() => {
-                adStatus.classList.add('hidden');
-            }, 4000);
-        }
-    }, 1000);
-});
 
+            setTimeout(() => { adStatus.classList.add('hidden'); }, 4000);
+        }
+    }, 100);
+});
 // --- 5. SHOP (MAĞAZA) MƏNTİQİ ---
 async function loadShopItems() {
     const { data: items, error } = await supabase
