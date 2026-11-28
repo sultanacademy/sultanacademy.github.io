@@ -1,9 +1,4 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-const supabase = createClient(
-    'https://ezccynahgubalainoqkf.supabase.co',
-    'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX'
-);
+import { supabase, escapeHTML } from './config.js';
 
 const vibrantGradients = [
     "linear-gradient(135deg, #FF416C, #FF4B2B)",
@@ -26,7 +21,6 @@ async function initSocialProof() {
         .eq("is_active", true)
         .order("id", { ascending: false });
 
-    // Hüquqi qaydaya görə: yalnız bazadakı real təsdiqlənmiş dəstəkçiləri göstəririk
     if (!data || data.length === 0) return;
 
     feedItems = data;
@@ -38,7 +32,7 @@ function showNextNotification() {
     if (!container || feedItems.length === 0) return;
 
     const item = feedItems[currentIndex];
-    const initial = item.name.charAt(0).toUpperCase();
+    const initial = escapeHTML(item.name.charAt(0).toUpperCase());
     const randomGrad = vibrantGradients[Math.floor(Math.random() * vibrantGradients.length)];
 
     const card = document.createElement("div");
@@ -46,9 +40,9 @@ function showNextNotification() {
     card.innerHTML = `
         <div class="sp-avatar" style="background: ${randomGrad};">${initial}</div>
         <div class="sp-details">
-            <span class="sp-name">${item.name}</span>
-            <span class="sp-action">${item.action}</span>
-            <span class="sp-time"><i class="fas fa-check-circle" style="color: #10b981;"></i> ${item.time_text}</span>
+            <span class="sp-name">${escapeHTML(item.name)}</span>
+            <span class="sp-action">${escapeHTML(item.action)}</span>
+            <span class="sp-time"><i class="fas fa-check-circle" style="color: #10b981;"></i> ${escapeHTML(item.time_text)}</span>
         </div>`;
 
     container.appendChild(card);
