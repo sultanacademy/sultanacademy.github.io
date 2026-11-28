@@ -116,6 +116,7 @@ const defaultLayout = {
             </button>
         </div>
 
+       <div id="sidebarBackdrop" class="sidebar-backdrop hidden"></div>
         <aside id="leftSidebar" class="left-sidebar">
             <div class="sidebar-brand">
                 <a href="index.html">
@@ -184,12 +185,25 @@ const defaultLayout = {
         </div>
     `;
 
-    const leftSidebar = document.getElementById("leftSidebar");
+const leftSidebar = document.getElementById("leftSidebar");
+    const sidebarBackdrop = document.getElementById("sidebarBackdrop");
     const mobileBtn = document.getElementById("mobileSidebarToggle");
     const closeMobileBtn = document.getElementById("closeMobileSidebar");
 
-    if (mobileBtn) mobileBtn.addEventListener("click", () => leftSidebar.classList.add("open"));
-    if (closeMobileBtn) closeMobileBtn.addEventListener("click", () => leftSidebar.classList.remove("open"));
+    function openMobSidebar() {
+        leftSidebar.classList.add("open");
+        if (sidebarBackdrop) sidebarBackdrop.classList.remove("hidden");
+        document.body.classList.add("sidebar-mobile-open");
+    }
+    function closeMobSidebar() {
+        leftSidebar.classList.remove("open");
+        if (sidebarBackdrop) sidebarBackdrop.classList.add("hidden");
+        document.body.classList.remove("sidebar-mobile-open");
+    }
+
+    if (mobileBtn) mobileBtn.addEventListener("click", openMobSidebar);
+    if (closeMobileBtn) closeMobileBtn.addEventListener("click", closeMobSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener("click", closeMobSidebar);
 
     document.querySelectorAll(".sidebar-projects-toggle").forEach(btn => {
         btn.addEventListener("click", () => {
