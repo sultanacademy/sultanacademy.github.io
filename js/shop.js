@@ -1,179 +1,183 @@
-// Supabase-i birbaşa brauzerə çağırmaq üçün CDN linki
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { SULTAN_CONFIG, supabase, escapeHTML, safeUrl, cleanHandle } from './config.js';
 
-// --- 1. SUPABASE AYARLARI ---
-const supabaseUrl = 'https://ezccynahgubalainoqkf.supabase.co';
-const supabaseKey = 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX';
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-// --- 2. HTML ELEMENTLƏRİNİ SEÇİRİK ---
-const loginBtn = document.getElementById('loginBtn');
-const userInput = document.getElementById('userInput');
 const userPointsDisplay = document.getElementById('userPoints');
 const watchAdBtn = document.getElementById('watchAdBtn');
 const adStatus = document.getElementById('adStatus');
 const productsGrid = document.getElementById('productsGrid');
-
 const loggedInUser = document.getElementById('loggedInUser');
 const userNameText = document.getElementById('userNameText');
 const loginBox = document.querySelector('.login-box');
 const sectionDesc = document.querySelector('.section-desc');
 
-let currentUser = null;
+let currentUser = localStorage.getItem('sultan_user');
+let currentToken = localStorage.getItem('sultan_token');
 let currentSP = 0;
 
-// --- 3. İSTİFADƏÇİ GİRİŞİ ---
-loginBtn.addEventListener('click', async () => {
-    const username = userInput.value.trim().toLowerCase();
-    
-    if(!username) {
-        alert("Please enter a valid Username.");
+// 1. Login Box-u Google Password Manager dəstəkli Form-a çeviririk (shop.html-i dəyişmədən!)
+function setupAuthBox() {
+    if (!loginBox) return;
+
+    // Əgər saytdan artıq giriş edilibsə, avtomatik balansını yüklə!
+    if (currentUser && currentToken) {
+        loadUserBalance();
         return;
     }
 
-    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-
-    const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('username', username)
-        .single();
-
-    if (data) {
-        currentUser = username;
-        currentSP = data.sp;
-        userPointsDisplay.innerText = currentSP;
-        alert(`Welcome back, ${username}! Your balance is loaded.`);
-    } else {
-        const { data: newData, error: insertError } = await supabase
-            .from('users')
-            .insert([{ username: username, sp: 0 }])
-            .select()
-            .single();
-            
-        if (!insertError) {
-            currentUser = username;
-            currentSP = 0;
-            userPointsDisplay.innerText = 0;
-            alert("Account created successfully!");
-        } else {
-            alert("Database error!");
-            loginBtn.innerHTML = '<i class="fas fa-save"></i> Save Identity';
-            return;
-        }
-    }
-
-    if (currentUser) {
-        loggedInUser.classList.remove('hidden');
-        userNameText.innerText = currentUser;
-        loginBox.classList.add('hidden');
-        sectionDesc.innerText = "You are successfully logged in! Complete tasks below to earn SP.";
-    }
-});
-
-// --- 4. ANTI-CHEAT REKLAM SİSTEMİ (10.5s BAR + TAB BAĞLANMA YOXLAMASI) ---
-watchAdBtn.addEventListener('click', () => {
-    if (!currentUser) {
-        alert("Please save your identity first to earn points!");
-        return;
-    }
-
-            const adUrl = "https://arwf.org/4/3946e81041ccc9d120f1b729feb68fae";
-            const adWindow = window.open(adUrl, "_blank");
-
-    if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
-        alert("⚠️ Pop-up Blocked! Please allow pop-ups to watch the sponsor ad.");
-        return;
-    }
-
-    watchAdBtn.disabled = true;
-    adStatus.classList.remove('hidden');
-    adStatus.innerHTML = `
-        <div style="max-width:340px; margin:12px auto 0 auto; text-align:left;">
-            <div style="display:flex; justify-content:space-between; font-size:12px; color:#f59e0b; font-weight:600; margin-bottom:5px;">
-                <span id="spBarLabel">Preparing your +10 SP reward...</span>
-                <span id="spBarPct">0%</span>
-            </div>
-            <div style="width:100%; height:9px; background:#0a0f1d; border-radius:10px; overflow:hidden; border:1px solid #334155;">
-                <div id="spBarFill" style="width:0%; height:100%; background:linear-gradient(90deg, #f59e0b, #10b981); transition:width 0.1s linear;"></div>
-            </div>
-        </div>
+    loginBox.innerHTML = `
+        <form id="shopAuthForm" autocomplete="on" style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; width:100%;">
+            <input type="text" id="userInput" name="username" autocomplete="username" maxlength="20" required placeholder="Username..." value="${escapeHTML(currentUser || '')}" style="max-width:220px;" />
+            <input type="password" id="shopPassInput" name="password" autocomplete="current-password" minlength="4" maxlength="32" required placeholder="Password / PIN..." style="max-width:200px;" />
+            <button type="submit" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Sign In / Save</button>
+        </form>
     `;
 
-    const DURATION = 10500;
-    const startTime = Date.now();
-    watchAdBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Watching Sponsor Ad...`;
+    document.getElementById('shopAuthForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('loginBtn');
+        const username = cleanHandle(document.getElementById('userInput').value);
+        const password = document.getElementById('shopPassInput').value;
 
-    const countdownTimer = setInterval(async () => {
-        const elapsed = Date.now() - startTime;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
 
-        if (adWindow.closed && !document.hidden && elapsed < DURATION) {
-            clearInterval(countdownTimer);
-            document.getElementById("spBarFill").style.background = "#ef4444";
-            document.getElementById("spBarLabel").style.color = "#ef4444";
-            document.getElementById("spBarLabel").innerText = "❌ You closed the ad too early! No SP awarded.";
-            watchAdBtn.innerHTML = `<i class="fas fa-play-circle"></i> Watch Sponsor Ad (+10 SP)`;
-            watchAdBtn.disabled = false;
+        const { data, error } = await supabase.rpc('auth_user', { p_username: username, p_password: password });
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In / Save';
+
+        if (error || !data || !data.ok) {
+            return alert(data?.error || 'Authentication failed.');
+        }
+
+        currentUser = data.username;
+        currentToken = data.token;
+        currentSP = data.sp || 0;
+
+        localStorage.setItem('sultan_user', currentUser);
+        localStorage.setItem('sultan_token', currentToken);
+
+        showLoggedInUI();
+    });
+}
+
+async function loadUserBalance() {
+    const { data } = await supabase.from('users').select('sp').eq('username', currentUser).single();
+    currentSP = data?.sp || 0;
+    showLoggedInUI();
+}
+
+function showLoggedInUI() {
+    userPointsDisplay.innerText = currentSP;
+    loggedInUser.classList.remove('hidden');
+    userNameText.innerHTML = `${escapeHTML(currentUser)} <button type="button" id="shopLogoutBtn" style="margin-left:8px; background:transparent; border:1px solid #475569; color:#94a3b8; font-size:11px; padding:2px 8px; border-radius:8px; cursor:pointer;">Log out</button>`;
+    if (loginBox) loginBox.classList.add('hidden');
+    if (sectionDesc) sectionDesc.innerText = "Signed in! Watch sponsor ads or redeem your SP below.";
+
+    const outBtn = document.getElementById('shopLogoutBtn');
+    if (outBtn) {
+        outBtn.addEventListener('click', () => {
+            localStorage.removeItem('sultan_user');
+            localStorage.removeItem('sultan_token');
+            window.location.reload();
+        });
+    }
+}
+
+// 2. ANTI-CHEAT REKLAM SİSTEMİ (Server-side RPC ilə)
+if (watchAdBtn) {
+    watchAdBtn.addEventListener('click', () => {
+        if (!currentUser || !currentToken) {
+            alert("Please sign in with your Username & Password at the top first!");
             return;
         }
 
-        const pct = Math.min(100, Math.round((elapsed / DURATION) * 100));
-        document.getElementById("spBarFill").style.width = `${pct}%`;
-        document.getElementById("spBarPct").innerText = `${pct}%`;
+        const adWindow = window.open(SULTAN_CONFIG.ADSTERRA_BOOK_URL, "_blank");
+        if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
+            alert("⚠️ Pop-up Blocked! Please allow pop-ups to watch the sponsor ad.");
+            return;
+        }
 
-        if (elapsed >= DURATION) {
-            clearInterval(countdownTimer);
-            document.getElementById("spBarLabel").innerText = "Verifying...";
+        watchAdBtn.disabled = true;
+        adStatus.classList.remove('hidden');
+        adStatus.innerHTML = `
+            <div style="max-width:340px; margin:12px auto 0 auto; text-align:left;">
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:#f59e0b; font-weight:600; margin-bottom:5px;">
+                    <span id="spBarLabel">Preparing your +10 SP reward...</span>
+                    <span id="spBarPct">0%</span>
+                </div>
+                <div style="width:100%; height:9px; background:#0a0f1d; border-radius:10px; overflow:hidden; border:1px solid #334155;">
+                    <div id="spBarFill" style="width:0%; height:100%; background:linear-gradient(90deg, #f59e0b, #10b981); transition:width 0.1s linear;"></div>
+                </div>
+            </div>
+        `;
 
-            currentSP += 10;
-            const { error } = await supabase
-                .from('users')
-                .update({ sp: currentSP })
-                .eq('username', currentUser);
+        const DURATION = 10500;
+        const startTime = Date.now();
+        watchAdBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Watching Sponsor Ad...`;
 
-            if (!error) {
-                userPointsDisplay.innerText = currentSP;
-                document.getElementById("spBarLabel").style.color = "#10b981";
-                document.getElementById("spBarLabel").innerText = "🎉 Success! +10 SP Added!";
-            } else {
+        const countdownTimer = setInterval(async () => {
+            const elapsed = Date.now() - startTime;
+
+            if (adWindow.closed && !document.hidden && elapsed < DURATION) {
+                clearInterval(countdownTimer);
+                document.getElementById("spBarFill").style.background = "#ef4444";
                 document.getElementById("spBarLabel").style.color = "#ef4444";
-                document.getElementById("spBarLabel").innerText = "❌ Database error.";
+                document.getElementById("spBarLabel").innerText = "❌ You closed the ad too early! No SP awarded.";
+                watchAdBtn.innerHTML = `<i class="fas fa-play-circle"></i> Watch Sponsor Ad (+10 SP)`;
+                watchAdBtn.disabled = false;
+                return;
             }
 
-            watchAdBtn.innerHTML = `<i class="fas fa-play-circle"></i> Watch Sponsor Ad (+10 SP)`;
-            watchAdBtn.disabled = false;
+            const pct = Math.min(100, Math.round((elapsed / DURATION) * 100));
+            document.getElementById("spBarFill").style.width = `${pct}%`;
+            document.getElementById("spBarPct").innerText = `${pct}%`;
 
-            setTimeout(() => { adStatus.classList.add('hidden'); }, 4000);
-        }
-    }, 100);
-});
-// --- 5. SHOP (MAĞAZA) MƏNTİQİ ---
+            if (elapsed >= DURATION) {
+                clearInterval(countdownTimer);
+                document.getElementById("spBarLabel").innerText = "Verifying securely...";
+
+                const { data, error } = await supabase.rpc('claim_ad_sp', { p_username: currentUser, p_token: currentToken });
+
+                if (!error && data && data.ok) {
+                    currentSP = data.sp;
+                    userPointsDisplay.innerText = currentSP;
+                    document.getElementById("spBarLabel").style.color = "#10b981";
+                    document.getElementById("spBarLabel").innerText = "🎉 Success! +10 SP Added!";
+                } else {
+                    document.getElementById("spBarLabel").style.color = "#ef4444";
+                    document.getElementById("spBarLabel").innerText = data?.error || "❌ Verification failed.";
+                }
+
+                watchAdBtn.innerHTML = `<i class="fas fa-play-circle"></i> Watch Sponsor Ad (+10 SP)`;
+                watchAdBtn.disabled = false;
+                setTimeout(() => { adStatus.classList.add('hidden'); }, 4000);
+            }
+        }, 100);
+    });
+}
+
+// 3. REWARDS SHOP (Server-side Alış + İkon klik xətası düzəldildi!)
 async function loadShopItems() {
-    const { data: items, error } = await supabase
-        .from('shop_items')
-        .select('*');
+    const { data: items, error } = await supabase.from('shop_items').select('*');
 
     if (error) {
         productsGrid.innerHTML = "<p class='loading-spinner'>Error loading items.</p>";
         return;
     }
-
-    if (items.length === 0) {
+    if (!items || items.length === 0) {
         productsGrid.innerHTML = "<p class='loading-spinner'>Shop is currently empty.</p>";
         return;
     }
 
-    productsGrid.innerHTML = ""; 
+    productsGrid.innerHTML = "";
 
     items.forEach(item => {
         const card = document.createElement('div');
         card.className = 'product-card';
-        
         card.innerHTML = `
-            <img src="${item.cover_img}" alt="Cover" class="product-image">
-            <h3 class="product-title">${item.title}</h3>
-            <p class="product-price">${item.price} SP</p>
-            <button class="buy-btn" data-id="${item.id}" data-price="${item.price}" data-link="${item.drive_link}">
+            <img src="${safeUrl(item.cover_img, 'logo.png')}" alt="Cover" class="product-image" onerror="this.src='logo.png'">
+            <h3 class="product-title">${escapeHTML(item.title)}</h3>
+            <p class="product-price">${parseInt(item.price, 10)} SP</p>
+            <button class="buy-btn" data-id="${item.id}">
                 <i class="fas fa-unlock"></i> Unlock Item
             </button>
         `;
@@ -181,36 +185,37 @@ async function loadShopItems() {
     });
 
     document.querySelectorAll('.buy-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            if (!currentUser) {
-                alert("Please identify yourself at the top first!");
+        btn.addEventListener('click', async () => {
+            if (!currentUser || !currentToken) {
+                alert("Please sign in at the top first!");
                 return;
             }
+            const itemId = parseInt(btn.getAttribute('data-id'), 10);
+            btn.disabled = true;
 
-            const price = parseInt(e.target.getAttribute('data-price'));
-            const driveLink = e.target.getAttribute('data-link');
+            const { data, error } = await supabase.rpc('purchase_shop_item', {
+                p_username: currentUser,
+                p_token: currentToken,
+                p_item_id: itemId
+            });
 
-            if (currentSP >= price) {
-                currentSP -= price;
-                
-                const { error } = await supabase
-                    .from('users')
-                    .update({ sp: currentSP })
-                    .eq('username', currentUser);
+            btn.disabled = false;
 
-                if (!error) {
-                    userPointsDisplay.innerText = currentSP;
-                    alert("Purchase successful! The material will open in a new tab.");
-                    window.open(driveLink, "_blank");
-                    
-                    e.target.innerHTML = '<i class="fas fa-check-circle"></i> Purchased';
-                    e.target.style.background = "linear-gradient(135deg, #10b981, #059669)";
-                }
+            if (!error && data && data.ok) {
+                currentSP = data.sp;
+                userPointsDisplay.innerText = currentSP;
+                alert("Purchase successful! The material will open in a new tab.");
+                window.open(safeUrl(data.drive_link), "_blank");
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Purchased';
+                btn.style.background = "linear-gradient(135deg, #10b981, #059669)";
             } else {
-                alert(`Not enough SP! You need ${price - currentSP} more SP. Watch some ads!`);
+                alert(data?.error || "Purchase failed.");
             }
         });
     });
 }
 
-window.addEventListener('DOMContentLoaded', loadShopItems);
+window.addEventListener('DOMContentLoaded', () => {
+    setupAuthBox();
+    loadShopItems();
+});
