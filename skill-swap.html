@@ -103,8 +103,7 @@
     <script src="js/cookie-consent.js"></script>
     <script type="module" src="js/wizard.js"></script>
     <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
+        import { SULTAN_CONFIG, supabase, escapeHTML, safeUrl, cleanHandle } from './js/config.js';
 
         let allSwaps = [];
         let allSwapReviews = [];
@@ -127,29 +126,22 @@
 
         async function loadSwaps() {
             const [{ data: swaps }, { data: eduSwaps }, { data: revs }] = await Promise.all([
-                supabase.from("skill_swaps").select("id, author_name, swap_type, offer_skill, want_skill, description, discord_link").eq("status", "approved").order("id", { ascending: false }),
-                supabase.from("tutors").select("id, name, language, subject, discord_channel, skill_swap_wanted").eq("status", "approved").not("skill_swap_wanted", "is", null).neq("skill_swap_wanted", ""),
+                supabase.from("skill_swaps").select("id, author_name, offer_skill, want_skill, description, discord_link, swap_type").eq("status", "approved").order("id", { ascending: false }),
+                supabase.from("tutors").select("id, name, owner_username, language, subject, discord_channel, skill_swap_wanted").eq("status", "approved").not("skill_swap_wanted", "is", null).neq("skill_swap_wanted", ""),
                 supabase.from("swap_reviews").select("*").order("created_at", { ascending: false })
             ]);
-
             allSwapReviews = revs || [];
-
             const mappedEdu = (eduSwaps || []).map(t => ({
-                id: null,
-                tutorId: t.id,
-                author_name: `${t.name} (Educator)`,
-                swap_type: "Skill Swap",
-                offer_skill: `${t.language} / ${t.subject}`,
-                want_skill: t.skill_swap_wanted,
-                description: "Verified educator open to direct skill exchange!",
-                discord_link: t.discord_channel
+                id: null, tutorId: t.id, author_name: `${t.name} (Educator)`,
+                chat_handle: cleanHandle(t.owner_username || t.name), swap_type: "Skill Swap",
+                offer_skill: `${t.language} / ${t.subject}`, want_skill: t.skill_swap_wanted,
+                description: "Verified educator open to direct skill exchange!", discord_link: t.discord_channel
             }));
-
-            allSwaps = [...(swaps || []), ...mappedEdu];
+            allSwaps = [...(swaps || []).map(s => ({ ...s, chat_handle: cleanHandle(s.author_name) })), ...mappedEdu];
             updateTabs();
         }
 
-function renderSwaps() {
+        function renderSwaps() {
             const grid = document.getElementById("swapsGrid");
             const filtered = currentFilter === "all" ? allSwaps : allSwaps.filter(s => s.swap_type === currentFilter);
             if (filtered.length === 0) {
@@ -159,46 +151,41 @@ function renderSwaps() {
             grid.innerHTML = filtered.map(s => {
                 const revs = s.id ? allSwapReviews.filter(r => r.swap_id === s.id) : [];
                 const avgTxt = revs.length > 0 ? `⭐ ${(revs.reduce((a, b) => a + b.rating, 0) / revs.length).toFixed(1)} (${revs.length})` : "New";
-
                 return `
                 <div class="tutor-card">
                     <div class="tutor-tags" style="margin-bottom:10px; justify-content:space-between; width:100%;">
-                        <div>
-                            <span style="color:#38bdf8; border-color:#38bdf8;">${s.swap_type}</span>
-                            <span>${s.author_name}</span>
-                        </div>
+                        <div><span style="color:#38bdf8; border-color:#38bdf8;">${escapeHTML(s.swap_type)}</span><span>${escapeHTML(s.author_name)}</span></div>
                         <span style="color:#f59e0b; border-color:#f59e0b;">${avgTxt}</span>
                     </div>
                     <h4 style="font-size:15px; margin-bottom:8px;">
-                        <span style="color:#10b981;">Teaches:</span> ${s.offer_skill} <br>
-                        <span style="color:#f59e0b;">Wants:</span> ${s.want_skill}
+                        <span style="color:#10b981;">Teaches:</span> ${escapeHTML(s.offer_skill)} <br>
+                        <span style="color:#f59e0b;">Wants:</span> ${escapeHTML(s.want_skill)}
                     </h4>
-                    <p class="tutor-bio">${s.description}</p>
+                    <p class="tutor-bio">${escapeHTML(s.description)}</p>
                     <div class="tutor-footer" style="gap:8px;">
-                        <a href="chat.html?to=${encodeURIComponent(s.author_name.replace(' (Educator)', ''))}&ctx=${encodeURIComponent(s.swap_type)}" class="cal-booking-btn" style="background:#10b981; color:#fff !important; width:100%;">
+                        <a href="chat.html?to=${encodeURIComponent(s.chat_handle)}&ctx=${encodeURIComponent(s.swap_type)}" class="cal-booking-btn" style="background:#10b981; color:#fff !important; width:100%;">
                             <i class="fas fa-comment-dots"></i> Send Message Request
                         </a>
-                        ${s.id ? `<button type="button" class="btn-reviews open-swap-rev-btn" data-id="${s.id}" data-name="${s.author_name}" style="width:100%;"><i class="fas fa-star"></i> Session Reviews (${revs.length})</button>` : `<a href="tutors.html?educator=${s.tutorId}" style="font-size:12px; color:#38bdf8; font-weight:600; text-align:center;">View Educator Card →</a>`}
-                        <a href="${s.discord_link}" target="_blank" rel="noopener" class="unlock-tutor-btn">
+                        ${s.id ? `<button type="button" class="btn-reviews open-swap-rev-btn" data-id="${s.id}" data-name="${escapeHTML(s.author_name)}" style="width:100%;"><i class="fas fa-star"></i> Session Reviews (${revs.length})</button>` : `<a href="tutors.html?educator=${s.tutorId}" style="font-size:12px; color:#38bdf8; font-weight:600; text-align:center;">View Educator Card →</a>`}
+                        <a href="${safeUrl(s.discord_link, SULTAN_CONFIG.DISCORD_INVITE)}" target="_blank" rel="noopener" class="unlock-tutor-btn">
                             <i class="fab fa-discord"></i> Open Discord Link ↗
                         </a>
                     </div>
                 </div>`;
             }).join("");
 
-            document.querySelectorAll(".open-swap-rev-btn").forEach(btn => {
+            grid.querySelectorAll(".open-swap-rev-btn").forEach(btn => {
                 btn.addEventListener("click", () => {
-                    const id = parseInt(btn.dataset.id);
-                    const name = btn.dataset.name;
-                    document.getElementById("swapReviewsTitle").innerText = `Reviews for ${name}`;
+                    const id = parseInt(btn.dataset.id, 10);
+                    document.getElementById("swapReviewsTitle").innerText = `Reviews for ${btn.dataset.name}`;
                     document.getElementById("swRevTargetId").value = id;
+                    const revName = document.getElementById("swRevName");
+                    const savedUser = localStorage.getItem("sultan_user");
+                    if (revName && savedUser) { revName.value = savedUser; revName.readOnly = true; }
                     const list = document.getElementById("swapReviewsList");
                     const revs = allSwapReviews.filter(r => r.swap_id === id);
                     list.innerHTML = revs.length === 0 ? `<p style="color:#94a3b8; font-size:13px;">No session reviews yet.</p>` : revs.map(r => `
-                        <div class="review-item">
-                            <div style="display:flex; justify-content:space-between;"><strong>${r.reviewer_name}</strong><span>${"⭐".repeat(r.rating)}</span></div>
-                            <p style="font-size:12px; color:#cbd5e1; margin-top:4px;">${r.comment}</p>
-                        </div>`).join("");
+                        <div class="review-item"><div style="display:flex; justify-content:space-between;"><strong>${escapeHTML(r.reviewer_name)}</strong><span>${"⭐".repeat(r.rating)}</span></div><p style="font-size:12px; color:#cbd5e1; margin-top:4px;">${escapeHTML(r.comment)}</p></div>`).join("");
                     document.getElementById("swapReviewsModal").classList.remove("hidden");
                 });
             });
@@ -213,31 +200,37 @@ function renderSwaps() {
             e.preventDefault();
             const btn = document.getElementById("swSubmitBtn");
             btn.disabled = true;
+            const authorVal = localStorage.getItem("sultan_user") || document.getElementById("swName").value.trim();
             const { error } = await supabase.from("skill_swaps").insert([{
-                author_name: document.getElementById("swName").value.trim(),
-                email: document.getElementById("swEmail").value.trim(),
+                author_name: authorVal, email: document.getElementById("swEmail").value.trim(),
                 swap_type: document.getElementById("swType").value,
                 offer_skill: document.getElementById("swOffer").value.trim(),
                 want_skill: document.getElementById("swWant").value.trim(),
                 description: document.getElementById("swDesc").value.trim(),
-                discord_link: document.getElementById("swDiscord").value.trim(),
-                status: "pending"
+                discord_link: document.getElementById("swDiscord").value.trim(), status: "pending"
             }]);
             if (!error) { alert("🎉 Skill Swap card submitted!"); e.target.reset(); swapModal.classList.add("hidden"); document.body.classList.remove("modal-open"); }
-            else { alert("Error submitting."); }
+            else alert("Error submitting.");
             btn.disabled = false;
         });
 
         document.getElementById("swapReviewForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-            const { error } = await supabase.from("swap_reviews").insert([{
-                swap_id: parseInt(document.getElementById("swRevTargetId").value),
-                reviewer_name: document.getElementById("swRevName").value.trim(),
-                rating: parseInt(document.getElementById("swRevRating").value),
-                comment: document.getElementById("swRevComment").value.trim()
-            }]);
-            if (!error) { alert("⭐ Session review posted!"); e.target.reset(); document.getElementById("swapReviewsModal").classList.add("hidden"); loadSwaps(); }
-            else { alert("Could not post review."); }
+            const me = localStorage.getItem("sultan_user");
+            const token = localStorage.getItem("sultan_token");
+            if (!me || !token) {
+                alert("Please sign in first (Quick Start in menu) to post a verified review!");
+                document.getElementById("navStartBtn")?.click();
+                return;
+            }
+            const { data, error } = await supabase.rpc("submit_swap_review", {
+                p_username: me, p_token: token,
+                p_swap_id: parseInt(document.getElementById("swRevTargetId").value, 10),
+                p_rating: parseInt(document.getElementById("swRevRating").value, 10),
+                p_comment: document.getElementById("swRevComment").value.trim()
+            });
+            if (!error && data?.ok) { alert("⭐ Session review posted!"); e.target.reset(); document.getElementById("swapReviewsModal").classList.add("hidden"); loadSwaps(); }
+            else alert(data?.error || "Could not post review.");
         });
 
         loadSwaps();
