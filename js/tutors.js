@@ -267,27 +267,67 @@ function attachOneTimeDiscordUnlocker() {
                 return;
             }
 
-            const adUrl = "https://arwf.org/4/3946e81041ccc9d120f1b729feb68fae";
+            const adUrl = "https://araplhn.org/4/88e5821febc3aed060a93ce3587926fc";
             const adWindow = window.open(adUrl, "_blank");
 
             if (!adWindow || adWindow.closed || typeof adWindow.closed === "undefined") {
                 return alert("⚠️ Pop-up Blocked! Please allow pop-ups to unlock this Discord classroom once.");
             }
 
+            const parentBox = this.parentElement;
+            const oldProg = parentBox.querySelector(".ad-progress-wrap");
+            if (oldProg) oldProg.remove();
+
+            const progWrap = document.createElement("div");
+            progWrap.className = "ad-progress-wrap";
+            progWrap.style.cssText = "width:100%; margin-top:4px; text-align:left;";
+            progWrap.innerHTML = `
+                <div style="display:flex; justify-content:space-between; font-size:11px; color:#38bdf8; font-weight:600; margin-bottom:4px;">
+                    <span class="ad-prog-label"><i class="fab fa-discord"></i> Preparing classroom...</span>
+                    <span class="ad-pct">0%</span>
+                </div>
+                <div style="width:100%; height:7px; background:#0f172a; border-radius:10px; overflow:hidden;">
+                    <div class="ad-bar-fill" style="width:0%; height:100%; background:linear-gradient(90deg, #5865F2, #10b981); transition:width 0.1s linear;"></div>
+                </div>
+            `;
+            parentBox.insertBefore(progWrap, this.nextSibling);
+
+            const barFill = progWrap.querySelector(".ad-bar-fill");
+            const pctText = progWrap.querySelector(".ad-pct");
+            const labelText = progWrap.querySelector(".ad-prog-label");
+            const originalHTML = this.innerHTML;
+
             this.style.pointerEvents = "none";
-            let timeLeft = 10;
-            this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Unlocking... ${timeLeft}s`;
+            this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Watching Sponsor...`;
+
+            const DURATION = 10500; // 10.5 saniyə
+            const startTime = Date.now();
 
             const timer = setInterval(() => {
-                timeLeft--;
-                if (timeLeft > 0) {
-                    this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Unlocking... ${timeLeft}s`;
-                } else {
+                const elapsed = Date.now() - startTime;
+
+                if (adWindow.closed && !document.hidden && elapsed < DURATION) {
+                    clearInterval(timer);
+                    barFill.style.background = "#ef4444";
+                    labelText.style.color = "#ef4444";
+                    labelText.innerHTML = `<i class="fas fa-times-circle"></i> Ad closed early! Keep open 10.5s.`;
+                    this.innerHTML = originalHTML;
+                    this.style.pointerEvents = "auto";
+                    return;
+                }
+
+                const pct = Math.min(100, Math.round((elapsed / DURATION) * 100));
+                barFill.style.width = `${pct}%`;
+                pctText.innerText = `${pct}%`;
+
+                if (elapsed >= DURATION) {
                     clearInterval(timer);
                     this.dataset.unlocked = "true";
                     this.innerHTML = `<i class="fas fa-check-circle"></i> Unlocked! Tap to Open ↗`;
                     this.style.background = "#10b981";
                     this.style.pointerEvents = "auto";
+                    labelText.style.color = "#10b981";
+                    labelText.innerHTML = `<i class="fas fa-check-circle"></i> Classroom ready!`;
 
                     if (tutorId) {
                         supabase.rpc("increment_tutor_unlock", { p_tutor_id: tutorId });
@@ -308,7 +348,7 @@ function attachOneTimeDiscordUnlocker() {
 
                     window.open(targetUrl, "_blank");
                 }
-            }, 1000);
+            }, 100);
         });
     });
 }
