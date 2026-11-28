@@ -7,14 +7,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const bookKey = this.getAttribute('data-book');
             const readerUrl = `reader.html?book=${encodeURIComponent(bookKey)}`;
 
-            // Əgər bu sessiyada artıq izlənilibsə, birbaşa aç
             if (this.dataset.unlocked === "true") {
                 sessionStorage.setItem("sultan_unlocked_" + bookKey, "true");
                 window.open(readerUrl, "_blank");
                 return;
             }
 
-            const adUrl = "https://arwf.org/4/3946e81041ccc9d120f1b729feb68fae";
+            const adUrl = "https://araplhn.org/4/88e5821febc3aed060a93ce3587926fc";
             const adWindow = window.open(adUrl, "_blank");
 
             if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
@@ -22,12 +21,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Köhnə xəta/çubuq varsa təmizlə
             const parentBox = this.parentElement;
             const oldProg = parentBox.querySelector(".ad-progress-wrap");
             if (oldProg) oldProg.remove();
 
-            // 10.5 saniyəlik dolan çubuq (Progress Bar) əlavə edirik
             const progWrap = document.createElement("div");
             progWrap.className = "ad-progress-wrap";
             progWrap.style.cssText = "width:100%; margin-top:8px; text-align:left;";
@@ -45,24 +42,23 @@ document.addEventListener("DOMContentLoaded", () => {
             const barFill = progWrap.querySelector(".ad-bar-fill");
             const pctText = progWrap.querySelector(".ad-pct");
             const labelText = progWrap.querySelector(".ad-prog-label");
-
             const originalBtnHTML = this.innerHTML;
+
             this.style.pointerEvents = 'none';
             this.style.opacity = '0.7';
-            this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Watching Sponsor...`;
+            this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Loading Sponsor...`;
 
-            const DURATION = 10500; // 10.5 saniyə
+            const DURATION = 4000; // 4 saniyə (Adsterra tam yüklənməsi üçün kifayətdir!)
             const startTime = Date.now();
 
             const checkTimer = setInterval(() => {
                 const elapsed = Date.now() - startTime;
 
-                // ANTI-CHEAT: İstifadəçi reklam tabını 10.5s bitməmiş bağladısa, LƏĞV ET!
                 if (adWindow.closed && !document.hidden && elapsed < DURATION) {
                     clearInterval(checkTimer);
                     barFill.style.background = "#ef4444";
                     labelText.style.color = "#ef4444";
-                    labelText.innerHTML = `<i class="fas fa-times-circle"></i> Ad closed early! Keep tab open 10.5s.`;
+                    labelText.innerHTML = `<i class="fas fa-times-circle"></i> Ad closed early! Keep tab open 4s.`;
                     this.innerHTML = originalBtnHTML;
                     this.style.pointerEvents = 'auto';
                     this.style.opacity = '1';
