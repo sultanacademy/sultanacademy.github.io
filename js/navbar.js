@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
 const defaultLayout = {
-        general: ["home", "dashboard", "chat", "become_educator", "find_educators", "skill_swap", "lang_exchange", "live_clubs"]
+        general: ["home", "dashboard", "chat", "become_educator", "find_educators", "skill_swap", "lang_exchange", "live_clubs"],
         others: ["leaderboard", "projects", "testimonials", "contact"]
     };
 
