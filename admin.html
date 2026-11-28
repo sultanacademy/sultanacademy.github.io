@@ -40,9 +40,11 @@
         <div id="authGate" class="auth-gate">
             <i class="fas fa-lock" style="font-size: 38px; color: #38bdf8; margin-bottom: 15px;"></i>
             <h3 style="margin-bottom: 15px;">Admin Authentication</h3>
-            <input type="email" id="adminEmailInput" value="sultanacademyinfo@gmail.com" readonly style="opacity: 0.8;"><br>
-            <input type="password" id="adminPasswordInput" placeholder="Enter your secret password"><br>
-            <button class="btn" id="loginPasswordBtn">Login to Control Center</button>
+            <form id="adminLoginForm" autocomplete="on">
+                <input type="email" id="adminEmailInput" name="email" autocomplete="username" value="sultanacademyinfo@gmail.com" readonly style="opacity: 0.8;"><br>
+                <input type="password" id="adminPasswordInput" name="password" autocomplete="current-password" placeholder="Enter your secret password"><br>
+                <button type="submit" class="btn" id="loginPasswordBtn">Login to Control Center</button>
+            </form>
         </div>
 
         <div id="dashboardArea" style="display: none;">
@@ -63,48 +65,36 @@
                     <tbody id="tutorsTableBody"></tbody>
                 </table>
             </div>
-
             <div id="tabEvents" class="tab-panel" style="overflow-x: auto;">
                 <table>
                     <thead><tr><th>Title</th><th>Educator</th><th>Category</th><th>Schedule</th><th>Action</th></tr></thead>
                     <tbody id="eventsTableBody"></tbody>
                 </table>
             </div>
-
             <div id="tabPartners" class="tab-panel" style="overflow-x: auto;">
                 <table>
                     <thead><tr><th>Image</th><th>Title / Author</th><th>Email</th><th>Category</th><th>Action</th></tr></thead>
                     <tbody id="partnersTableBody"></tbody>
                 </table>
             </div>
-
             <div id="tabSwaps" class="tab-panel" style="overflow-x: auto;">
                 <table>
                     <thead><tr><th>Author / Email</th><th>Type</th><th>Offer ↔ Want</th><th>Action</th></tr></thead>
                     <tbody id="swapsTableBody"></tbody>
                 </table>
             </div>
-
             <div id="tabTestimonials" class="tab-panel" style="overflow-x: auto;">
                 <table>
                     <thead><tr><th>Author</th><th>Rating</th><th>Message</th><th>Action</th></tr></thead>
                     <tbody id="testimonialsTableBody"></tbody>
                 </table>
             </div>
-
             <div id="tabReviews" class="tab-panel" style="overflow-x: auto;">
                 <h3 style="margin-bottom:10px; color:#f59e0b;">Educator Reviews</h3>
-                <table>
-                    <thead><tr><th>Student</th><th>Rating</th><th>Comment</th><th>Delete</th></tr></thead>
-                    <tbody id="reviewsTableBody"></tbody>
-                </table>
+                <table><thead><tr><th>Student</th><th>Rating</th><th>Comment</th><th>Delete</th></tr></thead><tbody id="reviewsTableBody"></tbody></table>
                 <h3 style="margin:25px 0 10px 0; color:#38bdf8;">Skill Swap Reviews</h3>
-                <table>
-                    <thead><tr><th>Reviewer</th><th>Rating</th><th>Comment</th><th>Delete</th></tr></thead>
-                    <tbody id="swapReviewsTableBody"></tbody>
-                </table>
+                <table><thead><tr><th>Reviewer</th><th>Rating</th><th>Comment</th><th>Delete</th></tr></thead><tbody id="swapReviewsTableBody"></tbody></table>
             </div>
-
             <div id="tabShop" class="tab-panel">
                 <h3 style="margin-bottom: 12px; color: #f59e0b;">Add New Shop Item</h3>
                 <div class="form-grid">
@@ -114,12 +104,8 @@
                     <input type="url" id="shopDrive" placeholder="Download / Drive Link">
                     <button class="btn" id="addShopBtn" style="max-width: 200px; background: #f59e0b;">Add to Shop</button>
                 </div>
-                <table>
-                    <thead><tr><th>Title</th><th>Price (SP)</th><th>Delete</th></tr></thead>
-                    <tbody id="shopTableBody"></tbody>
-                </table>
+                <table><thead><tr><th>Title</th><th>Price (SP)</th><th>Delete</th></tr></thead><tbody id="shopTableBody"></tbody></table>
             </div>
-
             <div id="tabSocial" class="tab-panel">
                 <h3 style="margin-bottom: 12px; color: #10b981;">🎁 Award +100 SP to #1 Learner of the Month</h3>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:30px;">
@@ -127,7 +113,6 @@
                     <input type="number" id="giftAmount" value="100" style="width:110px; margin:0;">
                     <button class="btn" id="sendGiftSpBtn" style="background:#10b981; color:white;">Send SP Bonus</button>
                 </div>
-
                 <h3 style="margin-bottom: 12px; color: #38bdf8;">Live Donations / Purchases Pop-up Feed</h3>
                 <div class="form-grid">
                     <input type="text" id="spName" placeholder="Name (e.g. Aysel T.)">
@@ -135,23 +120,15 @@
                     <input type="text" id="spTime" placeholder="Time text (e.g. 5 mins ago)">
                     <button class="btn" id="addSpBtn" style="max-width: 200px;">Add to Live Feed</button>
                 </div>
-                <table>
-                    <thead><tr><th>Name</th><th>Action</th><th>Time</th><th>Delete</th></tr></thead>
-                    <tbody id="socialTableBody"></tbody>
-                </table>
-
+                <table><thead><tr><th>Name</th><th>Action</th><th>Time</th><th>Delete</th></tr></thead><tbody id="socialTableBody"></tbody></table>
                 <h3 style="margin:30px 0 10px 0; color:#ef4444;">Deleted Account Feedback</h3>
-                <table>
-                    <thead><tr><th>Username</th><th>Reason</th><th>Date</th></tr></thead>
-                    <tbody id="feedbackTableBody"></tbody>
-                </table>
+                <table><thead><tr><th>Username</th><th>Reason</th><th>Date</th></tr></thead><tbody id="feedbackTableBody"></tbody></table>
             </div>
         </div>
     </div>
 
     <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
+        import { supabase, escapeHTML, safeUrl } from './js/config.js';
         const ADMIN_EMAIL = "sultanacademyinfo@gmail.com";
 
         const authGate = document.getElementById("authGate");
@@ -169,7 +146,8 @@
         }
         checkSession();
 
-        document.getElementById("loginPasswordBtn").addEventListener("click", async () => {
+        document.getElementById("adminLoginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
             const email = document.getElementById("adminEmailInput").value.trim();
             const password = document.getElementById("adminPasswordInput").value.trim();
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -204,90 +182,93 @@
 
             document.getElementById("tutorsTableBody").innerHTML = (t.data || []).map(x => `
                 <tr>
-                    <td><img src="${x.avatar_url}" class="avatar-preview" onerror="this.src='your-photo.jpg'"></td>
-                    <td><strong>${x.name}</strong></td>
-                    <td><a href="mailto:${x.email || ''}" style="color:#38bdf8;">${x.email || 'N/A'}</a></td>
-                    <td><b>${x.category || 'Languages'}</b><br><small style="color:#94a3b8;">${x.language} • ${x.subject}</small></td>
-                    <td>${x.price}</td>
+                    <td><img src="${safeUrl(x.avatar_url, 'your-photo.jpg')}" class="avatar-preview" onerror="this.src='your-photo.jpg'"></td>
+                    <td><strong>${escapeHTML(x.name)}</strong>${x.offers_free_trial ? '<br><small style="color:#10b981;">🎁 Free Trial</small>' : ''}</td>
+                    <td><a href="mailto:${escapeHTML(x.email || '')}" style="color:#38bdf8;">${escapeHTML(x.email || 'N/A')}</a></td>
+                    <td><b>${escapeHTML(x.category || 'Languages')}</b><br><small style="color:#94a3b8;">${escapeHTML(x.language)} • ${escapeHTML(x.subject)}</small></td>
+                    <td>${escapeHTML(x.price)}</td>
                     <td style="display:flex; gap:6px;">
-                        ${x.status === 'pending' ? `<button class="btn-approve" onclick="approveItem('tutors', ${x.id})">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Active</span>'}
-                        <button class="btn-delete" onclick="deleteRow('tutors', ${x.id})">Delete</button>
+                        ${x.status === 'pending' ? `<button class="btn-approve adm-app-btn" data-t="tutors" data-id="${x.id}">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Active</span>'}
+                        <button class="btn-delete adm-del-btn" data-t="tutors" data-id="${x.id}">Delete</button>
                     </td>
                 </tr>`).join("") || "<tr><td colspan='6'>Empty</td></tr>";
 
             document.getElementById("eventsTableBody").innerHTML = (ev.data || []).map(x => `
                 <tr>
-                    <td><b>${x.title}</b><br><small style="color:#94a3b8;">${x.description}</small></td>
-                    <td>${x.educator_name}<br><small style="color:#38bdf8;">${x.educator_email}</small></td>
-                    <td>${x.category}</td><td>${x.schedule_text}</td>
+                    <td><b>${escapeHTML(x.title)}</b><br><small style="color:#94a3b8;">${escapeHTML(x.description)}</small></td>
+                    <td>${escapeHTML(x.educator_name)}<br><small style="color:#38bdf8;">${escapeHTML(x.educator_email)}</small></td>
+                    <td>${escapeHTML(x.category)}</td><td>${escapeHTML(x.schedule_text)}</td>
                     <td style="display:flex; gap:6px;">
-                        ${x.status === 'pending' ? `<button class="btn-approve" onclick="approveItem('events', ${x.id})">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Live</span>'}
-                        <button class="btn-delete" onclick="deleteRow('events', ${x.id})">Delete</button>
+                        ${x.status === 'pending' ? `<button class="btn-approve adm-app-btn" data-t="events" data-id="${x.id}">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Live</span>'}
+                        <button class="btn-delete adm-del-btn" data-t="events" data-id="${x.id}">Delete</button>
                     </td>
                 </tr>`).join("") || "<tr><td colspan='5'>Empty</td></tr>";
 
             document.getElementById("partnersTableBody").innerHTML = (pa.data || []).map(x => `
                 <tr>
-                    <td><img src="${x.image_url}" class="avatar-preview" onerror="this.src='logo.png'"></td>
-                    <td><b>${x.title}</b><br><small style="color:#94a3b8;">${x.author_name}</small></td>
-                    <td><a href="mailto:${x.email}" style="color:#38bdf8;">${x.email}</a></td>
-                    <td>${x.category}</td>
+                    <td><img src="${safeUrl(x.image_url, 'logo.png')}" class="avatar-preview" onerror="this.src='logo.png'"></td>
+                    <td><b>${escapeHTML(x.title)}</b><br><small style="color:#94a3b8;">${escapeHTML(x.author_name)}</small></td>
+                    <td><a href="mailto:${escapeHTML(x.email)}" style="color:#38bdf8;">${escapeHTML(x.email)}</a></td>
+                    <td>${escapeHTML(x.category)}</td>
                     <td style="display:flex; gap:6px;">
-                        ${x.status === 'pending' ? `<button class="btn-approve" onclick="approveItem('partners', ${x.id})">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Live</span>'}
-                        <button class="btn-delete" onclick="deleteRow('partners', ${x.id})">Delete</button>
+                        ${x.status === 'pending' ? `<button class="btn-approve adm-app-btn" data-t="partners" data-id="${x.id}">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Live</span>'}
+                        <button class="btn-delete adm-del-btn" data-t="partners" data-id="${x.id}">Delete</button>
                     </td>
                 </tr>`).join("") || "<tr><td colspan='5'>Empty</td></tr>";
 
             document.getElementById("swapsTableBody").innerHTML = (sw.data || []).map(x => `
                 <tr>
-                    <td><b>${x.author_name}</b><br><small style="color:#38bdf8;">${x.email}</small></td>
-                    <td>${x.swap_type}</td><td><b>${x.offer_skill}</b> ↔ ${x.want_skill}</td>
+                    <td><b>${escapeHTML(x.author_name)}</b><br><small style="color:#38bdf8;">${escapeHTML(x.email)}</small></td>
+                    <td>${escapeHTML(x.swap_type)}</td><td><b>${escapeHTML(x.offer_skill)}</b> ↔ ${escapeHTML(x.want_skill)}</td>
                     <td style="display:flex; gap:6px;">
-                        ${x.status === 'pending' ? `<button class="btn-approve" onclick="approveItem('skill_swaps', ${x.id})">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Live</span>'}
-                        <button class="btn-delete" onclick="deleteRow('skill_swaps', ${x.id})">Delete</button>
+                        ${x.status === 'pending' ? `<button class="btn-approve adm-app-btn" data-t="skill_swaps" data-id="${x.id}">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Live</span>'}
+                        <button class="btn-delete adm-del-btn" data-t="skill_swaps" data-id="${x.id}">Delete</button>
                     </td>
                 </tr>`).join("") || "<tr><td colspan='4'>Empty</td></tr>";
 
             document.getElementById("testimonialsTableBody").innerHTML = (te.data || []).map(x => `
                 <tr>
-                    <td><b>${x.author_name}</b><br><small style="color:#94a3b8;">${x.author_role}</small></td>
-                    <td>${"⭐".repeat(x.rating)}</td><td>${x.message}</td>
+                    <td><b>${escapeHTML(x.author_name)}</b><br><small style="color:#94a3b8;">${escapeHTML(x.author_role)}</small></td>
+                    <td>${"⭐".repeat(x.rating)}</td><td>${escapeHTML(x.message)}</td>
                     <td style="display:flex; gap:6px;">
-                        ${x.status === 'pending' ? `<button class="btn-approve" onclick="approveItem('testimonials', ${x.id})">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Live</span>'}
-                        <button class="btn-delete" onclick="deleteRow('testimonials', ${x.id})">Delete</button>
+                        ${x.status === 'pending' ? `<button class="btn-approve adm-app-btn" data-t="testimonials" data-id="${x.id}">Approve</button>` : '<span style="color:#10b981;font-weight:700;">Live</span>'}
+                        <button class="btn-delete adm-del-btn" data-t="testimonials" data-id="${x.id}">Delete</button>
                     </td>
                 </tr>`).join("") || "<tr><td colspan='4'>Empty</td></tr>";
 
             document.getElementById("reviewsTableBody").innerHTML = (re.data || []).map(x => `
-                <tr><td><b>${x.student_name}</b></td><td>${"⭐".repeat(x.rating)}</td><td>${x.comment}</td><td><button class="btn-delete" onclick="deleteRow('reviews', ${x.id})">Delete</button></td></tr>`).join("");
+                <tr><td><b>${escapeHTML(x.student_name)}</b></td><td>${"⭐".repeat(x.rating)}</td><td>${escapeHTML(x.comment)}</td><td><button class="btn-delete adm-del-btn" data-t="reviews" data-id="${x.id}">Delete</button></td></tr>`).join("");
 
             document.getElementById("swapReviewsTableBody").innerHTML = (sre.data || []).map(x => `
-                <tr><td><b>${x.reviewer_name}</b></td><td>${"⭐".repeat(x.rating)}</td><td>${x.comment}</td><td><button class="btn-delete" onclick="deleteRow('swap_reviews', ${x.id})">Delete</button></td></tr>`).join("");
+                <tr><td><b>${escapeHTML(x.reviewer_name)}</b></td><td>${"⭐".repeat(x.rating)}</td><td>${escapeHTML(x.comment)}</td><td><button class="btn-delete adm-del-btn" data-t="swap_reviews" data-id="${x.id}">Delete</button></td></tr>`).join("");
 
             document.getElementById("shopTableBody").innerHTML = (sh.data || []).map(x => `
-                <tr><td><b>${x.title}</b></td><td>${x.price} SP</td><td><button class="btn-delete" onclick="deleteRow('shop_items', ${x.id})">Delete</button></td></tr>`).join("");
+                <tr><td><b>${escapeHTML(x.title)}</b></td><td>${parseInt(x.price, 10)} SP</td><td><button class="btn-delete adm-del-btn" data-t="shop_items" data-id="${x.id}">Delete</button></td></tr>`).join("");
 
             document.getElementById("socialTableBody").innerHTML = (sp.data || []).map(x => `
-                <tr><td><b>${x.name}</b></td><td>${x.action}</td><td>${x.time_text}</td><td><button class="btn-delete" onclick="deleteRow('social_proof', ${x.id})">Delete</button></td></tr>`).join("");
+                <tr><td><b>${escapeHTML(x.name)}</b></td><td>${escapeHTML(x.action)}</td><td>${escapeHTML(x.time_text)}</td><td><button class="btn-delete adm-del-btn" data-t="social_proof" data-id="${x.id}">Delete</button></td></tr>`).join("");
 
             document.getElementById("feedbackTableBody").innerHTML = (fb.data || []).map(x => `
-                <tr><td><b>${x.username}</b></td><td>${x.reason}</td><td>${new Date(x.created_at).toLocaleDateString()}</td></tr>`).join("") || "<tr><td colspan='3'>No feedback yet.</td></tr>";
+                <tr><td><b>${escapeHTML(x.username)}</b></td><td>${escapeHTML(x.reason)}</td><td>${new Date(x.created_at).toLocaleDateString()}</td></tr>`).join("") || "<tr><td colspan='3'>No feedback yet.</td></tr>";
         }
 
-        window.approveItem = async (table, id) => {
-            await supabase.from(table).update({ status: 'approved' }).eq('id', id);
-            loadAllAdminData();
-        };
-
-        window.deleteRow = async (table, id) => {
-            if (!confirm("Silmək istədiyinə əminsən?")) return;
-            await supabase.from(table).delete().eq('id', id);
-            loadAllAdminData();
-        };
+        dashboardArea.addEventListener("click", async (e) => {
+            const appBtn = e.target.closest(".adm-app-btn");
+            if (appBtn) {
+                await supabase.from(appBtn.dataset.t).update({ status: 'approved' }).eq('id', parseInt(appBtn.dataset.id, 10));
+                loadAllAdminData();
+            }
+            const delBtn = e.target.closest(".adm-del-btn");
+            if (delBtn) {
+                if (!confirm("Silmək istədiyinə əminsən?")) return;
+                await supabase.from(delBtn.dataset.t).delete().eq('id', parseInt(delBtn.dataset.id, 10));
+                loadAllAdminData();
+            }
+        });
 
         document.getElementById("sendGiftSpBtn").addEventListener("click", async () => {
             const uname = document.getElementById("giftUsername").value.trim();
-            const amt = parseInt(document.getElementById("giftAmount").value);
+            const amt = parseInt(document.getElementById("giftAmount").value, 10);
             if (!uname || !amt) return alert("Enter username & amount!");
             const { data } = await supabase.rpc("admin_gift_sp", { p_username: uname, p_amount: amt });
             if (data) alert(`🎉 Sent ${amt} SP to ${uname}!`);
@@ -306,7 +287,7 @@
 
         document.getElementById("addShopBtn").addEventListener("click", async () => {
             const title = document.getElementById("shopTitle").value.trim();
-            const price = parseInt(document.getElementById("shopPrice").value);
+            const price = parseInt(document.getElementById("shopPrice").value, 10);
             const cover_img = document.getElementById("shopCover").value.trim() || "book1.png";
             const drive_link = document.getElementById("shopDrive").value.trim();
             if (!title || !price || !drive_link) return alert("Fill required fields!");
