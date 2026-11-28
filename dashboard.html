@@ -340,8 +340,14 @@
             e.preventDefault();
             const btn = document.getElementById("eduSubmitBtn");
             btn.disabled = true;
-            const payload = {
+     let myHandle = localStorage.getItem("sultan_user");
+         if (!myHandle) {
+             myHandle = document.getElementById("tutorName").value.trim().toLowerCase().replace(/\s+/g, "").slice(0, 20);
+             localStorage.setItem("sultan_user", myHandle);
+         }
+         const payload = {
                 name: document.getElementById("tutorName").value.trim(),
+                owner_username: myHandle,
                 email: document.getElementById("tutorEmail").value.trim(),
                 edit_pin: document.getElementById("tutorPin").value.trim(),
                 price: document.getElementById("tutorPrice").value.trim(),
