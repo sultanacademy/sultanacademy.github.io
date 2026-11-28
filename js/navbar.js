@@ -1,6 +1,5 @@
-// --- SULTAN ACADEMY: DIVIDED SIDEBAR + TOP-RIGHT SHOP/START/SETTINGS ---
+// --- SULTAN ACADEMY: DIVIDED SIDEBAR + TOP-RIGHT LIBRARY/START/SETTINGS ---
 document.addEventListener("DOMContentLoaded", () => {
-    // Bütün səhifələrdə Footer yazısını avtomatik Sultan Academy edirik
     document.querySelectorAll(".footer p").forEach(p => {
         p.innerHTML = p.innerHTML.replace("Sultan Alizada", "Sultan Academy");
     });
@@ -11,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
     const activeUser = localStorage.getItem("sultan_user");
 
+    // BÜTÜN MENYU ELEMENTLƏRİ (Library kitab ikonu ilə əlavə olundu)
     const menuItemsDB = {
         home: { label: "Home", href: "index.html", icon: "fas fa-home" },
         dashboard: { label: "Dashboard", href: "dashboard.html", icon: "fas fa-th-large" },
@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         live_clubs: { label: "Weekly Live Clubs & Workshops", href: "clubs.html", icon: "fas fa-broadcast-tower" },
         skill_swap: { label: "Skill Swap", href: "skill-swap.html", icon: "fas fa-exchange-alt" },
         lang_exchange: { label: "Language & Cultural Exchange", href: "exchange.html", icon: "fas fa-globe" },
+        library: { label: "Library", href: "shop.html", icon: "fas fa-book" },
         projects: {
             label: "Projects",
             type: "dropdown",
@@ -43,7 +44,7 @@ const defaultLayout = {
         others: ["leaderboard", "projects", "testimonials", "contact"]
     };
 
-    const STORAGE_KEY = "sultan_sidebar_layout_v2";
+    const STORAGE_KEY = "sultan_sidebar_layout_v3";
     let savedLayout;
     try {
         savedLayout = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultLayout;
@@ -104,9 +105,10 @@ const defaultLayout = {
             <i class="fas fa-bars"></i>
         </button>
 
+        <!-- SAĞ YUXARI KÜNC: LIBRARY + START + SETTINGS -->
         <div class="top-utility-bar">
             <a href="shop.html" class="top-shop-btn">
-                <i class="fas fa-shopping-bag"></i> Shop
+                <i class="fas fa-book-open"></i> Library
             </a>
             <button id="navStartBtn" class="top-start-btn" type="button">
                 <i class="fas fa-bolt"></i> <span id="navStartText">${activeUser ? `Start • ${activeUser}` : 'Start'}</span>
@@ -116,7 +118,6 @@ const defaultLayout = {
             </button>
         </div>
 
-       <div id="sidebarBackdrop" class="sidebar-backdrop hidden"></div>
         <aside id="leftSidebar" class="left-sidebar">
             <div class="sidebar-brand">
                 <a href="index.html">
@@ -185,25 +186,12 @@ const defaultLayout = {
         </div>
     `;
 
-const leftSidebar = document.getElementById("leftSidebar");
-    const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+    const leftSidebar = document.getElementById("leftSidebar");
     const mobileBtn = document.getElementById("mobileSidebarToggle");
     const closeMobileBtn = document.getElementById("closeMobileSidebar");
 
-    function openMobSidebar() {
-        leftSidebar.classList.add("open");
-        if (sidebarBackdrop) sidebarBackdrop.classList.remove("hidden");
-        document.body.classList.add("sidebar-mobile-open");
-    }
-    function closeMobSidebar() {
-        leftSidebar.classList.remove("open");
-        if (sidebarBackdrop) sidebarBackdrop.classList.add("hidden");
-        document.body.classList.remove("sidebar-mobile-open");
-    }
-
-    if (mobileBtn) mobileBtn.addEventListener("click", openMobSidebar);
-    if (closeMobileBtn) closeMobileBtn.addEventListener("click", closeMobSidebar);
-    if (sidebarBackdrop) sidebarBackdrop.addEventListener("click", closeMobSidebar);
+    if (mobileBtn) mobileBtn.addEventListener("click", () => leftSidebar.classList.add("open"));
+    if (closeMobileBtn) closeMobileBtn.addEventListener("click", () => leftSidebar.classList.remove("open"));
 
     document.querySelectorAll(".sidebar-projects-toggle").forEach(btn => {
         btn.addEventListener("click", () => {
