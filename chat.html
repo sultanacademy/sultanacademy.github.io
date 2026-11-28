@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages, Tools & Live Discord | Sultan Academy</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="personal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .chat-layout { display: grid; grid-template-columns: 270px 1fr; gap: 20px; text-align: left; }
+        .chat-sidebar-box, .chat-main-box {
+            background: #1e293b; border: 1px solid #334155; border-radius: 22px; padding: 18px;
+        }
+        .chat-main-box { display: flex; flex-direction: column; height: 600px; position: relative; }
+        .chat-topbar {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            padding-bottom: 12px; border-bottom: 1px solid #334155;
+        }
+        .chat-messages {
+            flex: 1; overflow-y: auto; padding: 15px 6px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .msg-bubble {
+            max-width: 78%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.45;
+        }
+        .msg-me { align-self: flex-end; background: #0284c7; color: #fff; border-bottom-right-radius: 4px; }
+        .msg-them { align-self: flex-start; background: #0f172a; color: #f8fafc; border: 1px solid #334155; border-bottom-left-radius: 4px; }
+        .msg-meta { font-size: 10px; opacity: 0.7; display: block; margin-bottom: 3px; }
+        .proposal-card {
+            background: rgba(15, 23, 42, 0.95); border: 1px solid #38bdf8; border-radius: 16px;
+            padding: 14px; margin: 4px 0;
+        }
+        .chat-input-bar {
+            display: flex; align-items: center; gap: 8px; padding-top: 12px; border-top: 1px solid #334155; position: relative;
+        }
+        .plus-tool-btn {
+            width: 42px; height: 42px; border-radius: 50%; background: #334155; color: #38bdf8;
+            border: 1px solid #475569; font-size: 18px; cursor: pointer; flex-shrink: 0; transition: 0.2s;
+        }
+        .plus-tool-btn:hover { background: #38bdf8; color: #0f172a; transform: rotate(90deg); }
+        .tools-popover {
+            position: absolute; bottom: 62px; left: 0; background: #0f172a; border: 1px solid #38bdf8;
+            border-radius: 18px; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+            width: 300px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); z-index: 50;
+        }
+        .tool-item-btn {
+            background: #1e293b; border: 1px solid #334155; color: #f8fafc; padding: 10px; border-radius: 12px;
+            font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-align: left;
+        }
+        .tool-item-btn:hover { border-color: #38bdf8; background: rgba(56,189,248,0.12); }
+
+        /* MINI CALCULATOR FLOATING WIDGET */
+        .calc-widget {
+            position: fixed; bottom: 90px; right: 25px; width: 240px; background: #0f172a;
+            border: 1px solid #38bdf8; border-radius: 20px; padding: 14px; z-index: 99995;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+        }
+        .calc-screen {
+            width: 100%; padding: 10px; background: #1e293b; color: #38bdf8; border: 1px solid #334155;
+            border-radius: 10px; text-align: right; font-size: 18px; font-weight: 700; margin-bottom: 10px;
+        }
+        .calc-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .calc-keys button {
+            padding: 10px; border-radius: 10px; border: none; background: #1e293b; color: #fff;
+            font-weight: 600; cursor: pointer; font-size: 14px;
+        }
+        .calc-keys button:hover { background: #334155; }
+        .calc-op { background: rgba(56,189,248,0.2) !important; color: #38bdf8 !important; }
+        .calc-eq { background: #10b981 !important; color: #fff !important; grid-column: span 2; }
+
+        /* BƏZƏKLİ DISCORD WIDGETBOT KARKASI */
+        .fancy-discord-showcase {
+            background: linear-gradient(135deg, rgba(88, 101, 242, 0.25), rgba(56, 189, 248, 0.12), rgba(15, 23, 42, 0.98));
+            border: 2px solid #5865F2;
+            border-radius: 26px;
+            padding: 22px;
+            box-shadow: 0 0 40px rgba(88, 101, 242, 0.3), inset 0 0 20px rgba(56, 189, 248, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .discord-live-header {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+            margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .live-dot {
+            width: 10px; height: 10px; border-radius: 50%; background: #10b981;
+            display: inline-block; box-shadow: 0 0 10px #10b981; animation: pulseDot 1.5s infinite;
+        }
+        @keyframes pulseDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.3); } }
+        .discord-cta-pill {
+            background: linear-gradient(135deg, #5865F2, #4752C4); color: #fff !important;
+            padding: 10px 20px; border-radius: 30px; font-weight: 700; font-size: 13px;
+            display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 18px rgba(88,101,242,0.5);
+        }
+        .widgetbot-frame-wrap {
+            border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.12); background: #1e293b;
+        }
+        @media (max-width: 850px) { .chat-layout { grid-template-columns: 1fr; } .chat-main-box { height: 520px; } }
+    </style>
+</head>
+<body>
+
+    <header id="main-header"></header>
+
+    <main class="section" style="padding-top: 90px; max-width: 1120px;">
+        <div class="section-header" style="margin-bottom: 25px;">
+            <h2>Study Chat, Lesson Tools & Live Discord</h2>
+            <p>Coordinate lesson times (with 4-hour accountability), use live study tools, or hang out in Discord!</p>
+        </div>
+
+        <div class="mode-tabs-bar">
+            <button type="button" class="mode-tab-big active" id="tabDirectChat"><i class="fas fa-comments"></i> 1-on-1 Chat & Proposals</button>
+            <button type="button" class="mode-tab-big" id="tabDiscordLive"><i class="fab fa-discord"></i> Live Discord Community Chat</button>
+        </div>
+
+        <!-- TAB 1: SUPABASE REALTIME ÇAT + DƏRS TƏKLİFLƏRİ + "+" TOOLS -->
+        <div id="panelDirectChat" class="chat-layout">
+            
+            <!-- Sol: Otağa Qoşul + Gələn Təkliflər -->
+            <div class="chat-sidebar-box">
+                <h4 style="color: #38bdf8; font-size: 14px; margin-bottom: 10px;"><i class="fas fa-user-friends"></i> Connect with Partner / Educator</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
+                    <input type="text" id="partnerUsernameInput" maxlength="20" placeholder="Enter partner username..." style="padding: 9px 12px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 13px;">
+                    <button type="button" id="connectRoomBtn" class="submit-profile-btn" style="margin: 0; padding: 9px; font-size: 13px;">Open Chat Room</button>
+                </div>
+
+                <h4 style="color: #f8fafc; font-size: 13px; margin-bottom: 10px; border-top: 1px solid #334155; padding-top: 14px;">
+                    <i class="fas fa-inbox" style="color: #10b981;"></i> Your Active Proposals
+                </h4>
+                <div id="inboxList" style="display: flex; flex-direction: column; gap: 8px; max-height: 310px; overflow-y: auto;">
+                    <span style="color: #64748b; font-size: 12px;">Enter your username via Start to see your proposals.</span>
+                </div>
+            </div>
+
+            <!-- Sağ: Canlı Çat Otağı -->
+            <div class="chat-main-box">
+                <div class="chat-topbar">
+                    <div>
+                        <strong id="activeRoomTitle" style="color: #fff; font-size: 15px;">Select or Enter a Username to Chat</strong>
+                        <span id="onlinePresenceText" style="display: block; font-size: 11px; color: #10b981;"></span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span id="liveTimerBadge" class="hidden" style="background: rgba(245,158,11,0.18); color: #fbbf24; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;">
+                            ⏱️ <span id="timerClock">25:00</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessagesBox">
+                    <p style="color: #64748b; font-size: 13px; text-align: center; margin-top: 40px;">
+                        Enter a partner or educator's username on the left to start chatting, propose lesson times, and use built-in tools!
+                    </p>
+                </div>
+
+                <!-- "+" TOOLS POPOVER -->
+                <div id="toolsPopover" class="tools-popover hidden">
+                    <button type="button" class="tool-item-btn" id="toolProposeBtn"><i class="fas fa-calendar-check" style="color:#38bdf8;"></i> Propose Lesson</button>
+                    <button type="button" class="tool-item-btn" id="toolCalcBtn"><i class="fas fa-calculator" style="color:#10b981;"></i> Calculator</button>
+                    <button type="button" class="tool-item-btn" id="toolDocsBtn"><i class="fas fa-file-alt" style="color:#60a5fa;"></i> Google Docs</button>
+                    <button type="button" class="tool-item-btn" id="toolTimerBtn"><i class="fas fa-stopwatch" style="color:#f59e0b;"></i> 25m Timer</button>
+                    <button type="button" class="tool-item-btn" id="toolJitsiBtn" style="grid-column: span 2;"><i class="fas fa-video" style="color:#ec4899;"></i> Send Live Jitsi Video Room Invite</button>
+                </div>
+
+                <form id="chatSendForm" class="chat-input-bar">
+                    <button type="button" id="plusToolsBtn" class="plus-tool-btn" title="Study Tools">+</button>
+                    <input type="text" id="chatMsgInput" maxlength="250" placeholder="Type a message (real-time, 0 DB load)..." style="flex:1; padding: 11px 14px; border-radius: 20px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 13px; outline: none;">
+                    <button type="submit" style="background: #38bdf8; color: #0f172a; border: none; padding: 10px 18px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer;">
+                        Send <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- TAB 2: BƏZƏKLİ WIDGETBOT DISCORD CANLI ÇAT PƏNCƏRƏSİ -->
+        <div id="panelDiscordLive" class="hidden">
+            <div class="fancy-discord-showcase">
+                <div class="discord-live-header">
+                    <div style="text-align: left;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <span class="live-dot"></span>
+                            <strong style="color: #ffffff; font-size: 18px;">Live Sultan Academy Discord Lounge</strong>
+                        </div>
+                        <p style="color: #cbd5e1; font-size: 13px; margin: 0;">Chat live right here! Want voice classrooms, karaoke nights & full channels? Join our Discord!</p>
+                    </div>
+                    <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="discord-cta-pill">
+                        <i class="fab fa-discord" style="font-size: 18px;"></i> Join Official Discord Server ↗
+                    </a>
+                </div>
+
+                <div class="widgetbot-frame-wrap">
+                    <!-- QEYD: WidgetBot botunu serverə dəvət etdikdən sonra #general kanalının ID-sini channel="" yerinə yaz -->
+                    <widgetbot server="1506203530023931977" channel="1506203530527248506" width="100%" height="520"></widgetbot>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- DƏRS TƏKLİFİ MODALI -->
+    <div id="proposeLessonModal" class="auth-modal-overlay hidden">
+        <div class="wizard-card" style="max-width: 440px;">
+            <button class="auth-close-btn" id="closeProposeModal" type="button">&times;</button>
+            <h3 style="margin-bottom: 8px;"><i class="fas fa-calendar-check" style="color: #38bdf8;"></i> Propose a Lesson Time</h3>
+            <p style="font-size: 12px; color: #fcd34d; margin-bottom: 16px;">⚠️ 4-Hour Rule: Cancelling less than 4 hours before start or missing the session triggers a -100 Leaderboard & -50 SP penalty.</p>
+            <form id="proposeLessonForm" class="educator-form">
+                <div class="form-group"><label>Topic / Skill (max 35) *</label><input type="text" id="propTopic" maxlength="35" required placeholder="e.g. German B2 Speaking"></div>
+                <div class="form-group"><label>Date & Time *</label><input type="datetime-local" id="propDateTime" required></div>
+                <button type="submit" class="submit-profile-btn">Send Proposal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- GOOGLE DOCS PAYLAŞMA MODALI -->
+    <div id="docsShareModal" class="auth-modal-overlay hidden">
+        <div class="wizard-card" style="max-width: 440px;">
+            <button class="auth-close-btn" id="closeDocsModal" type="button">&times;</button>
+            <h3 style="margin-bottom: 8px;"><i class="fas fa-file-alt" style="color: #60a5fa;"></i> Google Docs Tool</h3>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 14px;">Create a fresh collaborative document or paste an existing Google Docs link to share in chat.</p>
+            <a href="https://docs.new" target="_blank" rel="noopener" class="dash-action-btn" style="margin-bottom: 14px; background: #2563eb;">
+                <i class="fas fa-plus"></i> Create New Google Doc (docs.new) ↗
+            </a>
+            <div style="display: flex; gap: 8px;">
+                <input type="url" id="shareDocUrl" placeholder="Paste Google Docs URL..." style="flex:1; padding:10px; border-radius:10px; border:1px solid #334155; background:#1e293b; color:white;">
+                <button type="button" id="sendDocToChatBtn" class="submit-profile-btn" style="margin:0; padding:10px 16px;">Share</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- KALKULYATOR VİDCETİ -->
+    <div id="calcWidget" class="calc-widget hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:12px; font-weight:700; color:#94a3b8;">🧮 Calculator</span>
+            <button type="button" id="closeCalcBtn" style="background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer;">&times;</button>
+        </div>
+        <input type="text" id="calcDisplay" class="calc-screen" readonly value="0">
+        <div class="calc-keys">
+            <button type="button" onclick="calcClear()" class="calc-op">C</button>
+            <button type="button" onclick="calcAppend('/')" class="calc-op">/</button>
+            <button type="button" onclick="calcAppend('*')" class="calc-op">*</button>
+            <button type="button" onclick="calcBack()" class="calc-op">⌫</button>
+            <button type="button" onclick="calcAppend('7')">7</button>
+            <button type="button" onclick="calcAppend('8')">8</button>
+            <button type="button" onclick="calcAppend('9')">9</button>
+            <button type="button" onclick="calcAppend('-')" class="calc-op">-</button>
+            <button type="button" onclick="calcAppend('4')">4</button>
+            <button type="button" onclick="calcAppend('5')">5</button>
+            <button type="button" onclick="calcAppend('6')">6</button>
+            <button type="button" onclick="calcAppend('+')" class="calc-op">+</button>
+            <button type="button" onclick="calcAppend('1')">1</button>
+            <button type="button" onclick="calcAppend('2')">2</button>
+            <button type="button" onclick="calcAppend('3')">3</button>
+            <button type="button" onclick="calcAppend('.')">.</button>
+            <button type="button" onclick="calcAppend('0')">0</button>
+            <button type="button" onclick="calcEval()" class="calc-eq">=</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2026 Sultan Academy • <a href="privacy.html" style="color: #38bdf8;">Privacy & Legal Notice</a></p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/cookie-consent.js"></script>
+    <script type="module" src="js/wizard.js"></script>
+
+    <!-- KALKULYATOR SKRİPTİ (0 Supabase Yükü) -->
+    <script>
+        let calcVal = "";
+        const disp = document.getElementById("calcDisplay");
+        window.calcAppend = (v) => { calcVal += v; disp.value = calcVal; };
+        window.calcClear = () => { calcVal = ""; disp.value = "0"; };
+        window.calcBack = () => { calcVal = calcVal.slice(0, -1); disp.value = calcVal || "0"; };
+        window.calcEval = () => {
+            try { calcVal = String(Function('"use strict";return (' + calcVal + ')')()); disp.value = calcVal; }
+            catch { disp.value = "Error"; calcVal = ""; }
+        };
+        document.getElementById("closeCalcBtn").addEventListener("click", () => document.getElementById("calcWidget").classList.add("hidden"));
+    </script>
+
+    <!-- REALTIME ÇAT + DƏRS TƏKLİFLƏRİ + 4-SAAT CƏZA MƏNTİQİ -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
+
+        // Tablar
+        const tabDirect = document.getElementById("tabDirectChat");
+        const tabDiscord = document.getElementById("tabDiscordLive");
+        const panDirect = document.getElementById("panelDirectChat");
+        const panDiscord = document.getElementById("panelDiscordLive");
+
+        tabDirect.addEventListener("click", () => { tabDirect.classList.add("active"); tabDiscord.classList.remove("active"); panDirect.classList.remove("hidden"); panDiscord.classList.add("hidden"); });
+        tabDiscord.addEventListener("click", () => { tabDiscord.classList.add("active"); tabDirect.classList.remove("active"); panDiscord.classList.remove("hidden"); panDirect.classList.add("hidden"); });
+
+        let me = localStorage.getItem("sultan_user");
+        let currentPartner = null;
+        let currentRoomId = null;
+        let realtimeChannel = null;
+        let activeTimerInterval = null;
+
+        // 1. Gələn Qutusu (Inbox)
+        async function loadInbox() {
+            const box = document.getElementById("inboxList");
+            if (!me) {
+                box.innerHTML = `<button type="button" onclick="document.getElementById('navStartBtn').click()" class="btn-secondary-sm" style="width:100%;">Click Start to Set Username</button>`;
+                return;
+            }
+            const { data } = await supabase
+                .from("lesson_proposals")
+                .select("*")
+                .or(`sender_name.eq.${me},receiver_name.eq.${me}`)
+                .order("id", { ascending: false });
+
+            if (!data || data.length === 0) {
+                box.innerHTML = `<span style="color:#64748b; font-size:12px;">No lesson proposals yet.</span>`;
+                return;
+            }
+
+            const uniquePartners = [...new Set(data.map(p => p.sender_name === me ? p.receiver_name : p.sender_name))];
+            box.innerHTML = uniquePartners.map(p => `
+                <button type="button" class="btn-secondary-sm open-inbox-room" data-partner="${p}" style="width:100%; text-align:left; display:flex; justify-content:space-between;">
+                    <span>👤 ${p}</span><span style="color:#38bdf8;">Open →</span>
+                </button>`).join("");
+
+            document.querySelectorAll(".open-inbox-room").forEach(b => {
+                b.addEventListener("click", () => openRoom(b.dataset.partner));
+            });
+        }
+
+        // 2. Otağa Qoşulmaq (Supabase Realtime Broadcast - 0 MB DB)
+        async function openRoom(partnerName) {
+            if (!me) {
+                alert("Please enter your username via the Start button first!");
+                document.getElementById("navStartBtn").click();
+                return;
+            }
+            currentPartner = partnerName.trim().toLowerCase();
+            if (!currentPartner || currentPartner === me) return alert("Enter a valid partner username (different from yours).");
+
+            currentRoomId = [me, currentPartner].sort().join("__");
+            document.getElementById("activeRoomTitle").innerText = `Chat with ${currentPartner}`;
+            document.getElementById("onlinePresenceText").innerText = "🟢 Connected to Real-Time Room";
+
+            if (realtimeChannel) supabase.removeChannel(realtimeChannel);
+
+            realtimeChannel = supabase.channel(`room:${currentRoomId}`, { config: { broadcast: { self: true } } });
+
+            realtimeChannel
+                .on("broadcast", { event: "chat_msg" }, ({ payload }) => {
+                    appendLocalChat(payload);
+                    renderRoomView();
+                })
+                .on("broadcast", { event: "refresh_proposals" }, () => {
+                    renderRoomView();
+                })
+                .on("broadcast", { event: "start_timer" }, ({ payload }) => {
+                    runSharedTimer(payload.seconds);
+                })
+                .subscribe();
+
+            renderRoomView();
+        }
+
+        function appendLocalChat(msg) {
+            const key = `sultan_chat_${currentRoomId}`;
+            const history = JSON.parse(localStorage.getItem(key) || "[]");
+            history.push(msg);
+            if (history.length > 40) history.shift();
+            localStorage.setItem(key, JSON.stringify(history));
+        }
+
+        async function renderRoomView() {
+            if (!currentRoomId) return;
+            const box = document.getElementById("chatMessagesBox");
+
+            const localMsgs = JSON.parse(localStorage.getItem(`sultan_chat_${currentRoomId}`) || "[]");
+            const { data: proposals } = await supabase.from("lesson_proposals").select("*").eq("room_id", currentRoomId).order("id", { ascending: true });
+
+            let html = "";
+
+            (proposals || []).forEach(p => {
+                const dt = new Date(p.scheduled_at).toLocaleString();
+                const isReceiver = p.receiver_name === me;
+                let actionBtns = "";
+
+                if (p.status === "proposed") {
+                    if (isReceiver) {
+                        actionBtns = `
+                            <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+                                <button onclick="window.propAction(${p.id}, 'accepted')" style="background:#10b981; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">✅ Accept</button>
+                                <button onclick="window.rescheduleProp(${p.id})" style="background:#f59e0b; color:#0f172a; border:none; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">🔄 Offer New Time</button>
+                                <button onclick="window.propAction(${p.id}, 'rejected')" style="background:#ef4444; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">❌ Reject</button>
+                            </div>`;
+                    } else {
+                        actionBtns = `<span style="font-size:11px; color:#f59e0b;">⏳ Waiting for ${p.receiver_name}...</span>`;
+                    }
+                } else if (p.status === "accepted") {
+                    const absentTarget = (p.sender_name === me) ? p.receiver_name : p.sender_name;
+                    actionBtns = `
+                        <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+                            <button onclick="window.cancelProp(${p.id})" style="background:#334155; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">Cancel (4h Check)</button>
+                            <button onclick="window.completeProp(${p.id}, '${p.sender_name}')" style="background:#10b981; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">🎓 Confirm Done (+10 SP)</button>
+                            <button onclick="window.noShowProp(${p.id}, '${absentTarget}')" style="background:#ef4444; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">⚠️ Report No-Show</button>
+                        </div>`;
+                }
+
+                html += `
+                    <div class="proposal-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong style="color:#38bdf8; font-size:13px;">📅 Lesson Proposal: ${p.topic}</strong>
+                            <span style="font-size:10px; padding:3px 8px; border-radius:10px; background:#1e293b; color:#f8fafc;">${p.status.toUpperCase()}</span>
+                        </div>
+                        <p style="font-size:12px; color:#cbd5e1; margin:0;">From <b>${p.sender_name}</b> • Scheduled: <b>${dt}</b></p>
+                        ${actionBtns}
+                    </div>`;
+            });
+
+            localMsgs.forEach(m => {
+                const isMine = m.sender === me;
+                html += `
+                    <div class="msg-bubble ${isMine ? 'msg-me' : 'msg-them'}">
+                        <span class="msg-meta">${m.sender} • ${m.time}</span>
+                        <div>${m.html || m.text}</div>
+                    </div>`;
+            });
+
+            box.innerHTML = html || `<p style="color:#64748b; text-align:center; font-size:13px;">Say hello or press + to propose a lesson!</p>`;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // Global proposal action handlers
+        window.propAction = async (id, status) => {
+            await supabase.rpc("respond_lesson_proposal", { p_id: id, p_new_status: status });
+            if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+            renderRoomView();
+        };
+
+        window.rescheduleProp = async (id) => {
+            const newIso = prompt("Enter new date & time (YYYY-MM-DD HH:MM, e.g. 2026-12-01 18:00):");
+            if (!newIso) return;
+            const parsed = new Date(newIso.replace(" ", "T"));
+            if (isNaN(parsed)) return alert("Invalid date format.");
+            await supabase.rpc("respond_lesson_proposal", { p_id: id, p_new_status: "proposed", p_new_time: parsed.toISOString() });
+            if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+            renderRoomView();
+        };
+
+        window.cancelProp = async (id) => {
+            const { data } = await supabase.rpc("cancel_lesson_proposal", { p_id: id, p_actor: me });
+            if (data === "penalized") alert("⚠️ Late cancellation (< 4h notice)! Penalty applied: -100 Leaderboard pts & -50 SP.");
+            else alert("Cancelled cleanly (> 4h notice). 0 penalty.");
+            if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+            renderRoomView();
+        };
+
+        window.noShowProp = async (id, absentUser) => {
+            if (!confirm(`Report ${absentUser} as a No-Show? This applies a -100 pts / -50 SP penalty.`)) return;
+            await supabase.rpc("report_lesson_noshow", { p_id: id, p_absent_user: absentUser });
+            alert(`Reported! ${absentUser} received a -100 Leaderboard & -50 SP penalty.`);
+            if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+            renderRoomView();
+        };
+
+        window.completeProp = async (id, studentName) => {
+            await supabase.rpc("complete_lesson_proposal", { p_id: id, p_student: studentName });
+            alert("🎉 Session completed! +10 SP awarded!");
+            if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+            renderRoomView();
+        };
+
+        document.getElementById("connectRoomBtn").addEventListener("click", () => {
+            openRoom(document.getElementById("partnerUsernameInput").value);
+        });
+
+        // Send Chat Message (Broadcast)
+        document.getElementById("chatSendForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (!currentRoomId) return alert("Open a chat room first!");
+            const input = document.getElementById("chatMsgInput");
+            const txt = input.value.trim();
+            if (!txt) return;
+
+            realtimeChannel.send({
+                type: "broadcast",
+                event: "chat_msg",
+                payload: { sender: me, text: txt, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
+            });
+            input.value = "";
+        });
+
+        // "+" TOOLS MENU LOGIC (0 Supabase Calls!)
+        const toolsPop = document.getElementById("toolsPopover");
+        document.getElementById("plusToolsBtn").addEventListener("click", () => toolsPop.classList.toggle("hidden"));
+
+        // Tool 1: Propose Lesson
+        const propModal = document.getElementById("proposeLessonModal");
+        document.getElementById("toolProposeBtn").addEventListener("click", () => {
+            if (!currentRoomId) return alert("Open a chat room first!");
+            toolsPop.classList.add("hidden");
+            propModal.classList.remove("hidden");
+        });
+        document.getElementById("closeProposeModal").addEventListener("click", () => propModal.classList.add("hidden"));
+
+        document.getElementById("proposeLessonForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const topic = document.getElementById("propTopic").value.trim();
+            const dtVal = document.getElementById("propDateTime").value;
+            if (!dtVal) return;
+
+            const { error } = await supabase.from("lesson_proposals").insert([{
+                room_id: currentRoomId, sender_name: me, receiver_name: currentPartner,
+                topic, scheduled_at: new Date(dtVal).toISOString(), status: "proposed"
+            }]);
+
+            if (!error) {
+                propModal.classList.add("hidden");
+                e.target.reset();
+                realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                loadInbox();
+            }
+        });
+
+        // Tool 2: Calculator
+        document.getElementById("toolCalcBtn").addEventListener("click", () => {
+            toolsPop.classList.add("hidden");
+            document.getElementById("calcWidget").classList.remove("hidden");
+        });
+
+        // Tool 3: Google Docs
+        const docsModal = document.getElementById("docsShareModal");
+        document.getElementById("toolDocsBtn").addEventListener("click", () => {
+            if (!currentRoomId) return alert("Open a chat room first!");
+            toolsPop.classList.add("hidden");
+            docsModal.classList.remove("hidden");
+        });
+        document.getElementById("closeDocsModal").addEventListener("click", () => docsModal.classList.add("hidden"));
+        document.getElementById("sendDocToChatBtn").addEventListener("click", () => {
+            const url = document.getElementById("shareDocUrl").value.trim();
+            if (!url) return;
+            realtimeChannel.send({
+                type: "broadcast", event: "chat_msg",
+                payload: {
+                    sender: me,
+                    html: `<a href="${url}" target="_blank" style="color:#fcd34d; font-weight:700;"><i class="fas fa-file-alt"></i> Open Shared Google Doc ↗</a>`,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+            });
+            document.getElementById("shareDocUrl").value = "";
+            docsModal.classList.add("hidden");
+        });
+
+        // Tool 4: Synced 25m Timer
+        function runSharedTimer(sec) {
+            if (activeTimerInterval) clearInterval(activeTimerInterval);
+            const badge = document.getElementById("liveTimerBadge");
+            const clock = document.getElementById("timerClock");
+            badge.classList.remove("hidden");
+            let rem = sec;
+            activeTimerInterval = setInterval(() => {
+                rem--;
+                const m = String(Math.floor(rem / 60)).padStart(2, "0");
+                const s = String(rem % 60).padStart(2, "0");
+                clock.innerText = `${m}:${s}`;
+                if (rem <= 0) { clearInterval(activeTimerInterval); clock.innerText = "Done!"; }
+            }, 1000);
+        }
+        document.getElementById("toolTimerBtn").addEventListener("click", () => {
+            if (!currentRoomId) return alert("Open a chat room first!");
+            toolsPop.classList.add("hidden");
+            realtimeChannel.send({ type: "broadcast", event: "start_timer", payload: { seconds: 1500 } });
+        });
+
+        // Tool 5: Jitsi Video Invite
+        document.getElementById("toolJitsiBtn").addEventListener("click", () => {
+            if (!currentRoomId) return alert("Open a chat room first!");
+            toolsPop.classList.add("hidden");
+            const link = `classroom.html?room=SultanChat-${currentRoomId.replace(/[^a-zA-Z0-9]/g, "")}`;
+            realtimeChannel.send({
+                type: "broadcast", event: "chat_msg",
+                payload: {
+                    sender: me,
+                    html: `<a href="${link}" target="_blank" style="background:#10b981; color:#fff; padding:6px 12px; border-radius:10px; display:inline-block; font-weight:700;"><i class="fas fa-video"></i> Join Live Jitsi Video Room ↗</a>`,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+            });
+        });
+
+        loadInbox();
+    </script>
+</body>
+</html>
