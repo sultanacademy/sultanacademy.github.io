@@ -3,192 +3,585 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sultan Academy</title>
+    <title>Messages, Tools & Live Discord | Sultan Academy</title>
     <link rel="icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="personal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .chat-layout { display: grid; grid-template-columns: 270px 1fr; gap: 20px; text-align: left; }
+        .chat-sidebar-box, .chat-main-box { background: #1e293b; border: 1px solid #334155; border-radius: 22px; padding: 18px; }
+        .chat-main-box { display: flex; flex-direction: column; height: 610px; position: relative; }
+        .chat-topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid #334155; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 15px 6px; display: flex; flex-direction: column; gap: 10px; }
+        .msg-bubble { max-width: 78%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.45; word-break: break-word; }
+        .msg-me { align-self: flex-end; background: #0284c7; color: #fff; border-bottom-right-radius: 4px; }
+        .msg-them { align-self: flex-start; background: #0f172a; color: #f8fafc; border: 1px solid #334155; border-bottom-left-radius: 4px; }
+        .msg-meta { font-size: 10px; opacity: 0.7; display: block; margin-bottom: 3px; }
+        .proposal-card { background: rgba(15, 23, 42, 0.95); border: 1px solid #38bdf8; border-radius: 16px; padding: 14px; margin: 4px 0; }
+        .chat-input-bar { display: flex; align-items: center; gap: 8px; padding-top: 12px; border-top: 1px solid #334155; position: relative; }
+        .plus-tool-btn { width: 42px; height: 42px; border-radius: 50%; background: #334155; color: #38bdf8; border: 1px solid #475569; font-size: 18px; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+        .plus-tool-btn:hover { background: #38bdf8; color: #0f172a; transform: rotate(90deg); }
+        .tools-popover { position: absolute; bottom: 62px; left: 0; background: #0f172a; border: 1px solid #38bdf8; border-radius: 18px; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 300px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); z-index: 50; }
+        .tool-item-btn { background: #1e293b; border: 1px solid #334155; color: #f8fafc; padding: 10px; border-radius: 12px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-align: left; }
+        .tool-item-btn:hover { border-color: #38bdf8; background: rgba(56,189,248,0.12); }
+        .request-builder-box { background: #0f172a; border: 1px solid #38bdf8; border-radius: 18px; padding: 20px; margin: auto 0; }
+        .reason-pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+        .reason-pill { background: #1e293b; border: 1px solid #334155; color: #cbd5e1; padding: 7px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .reason-pill.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+        .preview-template { background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38bdf8; padding: 10px 14px; border-radius: 8px; font-size: 13px; color: #e2e8f0; margin-bottom: 12px; font-style: italic; }
+        .calc-widget { position: fixed; bottom: 90px; right: 25px; width: 240px; background: #0f172a; border: 1px solid #38bdf8; border-radius: 20px; padding: 14px; z-index: 99995; box-shadow: 0 20px 45px rgba(0,0,0,0.6); }
+        .calc-screen { width: 100%; padding: 10px; background: #1e293b; color: #38bdf8; border: 1px solid #334155; border-radius: 10px; text-align: right; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+        .calc-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .calc-keys button { padding: 10px; border-radius: 10px; border: none; background: #1e293b; color: #fff; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .calc-op { background: rgba(56,189,248,0.2) !important; color: #38bdf8 !important; }
+        .calc-eq { background: #10b981 !important; color: #fff !important; grid-column: span 2; }
+        .fancy-discord-showcase { background: linear-gradient(135deg, rgba(88, 101, 242, 0.25), rgba(56, 189, 248, 0.12), rgba(15, 23, 42, 0.98)); border: 2px solid #5865F2; border-radius: 26px; padding: 22px; box-shadow: 0 0 40px rgba(88, 101, 242, 0.3); }
+        .discord-live-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .live-dot { width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 10px #10b981; animation: pulseDot 1.5s infinite; }
+        @keyframes pulseDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.3); } }
+        .discord-cta-pill { background: linear-gradient(135deg, #5865F2, #4752C4); color: #fff !important; padding: 10px 20px; border-radius: 30px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; }
+        .widgetbot-frame-wrap { border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.12); background: #1e293b; }
+        @media (max-width: 850px) { .chat-layout { grid-template-columns: 1fr; } .chat-main-box { height: 540px; } }
+    </style>
 </head>
 <body>
 
     <header id="main-header"></header>
 
-    <!-- 1. PROJECTS & HERO -->
-    <section id="projects" class="hero-section">
-        <div class="hero-bg-glow"></div>
-        <div class="hero-container">
-            
-         <div class="parent-org" style="justify-content: center;">
-                <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" class="hero-logo-link" rel="noopener">
-                    <img src="logo.png" alt="Sultan Academy Logo" class="hero-logo-img">
-                </a>
-            </div>
+    <main class="section" style="padding-top: 90px; max-width: 1120px;">
+        <div class="section-header" style="margin-bottom: 25px;">
+            <h2>Study Chat, Requests & Live Discord</h2>
+            <p>Send a structured connection request from any card, propose lesson times, or join the live Discord lounge!</p>
+        </div>
 
-            <button type="button" id="heroStartBtn" class="hero-start-cta">
-                <i class="fas fa-bolt"></i> Start Now — Find Educators, Partners or Teach
-            </button>
+        <div class="mode-tabs-bar">
+            <button type="button" class="mode-tab-big active" id="tabDirectChat"><i class="fas fa-comments"></i> 1-on-1 Chat & Requests</button>
+            <button type="button" class="mode-tab-big" id="tabDiscordLive"><i class="fab fa-discord"></i> Live Discord Community Chat</button>
+        </div>
 
-            <div class="tree-connector">
-                <div class="tree-stem"></div>
-                <div class="tree-horizontal-bar"></div>
-            </div>
-
-            <div class="subsidiaries-grid">
-                <div class="subsidiary-card">
-                    <div class="branch-line"></div>
-                    <div class="sub-img-wrap"><img src="stutor.png" alt="STUTOR" class="sub-img"></div>
-                    <h4>STUTOR</h4>
-                    <span class="sub-tag">Peer Mentorship</span>
-                    <a href="stutor.html" class="sub-project-btn">Open Project <i class="fas fa-arrow-right"></i></a>
+        <div id="panelDirectChat" class="chat-layout">
+            <div class="chat-sidebar-box">
+                <h4 style="color: #f8fafc; font-size: 14px; margin-bottom: 12px;">
+                    <i class="fas fa-inbox" style="color: #10b981;"></i> Your Conversations & Requests
+                </h4>
+                <div id="inboxList" style="display: flex; flex-direction: column; gap: 8px; max-height: 410px; overflow-y: auto;">
+                    <span style="color: #64748b; font-size: 12px;">Loading conversations...</span>
                 </div>
-                <div class="subsidiary-card">
-                    <div class="branch-line"></div>
-                    <div class="sub-img-wrap"><img src="sultan-academy-global.png" alt="Sultan Academy Global" class="sub-img"></div>
-                    <h4>Sultan Academy | Empowering Global Professionals</h4>
-                    <span class="sub-tag">Career & Skills</span>
-                    <a href="global.html" class="sub-project-btn">Open Project <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="subsidiary-card">
-                    <div class="branch-line"></div>
-                    <div class="sub-img-wrap"><img src="sultan-academy-kids.png" alt="Sultan Academy Kids" class="sub-img"></div>
-                    <h4>Sultan Academy Kids</h4>
-                    <span class="sub-tag">Young Learners</span>
-                    <a href="kids.html" class="sub-project-btn">Open Project <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="subsidiary-card">
-                    <div class="branch-line"></div>
-                    <div class="sub-img-wrap"><img src="easy-azerbaijani.png" alt="Easy Azerbaijani" class="sub-img"></div>
-                    <h4>Easy Azerbaijani</h4>
-                    <span class="sub-tag">Language Hub</span>
-                    <a href="easy-azerbaijani.html" class="sub-project-btn">Open Project <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-        <!-- SULTAN ACADEMY MUSIC ŞAXƏSİ (TARAZ & MUSICO) -->
-            <div class="music-tree-connector">
-                <div class="tree-stem" style="height: 35px; background: linear-gradient(180deg, #818cf8, #f59e0b);"></div>
-                <div class="music-hub-pill">
-                    <i class="fas fa-music"></i> Sultan Academy Music
-                </div>
-                <div class="tree-stem" style="height: 25px; background: #f59e0b;"></div>
-                <div class="tree-horizontal-bar" style="width: 52%; background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);"></div>
-            </div>
-
-            <div class="music-subsidiaries-grid">
-                <!-- TARAZ -->
-                <div class="subsidiary-card music-card-border">
-                    <div class="branch-line" style="background: #f59e0b;"></div>
-                    <div class="sub-img-wrap" style="width: 110px; height: 85px;">
-                        <img src="taraz.png" alt="TARAZ" class="sub-img">
+                <div style="border-top: 1px solid #334155; margin-top: 16px; padding-top: 14px;">
+                    <span style="font-size: 11px; color: #64748b; display: block; margin-bottom: 6px;">Or jump directly by username:</span>
+                    <div style="display: flex; gap: 6px;">
+                        <input type="text" id="partnerUsernameInput" maxlength="25" placeholder="Username..." style="flex:1; padding: 7px 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 12px;">
+                        <button type="button" id="connectRoomBtn" class="btn-secondary-sm" style="background: #38bdf8; color: #0f172a; border: none;">Go</button>
                     </div>
-                    <h4>TARAZ</h4>
-                    <span class="sub-tag" style="color: #f59e0b; background: rgba(245, 158, 11, 0.14);">National Instruments • Live Concerts & Talks</span>
-                    <a href="taraz.html" class="sub-project-btn">
-                        Enter TARAZ <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="chat-main-box">
+                <div class="chat-topbar">
+                    <div>
+                        <strong id="activeRoomTitle" style="color: #fff; font-size: 15px;">Inbox & Connection Hub</strong>
+                        <span id="onlinePresenceText" style="display: block; font-size: 11px; color: #94a3b8;">Select a conversation on the left or click a card's Message Request button.</span>
+                    </div>
+                    <span id="liveTimerBadge" class="hidden" style="background: rgba(245,158,11,0.18); color: #fbbf24; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;">
+                        ⏱️ <span id="timerClock">25:00</span>
+                    </span>
+                </div>
+
+                <div class="chat-messages" id="chatMessagesBox">
+                    <div style="text-align: center; margin: auto; color: #64748b; max-width: 400px;">
+                        <i class="fas fa-paper-plane" style="font-size: 34px; color: #38bdf8; margin-bottom: 12px;"></i>
+                        <p style="font-size: 13px;">To prevent spam, first-time messages use a structured Connection Request. Once accepted, real-time & saved chat unlocks!</p>
+                    </div>
+                </div>
+
+                <div id="toolsPopover" class="tools-popover hidden">
+                    <button type="button" class="tool-item-btn" id="toolProposeBtn"><i class="fas fa-calendar-check" style="color:#38bdf8;"></i> Propose Lesson</button>
+                    <button type="button" class="tool-item-btn" id="toolCalcBtn"><i class="fas fa-calculator" style="color:#10b981;"></i> Calculator</button>
+                    <button type="button" class="tool-item-btn" id="toolDocsBtn"><i class="fas fa-file-alt" style="color:#60a5fa;"></i> Google Docs</button>
+                    <button type="button" class="tool-item-btn" id="toolTimerBtn"><i class="fas fa-stopwatch" style="color:#f59e0b;"></i> 25m Timer</button>
+                    <button type="button" class="tool-item-btn" id="toolJitsiBtn" style="grid-column: span 2;"><i class="fas fa-video" style="color:#ec4899;"></i> Send Private Jitsi Room Invite</button>
+                </div>
+
+                <form id="chatSendForm" class="chat-input-bar hidden">
+                    <button type="button" id="plusToolsBtn" class="plus-tool-btn" title="Study Tools">+</button>
+                    <input type="text" id="chatMsgInput" maxlength="250" placeholder="Type a message..." style="flex:1; padding: 11px 14px; border-radius: 20px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 13px; outline: none;">
+                    <button type="submit" style="background: #38bdf8; color: #0f172a; border: none; padding: 10px 18px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer;">
+                        Send <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="panelDiscordLive" class="hidden">
+            <div class="fancy-discord-showcase">
+                <div class="discord-live-header">
+                    <div style="text-align: left;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <span class="live-dot"></span>
+                            <strong style="color: #ffffff; font-size: 18px;">Live Sultan Academy Discord Lounge</strong>
+                        </div>
+                        <p style="color: #cbd5e1; font-size: 13px; margin: 0;">See live community discussions! Join Discord for voice lounges, karaoke & classrooms.</p>
+                    </div>
+                    <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="discord-cta-pill">
+                        <i class="fab fa-discord" style="font-size: 18px;"></i> Join Official Discord Server ↗
                     </a>
                 </div>
-
-                <!-- MUSICO -->
-                <div class="subsidiary-card music-card-border">
-                    <div class="branch-line" style="background: #f59e0b;"></div>
-                    <div class="sub-img-wrap" style="width: 110px; height: 85px;">
-                        <img src="musico.png" alt="MUSICO" class="sub-img">
-                    </div>
-                    <h4>MUSICO</h4>
-                    <span class="sub-tag" style="color: #f59e0b; background: rgba(245, 158, 11, 0.14);">All Instruments • Vocals • Karaoke & Jams</span>
-                    <a href="musico.html" class="sub-project-btn">
-                        Enter MUSICO <i class="fas fa-arrow-right"></i>
-                    </a>
+                <div class="widgetbot-frame-wrap">
+                    <iframe src="https://e.widgetbot.io/channels/1506203530023931977/1537743858849415178"
+                        allow="clipboard-write; fullscreen" height="520" width="100%" style="border: none; display: block;">
+                    </iframe>
                 </div>
             </div>
-
-            
-
         </div>
-    </section>
+    </main>
 
-    <!-- 2. ACADEMY STATS & SKILLS -->
-    <section id="academy-overview" class="section">
-        <div class="academy-stats-bar">
-            <div class="academy-stat-item">
-                <i class="fas fa-chalkboard-teacher" style="color: #38bdf8;"></i>
-                <div><strong id="statEducators">Active</strong><span>Verified Educators</span></div>
+    <div id="proposeLessonModal" class="auth-modal-overlay hidden">
+        <div class="wizard-card" style="max-width: 440px;">
+            <button class="auth-close-btn" id="closeProposeModal" type="button">&times;</button>
+            <h3 style="margin-bottom: 8px;"><i class="fas fa-calendar-check" style="color: #38bdf8;"></i> Propose a Lesson Time</h3>
+            <p style="font-size: 12px; color: #fcd34d; margin-bottom: 16px;">⚠️ 4-Hour Rule: Cancelling less than 4 hours before start or missing the session triggers a -100 Leaderboard & -50 SP penalty.</p>
+            <form id="proposeLessonForm" class="educator-form">
+                <div class="form-group"><label>Topic / Skill (max 35) *</label><input type="text" id="propTopic" maxlength="35" required placeholder="e.g. German B2 Speaking"></div>
+                <div class="form-group"><label>Date & Time *</label><input type="datetime-local" id="propDateTime" required></div>
+                <button type="submit" class="submit-profile-btn">Send Proposal</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="docsShareModal" class="auth-modal-overlay hidden">
+        <div class="wizard-card" style="max-width: 440px;">
+            <button class="auth-close-btn" id="closeDocsModal" type="button">&times;</button>
+            <h3 style="margin-bottom: 8px;"><i class="fas fa-file-alt" style="color: #60a5fa;"></i> Google Docs Tool</h3>
+            <a href="https://docs.new" target="_blank" rel="noopener" class="dash-action-btn" style="margin-bottom: 14px; background: #2563eb;"><i class="fas fa-plus"></i> Create New Google Doc (docs.new) ↗</a>
+            <div style="display: flex; gap: 8px;">
+                <input type="url" id="shareDocUrl" placeholder="Paste Google Docs URL (https://...)..." style="flex:1; padding:10px; border-radius:10px; border:1px solid #334155; background:#1e293b; color:white;">
+                <button type="button" id="sendDocToChatBtn" class="submit-profile-btn" style="margin:0; padding:10px 16px;">Share</button>
             </div>
-            <div class="academy-stat-item">
-                <i class="fas fa-star" style="color: #f59e0b;"></i>
-                <div><strong id="statReviews">5.0 ★</strong><span>Community Reviews</span></div>
-            </div>
-            <div class="academy-stat-item">
-                <i class="fas fa-hand-holding-usd" style="color: #10b981;"></i>
-                <div><strong>0% Fee</strong><span>Zero Middleman Commission</span></div>
-            </div>
-            <div class="academy-stat-item">
-                <i class="fas fa-layer-group" style="color: #818cf8;"></i>
-                <div><strong>All-in-One</strong><span>Languages • Tech • Music</span></div>
-            </div>
         </div>
+    </div>
 
-        <div class="section-header" style="margin-top: 65px;">
-            <h2>Explore Skills & Subjects</h2>
-            <p>One ecosystem for every skill — learn what excites you, find a study partner, or share your expertise.</p>
+    <div id="calcWidget" class="calc-widget hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:12px; font-weight:700; color:#94a3b8;">🧮 Calculator</span>
+            <button type="button" id="closeCalcBtn" style="background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer;">&times;</button>
         </div>
-
-        <div class="disciplines-grid">
-            <a href="tutors.html" class="discipline-card">
-                <div class="disc-icon" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8;"><i class="fas fa-globe-europe"></i></div>
-                <h4>World Languages</h4>
-                <p>German, English, Turkish, Azerbaijani & exam prep (TELC, Goethe, IELTS).</p>
-            </a>
-            <a href="tutors.html" class="discipline-card">
-                <div class="disc-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;"><i class="fas fa-code"></i></div>
-                <h4>Tech & Coding</h4>
-                <p>Web development, AI productivity tools, and practical software skills.</p>
-            </a>
-            <a href="tutors.html" class="discipline-card">
-                <div class="disc-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;"><i class="fas fa-music"></i></div>
-                <h4>Music & Arts</h4>
-                <p>Instruments, vocal coaching, theory, and creative personal expression.</p>
-            </a>
-            <a href="tutors.html?tab=partners" class="discipline-card">
-                <div class="disc-icon" style="background: rgba(129, 140, 248, 0.12); color: #818cf8;"><i class="fas fa-handshake"></i></div>
-                <h4>Project & Study Partners</h4>
-                <p>Find co-founders, language exchange buddies, and collaborative creators.</p>
-            </a>
+        <input type="text" id="calcDisplay" class="calc-screen" readonly value="0">
+        <div class="calc-keys">
+            <button type="button" onclick="calcClear()" class="calc-op">C</button>
+            <button type="button" onclick="calcAppend('/')" class="calc-op">/</button>
+            <button type="button" onclick="calcAppend('*')" class="calc-op">*</button>
+            <button type="button" onclick="calcBack()" class="calc-op">⌫</button>
+            <button type="button" onclick="calcAppend('7')">7</button>
+            <button type="button" onclick="calcAppend('8')">8</button>
+            <button type="button" onclick="calcAppend('9')">9</button>
+            <button type="button" onclick="calcAppend('-')" class="calc-op">-</button>
+            <button type="button" onclick="calcAppend('4')">4</button>
+            <button type="button" onclick="calcAppend('5')">5</button>
+            <button type="button" onclick="calcAppend('6')">6</button>
+            <button type="button" onclick="calcAppend('+')" class="calc-op">+</button>
+            <button type="button" onclick="calcAppend('1')">1</button>
+            <button type="button" onclick="calcAppend('2')">2</button>
+            <button type="button" onclick="calcAppend('3')">3</button>
+            <button type="button" onclick="calcAppend('.')">.</button>
+            <button type="button" onclick="calcAppend('0')">0</button>
+            <button type="button" onclick="calcEval()" class="calc-eq">=</button>
         </div>
-    </section>
-
-
-
-    <!-- PASSİV SPONSOR BANNERİ -->
-        <div style="margin: 45px auto 0 auto; max-width: 750px; text-align: center; padding: 14px; background: #1e293b; border: 1px solid #334155; border-radius: 18px; overflow-x: auto;">
-            <span style="display:block; font-size:10px; color:#64748b; margin-bottom:8px; letter-spacing:1px;">SPONSORED</span>
-<script>
-  atOptions = {
-    'key' : 'fd21a74b6232623bf8701a83089c2a79',
-    'format' : 'iframe',
-    'height' : 250,
-    'width' : 300,
-    'params' : {}
-  };
-</script>
-<script data-cfasync="false" src="https://bicea.org/22/fd21a74b6232623bf8701a83089c2a79"></script>
-        </div>
-
+    </div>
 
     <footer class="footer">
-        <p>© 2026 Sultan Alizada • <a href="privacy.html" style="color: #38bdf8;">Privacy & Legal Notice</a></p>
+        <p>© 2026 Sultan Academy • <a href="privacy.html" style="color: #38bdf8;">Privacy & Legal Notice</a></p>
     </footer>
-
-    <a href="https://wise.com/pay/me/sultana1680" class="metallic-support-btn" target="_blank" rel="noopener">
-        <i class="fas fa-hand-holding-heart"></i> Support Our Work
-    </a>
-
-    <div id="social-proof-container"></div>
 
     <script src="js/navbar.js"></script>
     <script src="js/cookie-consent.js"></script>
     <script type="module" src="js/wizard.js"></script>
-    <script type="module" src="js/social-proof.js"></script>
 
+    <script>
+        let calcVal = "";
+        const disp = document.getElementById("calcDisplay");
+        window.calcAppend = (v) => { calcVal += v; disp.value = calcVal; };
+        window.calcClear = () => { calcVal = ""; disp.value = "0"; };
+        window.calcBack = () => { calcVal = calcVal.slice(0, -1); disp.value = calcVal || "0"; };
+        window.calcEval = () => { try { calcVal = String(Function('"use strict";return (' + calcVal + ')')()); disp.value = calcVal; } catch { disp.value = "Error"; calcVal = ""; } };
+        document.getElementById("closeCalcBtn").addEventListener("click", () => document.getElementById("calcWidget").classList.add("hidden"));
+    </script>
+
+    <script type="module">
+        import { supabase, escapeHTML, safeUrl, cleanHandle } from './js/config.js';
+
+        const tabDirect = document.getElementById("tabDirectChat");
+        const tabDiscord = document.getElementById("tabDiscordLive");
+        const panDirect = document.getElementById("panelDirectChat");
+        const panDiscord = document.getElementById("panelDiscordLive");
+
+        tabDirect.addEventListener("click", () => { tabDirect.classList.add("active"); tabDiscord.classList.remove("active"); panDirect.classList.remove("hidden"); panDiscord.classList.add("hidden"); });
+        tabDiscord.addEventListener("click", () => { tabDiscord.classList.add("active"); tabDirect.classList.remove("active"); panDiscord.classList.remove("hidden"); panDirect.classList.add("hidden"); });
+
+        let me = cleanHandle(localStorage.getItem("sultan_user"));
+        let myToken = localStorage.getItem("sultan_token");
+        let currentPartner = null;
+        let currentRoomId = null;
+        let realtimeChannel = null;
+        let activeTimerInterval = null;
+        let urlPresetReason = new URLSearchParams(window.location.search).get("ctx") || "Book a Lesson";
+
+        function renderFormattedMsg(rawText) {
+            if (rawText.startsWith("[JITSI]:")) {
+                const link = safeUrl(rawText.slice(8), "#");
+                return `<a href="${escapeHTML(link)}" target="_blank" rel="noopener" style="background:#10b981; color:#fff; padding:6px 12px; border-radius:10px; display:inline-block; font-weight:700;"><i class="fas fa-video"></i> Join Private Jitsi Video Room ↗</a>`;
+            }
+            if (rawText.startsWith("[DOC]:")) {
+                const link = safeUrl(rawText.slice(6), "#");
+                return `<a href="${escapeHTML(link)}" target="_blank" rel="noopener" style="color:#fcd34d; font-weight:700;"><i class="fas fa-file-alt"></i> Open Shared Google Doc ↗</a>`;
+            }
+            return escapeHTML(rawText);
+        }
+
+        async function loadInbox() {
+            const box = document.getElementById("inboxList");
+            if (!me || !myToken) {
+                box.innerHTML = `<button type="button" id="inboxSignInBtn" class="btn-secondary-sm" style="width:100%;">Sign In to View Messages</button>`;
+                const btn = document.getElementById("inboxSignInBtn");
+                if (btn) btn.addEventListener("click", () => document.getElementById("navStartBtn")?.click());
+                return;
+            }
+            const [{ data: reqs }, { data: props }] = await Promise.all([
+                supabase.from("chat_requests").select("*").or(`sender_name.eq.${me},receiver_name.eq.${me}`).order("id", { ascending: false }),
+                supabase.from("lesson_proposals").select("sender_name, receiver_name").or(`sender_name.eq.${me},receiver_name.eq.${me}`)
+            ]);
+
+            const partnersMap = new Map();
+            (reqs || []).forEach(r => {
+                const other = r.sender_name === me ? r.receiver_name : r.sender_name;
+                if (!partnersMap.has(other)) partnersMap.set(other, { status: r.status, isReceiver: r.receiver_name === me });
+            });
+            (props || []).forEach(p => {
+                const other = p.sender_name === me ? p.receiver_name : p.sender_name;
+                if (!partnersMap.has(other)) partnersMap.set(other, { status: "accepted", isReceiver: false });
+            });
+
+            if (partnersMap.size === 0) {
+                box.innerHTML = `<span style="color:#64748b; font-size:12px;">No requests yet. Click "Message Request" on any card!</span>`;
+                return;
+            }
+
+            let html = "";
+            partnersMap.forEach((info, partner) => {
+                let badge = "";
+                if (info.status === "pending" && info.isReceiver) badge = `<span style="background:#f59e0b; color:#0f172a; font-size:9px; padding:2px 6px; border-radius:8px; font-weight:700;">NEW</span>`;
+                else if (info.status === "pending") badge = `<span style="color:#94a3b8; font-size:10px;">⏳ Pending</span>`;
+                else if (info.status === "accepted") badge = `<span style="color:#10b981; font-size:11px;">💬 Chat</span>`;
+
+                html += `
+                    <button type="button" class="btn-secondary-sm open-inbox-room" data-partner="${escapeHTML(partner)}" style="width:100%; text-align:left; display:flex; justify-content:space-between; align-items:center;">
+                        <span>👤 ${escapeHTML(partner)}</span>${badge}
+                    </button>`;
+            });
+            box.innerHTML = html;
+
+            box.querySelectorAll(".open-inbox-room").forEach(b => {
+                b.addEventListener("click", () => openRoom(b.dataset.partner));
+            });
+        }
+
+        async function openRoom(partnerName) {
+            me = cleanHandle(localStorage.getItem("sultan_user"));
+            myToken = localStorage.getItem("sultan_token");
+            if (!me || !myToken) {
+                alert("Please sign in first (Quick Start in menu) to chat safely!");
+                document.getElementById("navStartBtn")?.click();
+                return;
+            }
+            currentPartner = cleanHandle(partnerName);
+            if (!currentPartner || currentPartner === me) return alert("Invalid partner username.");
+
+            currentRoomId = [me, currentPartner].sort().join("__");
+            document.getElementById("activeRoomTitle").innerText = `Connecting with ${currentPartner}`;
+            document.getElementById("onlinePresenceText").innerText = "Checking connection status...";
+
+            if (realtimeChannel) supabase.removeChannel(realtimeChannel);
+            realtimeChannel = supabase.channel(`room:${currentRoomId}`, { config: { broadcast: { self: false } } });
+            realtimeChannel
+                .on("broadcast", { event: "chat_msg" }, () => { renderRoomView(); })
+                .on("broadcast", { event: "refresh_proposals" }, () => { renderRoomView(); loadInbox(); })
+                .on("broadcast", { event: "start_timer" }, ({ payload }) => { runSharedTimer(payload.seconds); })
+                .subscribe();
+
+            renderRoomView();
+        }
+
+        async function renderRoomView() {
+            if (!currentRoomId) return;
+            const box = document.getElementById("chatMessagesBox");
+            const inputBar = document.getElementById("chatSendForm");
+
+            const { data: req } = await supabase.from("chat_requests").select("*").eq("room_id", currentRoomId).single();
+
+            if (!req) {
+                inputBar.classList.add("hidden");
+                document.getElementById("onlinePresenceText").innerText = "🔒 First-Message Request Builder";
+
+                const reasons = ["Book a Lesson", "Language & Cultural Exchange", "Skill Swap (Barter)", "Project / Study Partner", "Live Workshop Info"];
+                let selectedReason = reasons.includes(urlPresetReason) ? urlPresetReason : reasons[0];
+
+                box.innerHTML = `
+                    <div class="request-builder-box">
+                        <h4 style="color:#38bdf8; margin-bottom:4px;">Send a Connection Request to ${escapeHTML(currentPartner)}</h4>
+                        <p style="font-size:12px; color:#94a3b8;">Select why you are reaching out. Chat unlocks once they accept.</p>
+                        <div class="reason-pills" id="reasonPillsBox">
+                            ${reasons.map(r => `<button type="button" class="reason-pill ${r === selectedReason ? 'active' : ''}" data-reason="${escapeHTML(r)}">${escapeHTML(r)}</button>`).join("")}
+                        </div>
+                        <div class="preview-template" id="templatePreview">
+                            "Hi ${escapeHTML(currentPartner)}! I'd like to connect with you for <b>${escapeHTML(selectedReason)}</b>."
+                        </div>
+                        <input type="text" id="reqOptionalNote" maxlength="120" placeholder="Optional short note (max 120 chars)..." style="width:100%; padding:10px; border-radius:10px; border:1px solid #334155; background:#1e293b; color:white; font-size:12px; margin-bottom:12px;">
+                        <button type="button" id="sendConnectionReqBtn" class="submit-profile-btn" style="width:100%; margin:0;">
+                            <i class="fas fa-paper-plane"></i> Send Connection Request
+                        </button>
+                    </div>`;
+
+                box.querySelectorAll(".reason-pill").forEach(pill => {
+                    pill.addEventListener("click", () => {
+                        box.querySelectorAll(".reason-pill").forEach(p => p.classList.remove("active"));
+                        pill.classList.add("active");
+                        selectedReason = pill.dataset.reason;
+                        document.getElementById("templatePreview").innerHTML = `"Hi ${escapeHTML(currentPartner)}! I'd like to connect with you for <b>${escapeHTML(selectedReason)}</b>."`;
+                    });
+                });
+
+                document.getElementById("sendConnectionReqBtn").addEventListener("click", async () => {
+                    const note = document.getElementById("reqOptionalNote").value.trim();
+                    const fullMsg = `Hi ${currentPartner}! I'd like to connect with you for ${selectedReason}.${note ? ' Note: ' + note : ''}`;
+                    const { error } = await supabase.from("chat_requests").insert([{
+                        room_id: currentRoomId, sender_name: me, receiver_name: currentPartner,
+                        reason_tag: selectedReason, opening_message: fullMsg, status: "pending"
+                    }]);
+                    if (!error) {
+                        if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                        loadInbox();
+                        renderRoomView();
+                    } else alert("Could not send request. Try again.");
+                });
+                return;
+            }
+
+            if (req.status === "pending") {
+                inputBar.classList.add("hidden");
+                const isReceiver = req.receiver_name === me;
+                document.getElementById("onlinePresenceText").innerText = isReceiver ? "📩 Incoming Connection Request" : "⏳ Waiting for Approval";
+
+                box.innerHTML = `
+                    <div class="request-builder-box" style="border-color: #f59e0b;">
+                        <span style="font-size:11px; color:#f59e0b; font-weight:700;">REASON: ${escapeHTML(req.reason_tag.toUpperCase())}</span>
+                        <p style="font-size:14px; color:#ffffff; margin:10px 0;">"${escapeHTML(req.opening_message)}"</p>
+                        ${isReceiver ? `
+                            <div style="display:flex; gap:10px; margin-top:14px;">
+                                <button type="button" class="req-ans-btn" data-id="${req.id}" data-status="accepted" style="flex:1; background:#10b981; color:#fff; border:none; padding:10px; border-radius:10px; font-weight:700; cursor:pointer;">✅ Accept & Start Chatting</button>
+                                <button type="button" class="req-ans-btn" data-id="${req.id}" data-status="declined" style="background:#ef4444; color:#fff; border:none; padding:10px 16px; border-radius:10px; font-weight:700; cursor:pointer;">❌ Decline</button>
+                            </div>`
+                        : `<p style="font-size:12px; color:#94a3b8;">⏳ Request sent! Chat unlocks as soon as <b>${escapeHTML(currentPartner)}</b> accepts.</p>`}
+                    </div>`;
+
+                box.querySelectorAll(".req-ans-btn").forEach(btn => {
+                    btn.addEventListener("click", async () => {
+                        await supabase.rpc("respond_chat_request", { p_id: parseInt(btn.dataset.id, 10), p_new_status: btn.dataset.status });
+                        if (realtimeChannel) realtimeChannel.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                        loadInbox();
+                        renderRoomView();
+                    });
+                });
+                return;
+            }
+
+            if (req.status === "declined") {
+                inputBar.classList.add("hidden");
+                document.getElementById("onlinePresenceText").innerText = "🚫 Connection Declined";
+                box.innerHTML = `<p style="color:#ef4444; text-align:center; margin:auto; font-size:13px;">This connection request was declined.</p>`;
+                return;
+            }
+
+            // ACCEPTED -> CANLI & OFFLINE CHAT AÇILIR!
+            inputBar.classList.remove("hidden");
+            document.getElementById("onlinePresenceText").innerText = "🟢 Connected • Messages Saved Securely";
+
+            const [{ data: proposals }, { data: savedMsgs }] = await Promise.all([
+                supabase.from("lesson_proposals").select("*").eq("room_id", currentRoomId).order("id", { ascending: true }),
+                supabase.from("chat_messages").select("*").eq("room_id", currentRoomId).order("id", { ascending: true }).limit(60)
+            ]);
+
+            let html = `
+                <div class="msg-bubble msg-them" style="border-color:#10b981; align-self:center; max-width:95%; text-align:center;">
+                    <span class="msg-meta" style="color:#10b981;">✅ Connection Accepted (${escapeHTML(req.reason_tag)})</span>
+                    <div>"${escapeHTML(req.opening_message)}"</div>
+                </div>`;
+
+            (proposals || []).forEach(p => {
+                const dt = new Date(p.scheduled_at).toLocaleString();
+                const isReceiver = p.receiver_name === me;
+                let actionBtns = "";
+
+                if (p.status === "proposed") {
+                    actionBtns = isReceiver ? `
+                        <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+                            <button class="prop-act-btn" data-id="${p.id}" data-status="accepted" style="background:#10b981; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">✅ Accept</button>
+                            <button class="prop-resched-btn" data-id="${p.id}" style="background:#f59e0b; color:#0f172a; border:none; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">🔄 Offer New Time</button>
+                            <button class="prop-act-btn" data-id="${p.id}" data-status="rejected" style="background:#ef4444; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">❌ Reject</button>
+                        </div>` : `<span style="font-size:11px; color:#f59e0b;">⏳ Waiting for ${escapeHTML(p.receiver_name)}...</span>`;
+                } else if (p.status === "accepted") {
+                    const absentTarget = (p.sender_name === me) ? p.receiver_name : p.sender_name;
+                    actionBtns = `
+                        <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+                            <button class="prop-cancel-btn" data-id="${p.id}" style="background:#334155; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">Cancel (4h Check)</button>
+                            <button class="prop-done-btn" data-id="${p.id}" data-student="${escapeHTML(p.sender_name)}" style="background:#10b981; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">🎓 Confirm Done (+10 SP)</button>
+                            <button class="prop-noshow-btn" data-id="${p.id}" data-absent="${escapeHTML(absentTarget)}" style="background:#ef4444; color:#fff; border:none; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">⚠️ Report No-Show</button>
+                        </div>`;
+                }
+
+                html += `
+                    <div class="proposal-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong style="color:#38bdf8; font-size:13px;">📅 Lesson Proposal: ${escapeHTML(p.topic)}</strong>
+                            <span style="font-size:10px; padding:3px 8px; border-radius:10px; background:#1e293b; color:#f8fafc;">${escapeHTML(p.status.toUpperCase())}</span>
+                        </div>
+                        <p style="font-size:12px; color:#cbd5e1; margin:0;">From <b>${escapeHTML(p.sender_name)}</b> • Scheduled: <b>${escapeHTML(dt)}</b></p>
+                        ${actionBtns}
+                    </div>`;
+            });
+
+            (savedMsgs || []).forEach(m => {
+                const isMine = m.sender_name === me;
+                const timeStr = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                html += `
+                    <div class="msg-bubble ${isMine ? 'msg-me' : 'msg-them'}">
+                        <span class="msg-meta">${escapeHTML(m.sender_name)} • ${escapeHTML(timeStr)}</span>
+                        <div>${renderFormattedMsg(m.message)}</div>
+                    </div>`;
+            });
+
+            box.innerHTML = html;
+            box.scrollTop = box.scrollHeight;
+
+            // Təhlükəsiz event dinləyiciləri
+            box.querySelectorAll(".prop-act-btn").forEach(b => b.addEventListener("click", async () => {
+                await supabase.rpc("respond_lesson_proposal", { p_id: parseInt(b.dataset.id, 10), p_new_status: b.dataset.status });
+                realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                renderRoomView();
+            }));
+            box.querySelectorAll(".prop-resched-btn").forEach(b => b.addEventListener("click", async () => {
+                const newIso = prompt("Enter new date & time (YYYY-MM-DD HH:MM, e.g. 2026-12-01 18:00):");
+                if (!newIso) return;
+                const parsed = new Date(newIso.replace(" ", "T"));
+                if (isNaN(parsed)) return alert("Invalid date format.");
+                await supabase.rpc("respond_lesson_proposal", { p_id: parseInt(b.dataset.id, 10), p_new_status: "proposed", p_new_time: parsed.toISOString() });
+                realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                renderRoomView();
+            }));
+            box.querySelectorAll(".prop-cancel-btn").forEach(b => b.addEventListener("click", async () => {
+                const { data } = await supabase.rpc("cancel_lesson_proposal", { p_id: parseInt(b.dataset.id, 10), p_actor: me });
+                if (data === "penalized") alert("⚠️ Late cancellation (< 4h notice)! Penalty applied: -100 Leaderboard pts & -50 SP.");
+                else alert("Cancelled cleanly (> 4h notice). 0 penalty.");
+                realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                renderRoomView();
+            }));
+            box.querySelectorAll(".prop-noshow-btn").forEach(b => b.addEventListener("click", async () => {
+                if (!confirm(`Report ${b.dataset.absent} as No-Show? Applies -100 pts / -50 SP penalty.`)) return;
+                await supabase.rpc("report_lesson_noshow", { p_id: parseInt(b.dataset.id, 10), p_absent_user: b.dataset.absent });
+                alert(`Reported! ${b.dataset.absent} received -100 Leaderboard pts & -50 SP.`);
+                realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                renderRoomView();
+            }));
+            box.querySelectorAll(".prop-done-btn").forEach(b => b.addEventListener("click", async () => {
+                await supabase.rpc("complete_lesson_proposal", { p_id: parseInt(b.dataset.id, 10), p_student: b.dataset.student });
+                alert("🎉 Session completed! +10 SP awarded!");
+                realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} });
+                renderRoomView();
+            }));
+        }
+
+        async function sendSavedMessage(rawText) {
+            if (!currentRoomId || !me || !myToken) return;
+            const { data } = await supabase.rpc("post_chat_message", {
+                p_username: me, p_token: myToken, p_room_id: currentRoomId, p_message: rawText, p_is_html: false
+            });
+            if (data && data.ok) {
+                realtimeChannel?.send({ type: "broadcast", event: "chat_msg", payload: {} });
+                renderRoomView();
+            } else {
+                alert(data?.error || "Could not send message.");
+            }
+        }
+
+        document.getElementById("connectRoomBtn").addEventListener("click", () => openRoom(document.getElementById("partnerUsernameInput").value));
+
+        document.getElementById("chatSendForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const input = document.getElementById("chatMsgInput");
+            const txt = input.value.trim();
+            if (!txt) return;
+            input.value = "";
+            await sendSavedMessage(txt);
+        });
+
+        const toolsPop = document.getElementById("toolsPopover");
+        document.getElementById("plusToolsBtn").addEventListener("click", () => toolsPop.classList.toggle("hidden"));
+
+        const propModal = document.getElementById("proposeLessonModal");
+        document.getElementById("toolProposeBtn").addEventListener("click", () => { toolsPop.classList.add("hidden"); propModal.classList.remove("hidden"); });
+        document.getElementById("closeProposeModal").addEventListener("click", () => propModal.classList.add("hidden"));
+
+        document.getElementById("proposeLessonForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const dtVal = document.getElementById("propDateTime").value;
+            if (!dtVal) return;
+            const { error } = await supabase.from("lesson_proposals").insert([{
+                room_id: currentRoomId, sender_name: me, receiver_name: currentPartner,
+                topic: document.getElementById("propTopic").value.trim(),
+                scheduled_at: new Date(dtVal).toISOString(), status: "proposed"
+            }]);
+            if (!error) { propModal.classList.add("hidden"); e.target.reset(); realtimeChannel?.send({ type: "broadcast", event: "refresh_proposals", payload: {} }); loadInbox(); renderRoomView(); }
+        });
+
+        document.getElementById("toolCalcBtn").addEventListener("click", () => { toolsPop.classList.add("hidden"); document.getElementById("calcWidget").classList.remove("hidden"); });
+
+        const docsModal = document.getElementById("docsShareModal");
+        document.getElementById("toolDocsBtn").addEventListener("click", () => { toolsPop.classList.add("hidden"); docsModal.classList.remove("hidden"); });
+        document.getElementById("closeDocsModal").addEventListener("click", () => docsModal.classList.add("hidden"));
+        document.getElementById("sendDocToChatBtn").addEventListener("click", async () => {
+            const url = safeUrl(document.getElementById("shareDocUrl").value.trim(), "");
+            if (!url) return alert("Please enter a valid https:// Google Docs URL.");
+            document.getElementById("shareDocUrl").value = "";
+            docsModal.classList.add("hidden");
+            await sendSavedMessage(`[DOC]:${url}`);
+        });
+
+        function runSharedTimer(sec) {
+            if (activeTimerInterval) clearInterval(activeTimerInterval);
+            document.getElementById("liveTimerBadge").classList.remove("hidden");
+            const clock = document.getElementById("timerClock");
+            let rem = sec;
+            activeTimerInterval = setInterval(() => {
+                rem--;
+                clock.innerText = `${String(Math.floor(rem / 60)).padStart(2, "0")}:${String(rem % 60).padStart(2, "0")}`;
+                if (rem <= 0) { clearInterval(activeTimerInterval); clock.innerText = "Done!"; }
+            }, 1000);
+        }
+        document.getElementById("toolTimerBtn").addEventListener("click", () => {
+            toolsPop.classList.add("hidden");
+            runSharedTimer(1500);
+            realtimeChannel?.send({ type: "broadcast", event: "start_timer", payload: { seconds: 1500 } });
+        });
+
+        document.getElementById("toolJitsiBtn").addEventListener("click", async () => {
+            toolsPop.classList.add("hidden");
+            const randToken = Math.random().toString(36).substring(2, 9) + Date.now().toString(36).slice(-4);
+            const link = `classroom.html?room=SultanPrivate-${randToken}`;
+            await sendSavedMessage(`[JITSI]:${link}`);
+        });
+
+        loadInbox();
+        const urlTo = new URLSearchParams(window.location.search).get("to");
+        if (urlTo) setTimeout(() => openRoom(urlTo), 250);
+    </script>
 </body>
 </html>
