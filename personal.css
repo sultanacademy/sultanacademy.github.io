@@ -35,28 +35,6 @@ body.modal-open { overflow: hidden !important; }
 /* ==========================================
    2. HOVER-EXPAND LEFT SIDEBAR & TOP-RIGHT BAR
    ========================================== */
-@media (min-width: 992px) {
-    body { padding-left: 68px; } /* Normal halda yalnız 68px ikon zolağı tutur! */
-    #social-proof-container, #cookie-banner { left: 88px !important; }
-
-    /* PC-də normal halda yalnız ikonlar görünür */
-    .left-sidebar { width: 68px; }
-    .left-sidebar:hover { width: 260px; box-shadow: 10px 0 40px rgba(0, 0, 0, 0.55); }
-
-    .left-sidebar:not(:hover) .brand-text,
-    .left-sidebar:not(:hover) .nav-label-txt,
-    .left-sidebar:not(:hover) .drop-arrow,
-    .left-sidebar:not(:hover) .drag-handle,
-    .left-sidebar:not(:hover) .sidebar-group-title,
-    .left-sidebar:not(:hover) .sidebar-submenu {
-        display: none !important;
-    }
-
-    .left-sidebar:not(:hover) .sidebar-brand a { justify-content: center; width: 100%; }
-    .left-sidebar:not(:hover) .sidebar-link { justify-content: center; padding: 12px 0; }
-    .left-sidebar:not(:hover) .sidebar-link i { font-size: 16px; width: auto; }
-}
-
 .left-sidebar {
     position: fixed;
     top: 0;
@@ -96,10 +74,15 @@ body.modal-open { overflow: hidden !important; }
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 14px 10px;
+    padding: 14px 8px;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
 }
+.sidebar-scroll::-webkit-scrollbar { width: 4px; }
+.sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.2); border-radius: 10px; }
 
 .sidebar-group-title { font-size: 10px; font-weight: 700; color: #64748b; letter-spacing: 1px; padding: 4px 10px 8px 10px; white-space: nowrap; }
 .sidebar-list { list-style: none; min-height: 24px; display: flex; flex-direction: column; gap: 4px; }
@@ -135,9 +118,34 @@ body.modal-open { overflow: hidden !important; }
 .sidebar-submenu { padding-left: 30px; display: flex; flex-direction: column; gap: 3px; margin: 4px 0 6px 0; }
 .sidebar-sublink { font-size: 12px; color: #94a3b8; padding: 6px 10px; border-radius: 8px; display: block; white-space: nowrap; }
 .sidebar-sublink:hover, .sidebar-sublink.active { background: rgba(255,255,255,0.06); color: #38bdf8; }
-.sidebar-divider { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 14px 8px; }
+.sidebar-divider { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 12px 8px; }
 
 .mobile-sidebar-btn, .mobile-close-sb { display: none; }
+
+/* PC REJİMİ: YALNIZ 64px NAZİK İKON ZOLAĞI + HOVER-DƏ AÇILIR */
+@media (min-width: 992px) {
+    body { padding-left: 64px; }
+    #social-proof-container, #cookie-banner { left: 84px !important; }
+
+    .left-sidebar { width: 64px; }
+    .left-sidebar:hover { width: 260px; box-shadow: 10px 0 40px rgba(0, 0, 0, 0.55); }
+
+    .left-sidebar:not(:hover) .brand-text,
+    .left-sidebar:not(:hover) .nav-label-txt,
+    .left-sidebar:not(:hover) .drop-arrow,
+    .left-sidebar:not(:hover) .drag-handle,
+    .left-sidebar:not(:hover) .sidebar-group-title,
+    .left-sidebar:not(:hover) .sidebar-submenu {
+        display: none !important;
+    }
+
+    .left-sidebar:not(:hover) .sidebar-scroll::-webkit-scrollbar { width: 0px; }
+    .left-sidebar:not(:hover) .sidebar-scroll { scrollbar-width: none; }
+    .left-sidebar:not(:hover) .sidebar-brand { padding: 18px 0; justify-content: center; }
+    .left-sidebar:not(:hover) .sidebar-brand a { justify-content: center; width: 100%; }
+    .left-sidebar:not(:hover) .sidebar-link { justify-content: center; padding: 11px 0; }
+    .left-sidebar:not(:hover) .sidebar-link i { font-size: 16px; width: auto; }
+}
 
 /* TOP-RIGHT BAR */
 .top-utility-bar {
