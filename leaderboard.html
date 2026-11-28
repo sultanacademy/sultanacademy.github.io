@@ -30,8 +30,8 @@
         }
         .rank-list { display: flex; flex-direction: column; gap: 12px; }
         .rank-row {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: #1e293b;
+            border: 1px solid #334155;
             border-radius: 18px;
             padding: 16px 22px;
             display: flex;
@@ -219,7 +219,7 @@
                             <div class="rank-num ${i < 3 ? 'rank-' + (i + 1) : ''}">${i + 1}</div>
                             <img src="${t.avatar_url || 'your-photo.jpg'}" onerror="this.src='your-photo.jpg'" style="width:45px; height:45px; border-radius:50%; object-fit:cover;">
                             <div>
-                                <strong style="color:#0f172a; font-size:15px;">${t.name}</strong>
+                                <strong style="color:#ffffff; font-size:15px;">${t.name}</strong>
                                 <span style="display:block; font-size:12px; color:#64748b;">${t.category} • ${t.subject} (${t.revCount} reviews, ${t.clubCount} clubs)</span>
                             </div>
                         </div>
@@ -261,7 +261,7 @@
                         <div class="rank-left">
                             <div class="rank-num ${i < 3 ? 'rank-' + (i + 1) : ''}">${i + 1}</div>
                             <div>
-                                <strong style="color:#0f172a; font-size:15px;">${s.username}</strong>
+                                <strong style="color:#ffffff; font-size:15px;">${s.username}</strong>
                                 <span style="display:block; font-size:12px; color:#64748b;">${s.sp} SP • ${s.revWritten} reviews shared</span>
                             </div>
                         </div>
