@@ -80,9 +80,12 @@
                         <span style="color:#f59e0b;">Learning:</span> ${s.want_skill}
                     </h4>
                     <p class="tutor-bio">${s.description}</p>
-                    <div class="tutor-footer">
+                       <div class="tutor-footer">
+                        <a href="chat.html?to=${encodeURIComponent(s.author_name)}&ctx=${encodeURIComponent('Language & Cultural Exchange')}" class="cal-booking-btn" style="background:#10b981; color:#fff !important; width:100%;">
+                            <i class="fas fa-comment-dots"></i> Send Message Request
+                        </a>
                         <button class="unlock-tutor-btn ex-unlock-btn" data-target="${s.discord_link}">
-                            <i class="fab fa-discord"></i> Connect on Discord (Watch AD)
+                            <i class="fab fa-discord"></i> Discord Link (Watch AD)
                         </button>
                     </div>
                 </div>`).join("");
