@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academy Digital Reader | Sultan Academy</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; user-select: none; -webkit-user-select: none; }
+        body { background: #0a0f1d; color: #f8fafc; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .reader-topbar {
+            background: #0f172a; border-bottom: 1px solid #1e293b; padding: 10px 20px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; z-index: 10;
+        }
+        .reader-left { display: flex; align-items: center; gap: 14px; }
+        .reader-left a { color: #38bdf8; text-decoration: none; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+        .reader-title { font-size: 14px; font-weight: 700; color: #ffffff; }
+        .patreon-upsell {
+            background: linear-gradient(135deg, #FF424D, #e0353f); color: #fff; text-decoration: none;
+            padding: 7px 14px; border-radius: 10px; font-size: 12px; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .reader-frame-container { flex: 1; position: relative; width: 100%; height: 100%; background: #1e293b; }
+        iframe { width: 100%; height: 100%; border: none; display: block; }
+        /* Google Drive-ın sağ yuxarıdakı "Open in new tab" düyməsini örtən qoruyucu möhür */
+        .drive-corner-shield {
+            position: absolute; top: 8px; right: 12px; width: 58px; height: 50px;
+            background: #0f172a; border: 1px solid #38bdf8; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 20; cursor: default; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        .drive-corner-shield img { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; }
+        .locked-screen {
+            margin: auto; text-align: center; max-width: 440px; padding: 35px;
+            background: #1e293b; border: 1px solid #334155; border-radius: 24px;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div class="reader-topbar">
+        <div class="reader-left">
+            <a href="shop.html"><i class="fas fa-arrow-left"></i> Back to Shop</a>
+            <span class="reader-title" id="bookTitleDisplay">Academy Digital Reader</span>
+        </div>
+        <div id="readerActions">
+            <a id="patreonUpsellBtn" href="https://www.patreon.com/SultanAlizada" target="_blank" rel="noopener" class="patreon-upsell">
+                <i class="fab fa-patreon"></i> Want Downloadable PDF + Audio? Get on Patreon
+            </a>
+        </div>
+    </div>
+
+    <div class="reader-frame-container" id="readerContainer">
+        <!-- Google Drive sağ künc qoruyucusu -->
+        <div class="drive-corner-shield" title="Protected by Sultan Academy">
+            <img src="logo.png" alt="Protected">
+        </div>
+        <iframe id="docIframe" src="about:blank" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+
+    <script>
+        // --- KİTABLARIN BAZASI (Buraya Google Drive PDF linklərini qoy!) ---
+        const BOOKS_DB = {
+            ru: {
+                title: "Russian for Travelers (Read-Only Presentation)",
+                driveUrl: "YOUR_RU_DRIVE_PDF_LINK_HERE",
+                patreonUrl: "https://www.patreon.com/SultanAlizada"
+            },
+            appli: {
+                title: "Application & Interview Guide (Read-Only)",
+                driveUrl: "YOUR_APPLI_DRIVE_PDF_LINK_HERE",
+                patreonUrl: "https://www.patreon.com/SultanAlizada"
+            },
+            c1telc: {
+                title: "TELC C1 Preparation Material (Read-Only)",
+                driveUrl: "YOUR_C1TELC_DRIVE_PDF_LINK_HERE",
+                patreonUrl: "https://www.patreon.com/SultanAlizada"
+            }
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        const bookKey = params.get("book");
+        const book = BOOKS_DB[bookKey];
+        const container = document.getElementById("readerContainer");
+
+        // Anti-Share: İstifadəçi Shop-da 10 saniyəlik reklamı izləyib gəlibmi?
+        const isUnlocked = sessionStorage.getItem("sultan_unlocked_" + bookKey) === "true";
+
+        if (!book || !book.driveUrl || book.driveUrl.includes("YOUR_")) {
+            container.innerHTML = `
+                <div class="locked-screen" style="margin-top: 80px;">
+                    <i class="fas fa-book-open" style="font-size: 40px; color: #38bdf8; margin-bottom: 14px;"></i>
+                    <h3 style="margin-bottom: 8px;">Material Coming Soon</h3>
+                    <p style="font-size: 13px; color: #94a3b8; margin-bottom: 20px;">This study guide is currently being finalized by Sultan Academy.</p>
+                    <a href="shop.html" class="patreon-upsell" style="background: #38bdf8; color: #0f172a;">Return to Shop</a>
+                </div>`;
+        } else if (!isUnlocked) {
+            // Başqası linki paylaşsa belə, o adam reklam izləmədən aça bilməyəcək!
+            container.innerHTML = `
+                <div class="locked-screen" style="margin-top: 80px;">
+                    <i class="fas fa-lock" style="font-size: 42px; color: #f59e0b; margin-bottom: 14px;"></i>
+                    <h3 style="margin-bottom: 8px;">Unlock Access Required</h3>
+                    <p style="font-size: 13px; color: #94a3b8; margin-bottom: 20px;">To read <b>${book.title}</b> for free, please unlock it via a quick 10s sponsor view in the Shop.</p>
+                    <a href="shop.html" class="patreon-upsell" style="background: #10b981;">Go to Shop & Unlock Free</a>
+                </div>`;
+        } else {
+            document.getElementById("bookTitleDisplay").innerText = book.title;
+            if (book.patreonUrl) document.getElementById("patreonUpsellBtn").href = book.patreonUrl;
+
+            // Linki avtomatik /preview formatına çeviririk ki, heç vaxt /edit və ya yükləmə menyusu çıxmasın
+            let previewUrl = book.driveUrl.replace(/\/view.*$/, "/preview").replace(/\/edit.*$/, "/preview");
+            if (!previewUrl.includes("/preview") && previewUrl.includes("drive.google.com/file/d/")) {
+                previewUrl = previewUrl.split("?")[0].replace(/\/$/, "") + "/preview";
+            }
+
+            document.getElementById("docIframe").src = previewUrl;
+        }
+    </script>
+</body>
+</html>
