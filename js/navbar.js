@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // SƏNİN SEÇDİYİN DƏQİQ DEFAULT SIRA (+ library)
     const defaultLayout = {
-        general: ["home", "dashboard", "chat", "become_educator", "find_educators", "skill_swap", "lang_exchange", "live_clubs", "library"],
+        general: ["home", "dashboard", "chat", "library", "become_educator", "find_educators", "skill_swap", "lang_exchange", "live_clubs"],
         others: ["leaderboard", "projects", "testimonials", "contact"]
     };
 
