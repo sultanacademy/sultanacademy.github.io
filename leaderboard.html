@@ -227,8 +227,8 @@
                     else if (sr.rating === 4) swapPts += 20;
                 });
 
-                const totalScore = (u.sp || 0) + (revWritten * 15) + swapPts;
-                return { username: u.username, sp: u.sp || 0, revWritten, totalScore };
+                const totalScore = Math.max(0, (u.sp || 0) + (revWritten * 15) + swapPts - (u.penalty_pts || 0));
+                return { username: u.username, sp: u.sp || 0, revWritten, penalty: u.penalty_pts || 0, totalScore };
             }).sort((a, b) => b.totalScore - a.totalScore);
 
             const stuBox = document.getElementById("studentsRankList");
