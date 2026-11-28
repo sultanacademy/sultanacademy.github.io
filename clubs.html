@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Live Clubs & Workshops | Sultan Academy</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="personal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header id="main-header"></header>
+
+    <main class="section" style="padding-top: 90px;">
+        <div class="section-header">
+            <h2>Weekly Live Clubs & Workshops</h2>
+            <p>Join interactive speaking lounges, coding labs, and creative sessions hosted by our educators on Discord.</p>
+            <div style="margin-top: 18px;">
+                <a href="dashboard.html?mode=educator" class="inline-blue-btn" style="padding: 10px 22px; font-size: 13px;">
+                    <i class="fas fa-plus-circle"></i> Host a Live Club
+                </a>
+            </div>
+        </div>
+
+        <div class="clubs-grid" id="clubsGrid">
+            <p class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading live workshops...</p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Sultan Academy • <a href="privacy.html" style="color: #38bdf8;">Privacy & Legal Notice</a></p>
+    </footer>
+
+    <a href="YOUR_WISE_LINK_HERE" class="metallic-support-btn" target="_blank" rel="noopener">
+        <i class="fas fa-hand-holding-heart"></i> Support Our Work
+    </a>
+
+    <script src="js/navbar.js"></script>
+    <script src="js/cookie-consent.js"></script>
+    <script type="module" src="js/wizard.js"></script>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
+
+        async function loadEvents() {
+            const grid = document.getElementById('clubsGrid');
+            const { data: events } = await supabase
+                .from('events')
+                .select('id, educator_name, category, title, description, schedule_text, discord_link')
+                .eq('status', 'approved')
+                .order('id', { ascending: false });
+
+            if (!events || events.length === 0) {
+                grid.innerHTML = `
+                    <div class="club-card">
+                        <div class="club-badge live-lang"><i class="fas fa-comments"></i> Languages</div>
+                        <h4>Polyglot Speaking Lounge</h4>
+                        <p>Practice German, English, Turkish & Azerbaijani in friendly moderated voice rooms.</p>
+                        <div class="club-meta"><span><i class="far fa-clock"></i> Weekly Rooms</span><span><i class="fab fa-discord"></i> Free Access</span></div>
+                        <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Discord Lounge</a>
+                    </div>
+                    <div class="club-card">
+                        <div class="club-badge live-tech"><i class="fas fa-laptop-code"></i> Tech & Study</div>
+                        <h4>Coding & Productivity Lab</h4>
+                        <p>Co-working Pomodoro sessions, beginner web dev help, and study-planning workshops.</p>
+                        <div class="club-meta"><span><i class="far fa-clock"></i> Weekend Focus</span><span><i class="fab fa-discord"></i> Open Stage</span></div>
+                        <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Discord Lounge</a>
+                    </div>
+                    <div class="club-card">
+                        <div class="club-badge live-music"><i class="fas fa-guitar"></i> Music & Arts</div>
+                        <h4>Creative & Music Hangout</h4>
+                        <p>Acoustic jams, music theory discussions, and hobby sharing with academy members.</p>
+                        <div class="club-meta"><span><i class="far fa-clock"></i> Community Jam</span><span><i class="fab fa-discord"></i> All Welcome</span></div>
+                        <a href="https://discord.gg/rPbq3sWNCQ" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Discord Lounge</a>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = events.map(ev => `
+                <div class="club-card">
+                    <div class="club-badge live-lang">${ev.category}</div>
+                    <h4>${ev.title}</h4>
+                    <p>${ev.description}</p>
+                    <div class="club-meta"><span><i class="far fa-clock"></i> ${ev.schedule_text}</span><span><i class="fas fa-user"></i> ${ev.educator_name}</span></div>
+                    <a href="${ev.discord_link}" target="_blank" rel="noopener" class="club-join-btn"><i class="fab fa-discord"></i> Join Live Room</a>
+                </div>`).join('');
+        }
+        loadEvents();
+    </script>
+</body>
+</html>
