@@ -62,7 +62,7 @@
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
         const supabase = createClient('https://ezccynahgubalainoqkf.supabase.co', 'sb_publishable_ipRtiX4xI1SYlMxU8YAWQw_D8txWLKX');
 
-        async function loadExchange() {
+async function loadExchange() {
             const grid = document.getElementById("exchangeGrid");
             const { data } = await supabase.from("skill_swaps").select("id, author_name, offer_skill, want_skill, description, discord_link").eq("status", "approved").eq("swap_type", "Language & Cultural Exchange").order("id", { ascending: false });
             if (!data || data.length === 0) {
@@ -75,37 +75,20 @@
                         <span style="color:#38bdf8; border-color:#38bdf8;">Cultural Exchange</span>
                         <span>${s.author_name}</span>
                     </div>
-                    <h4 style="color:#0f172a; font-size:15px; margin-bottom:8px;">
+                    <h4 style="font-size:15px; margin-bottom:8px;">
                         <span style="color:#10b981;">Speaks:</span> ${s.offer_skill}<br>
                         <span style="color:#f59e0b;">Learning:</span> ${s.want_skill}
                     </h4>
                     <p class="tutor-bio">${s.description}</p>
-                       <div class="tutor-footer">
+                    <div class="tutor-footer">
                         <a href="chat.html?to=${encodeURIComponent(s.author_name)}&ctx=${encodeURIComponent('Language & Cultural Exchange')}" class="cal-booking-btn" style="background:#10b981; color:#fff !important; width:100%;">
                             <i class="fas fa-comment-dots"></i> Send Message Request
                         </a>
-                        <button class="unlock-tutor-btn ex-unlock-btn" data-target="${s.discord_link}">
-                            <i class="fab fa-discord"></i> Discord Link (Watch AD)
-                        </button>
+                        <a href="${s.discord_link}" target="_blank" rel="noopener" class="unlock-tutor-btn">
+                            <i class="fab fa-discord"></i> Open Discord Link ↗
+                        </a>
                     </div>
                 </div>`).join("");
-
-            document.querySelectorAll(".ex-unlock-btn").forEach(btn => {
-                btn.addEventListener("click", function() {
-                    const url = this.dataset.target;
-                    if (this.dataset.unlocked === "true") return window.open(url, "_blank");
-                    const ad = window.open("https://www.profitableratecpmnetwork.com/fspm49jkm?key=88e5821febc3aed060a93ce3587926fc", "_blank");
-                    if (!ad || ad.closed) return alert("⚠️ Pop-up blocked! Please allow pop-ups.");
-                    this.style.pointerEvents = "none";
-                    let t = 10;
-                    this.innerText = `Unlocking... ${t}s`;
-                    const iv = setInterval(() => {
-                        t--;
-                        if (t > 0) this.innerText = `Unlocking... ${t}s`;
-                        else { clearInterval(iv); this.dataset.unlocked = "true"; this.innerText = "Ready! Tap to Open"; this.style.background = "#10b981"; this.style.pointerEvents = "auto"; window.open(url, "_blank"); }
-                    }, 1000);
-                });
-            });
         }
 
         const exModal = document.getElementById("exModal");
